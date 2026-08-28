@@ -136,7 +136,7 @@ export function PackageCollection({
 
   return (
     <div>
-      <div className="grid gap-4 border-b border-line pb-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="grid items-end gap-4 border-b border-line pb-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <label className="relative block">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/40">
             <SearchIcon />
