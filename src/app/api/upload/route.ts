@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
@@ -19,6 +20,17 @@ export async function POST(req: Request) {
     }
     const bytes = await file.arrayBuffer();
     const safe = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${rawExt}`;
+
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(`carte-clinique/${safe}`, Buffer.from(bytes), {
+        access: "public",
+        contentType: file.type || `image/${rawExt}`,
+        addRandomSuffix: false,
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+      return NextResponse.json({ url: blob.url });
+    }
+
     const dir = path.join(process.cwd(), "uploads");
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, safe), Buffer.from(bytes));
