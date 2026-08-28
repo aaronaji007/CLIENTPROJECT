@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { specialties } from "@/lib/data";
+import { specialties, specialtyFaqs } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 export const dynamicParams = false;
 
@@ -75,6 +76,23 @@ export default async function SpecialtyPage({
             <h2 className="font-display text-2xl font-medium text-ink">Recovery</h2>
             <p className="mt-3 leading-relaxed text-ink/75">{specialty.recovery}</p>
           </section>
+
+          {specialtyFaqs[specialty.slug] && (
+            <section className="mt-14" id="faq">
+              <h2 className="font-display text-2xl font-medium text-ink">
+                Common questions
+              </h2>
+              <div className="mt-4">
+                <FaqAccordion items={specialtyFaqs[specialty.slug]} />
+              </div>
+              <Link
+                href="/faq"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink underline-offset-4 hover:underline"
+              >
+                View all FAQs <ArrowIcon />
+              </Link>
+            </section>
+          )}
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">

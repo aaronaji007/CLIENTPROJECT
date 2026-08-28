@@ -397,3 +397,76 @@ export const journeyPhases = [
     actions: ["Treatment", "Physiotherapy", "Home handoff & follow-up"],
   },
 ];
+
+export type FaqItem = {
+  q: string;
+  a: string;
+};
+
+export const generalFaqs: FaqItem[] = [
+  {
+    q: "Is Carte Clinique a hospital or a clinic?",
+    a: "Neither, in the traditional sense. We are a concierge that coordinates your care across vetted providers, hospitals, and surgical centers in other countries. We are the single point of contact who owns your file, your travel, and your timeline — not a place that performs the surgery itself.",
+  },
+  {
+    q: "How is a provider chosen for me?",
+    a: "Providers are selected against your condition, timeline, and preferences, then matched by a case manager. For this demonstration, the full accreditation and vetting process is a placeholder — in production it would be documented per provider.",
+  },
+  {
+    q: "What does the concierge actually coordinate?",
+    a: "The journey end to end: understanding and choosing care, visas and travel, transfers and accommodation, hospital admission, treatment, physiotherapy or rehab, and the handoff to a provider near your home. One person owns the whole thread.",
+  },
+  {
+    q: "Are the prices and outcomes real?",
+    a: "No. This is a concept demonstration. Every price, credential, and clinical outcome shown is a labeled placeholder and must not be relied on. Confirm everything with a case manager before making any decision.",
+  },
+  {
+    q: "Does this site provide medical advice?",
+    a: "No. Nothing here is medical advice, a diagnosis, or a verified clinical promise. Your own doctors remain in charge of your decisions. We provide coordination, not clinical direction.",
+  },
+  {
+    q: "How do time zones and language work?",
+    a: "Your case manager schedules and communicates in your local time and language. The booking flow on this site is timezone-aware, and reminders arrive in the timezone you live in.",
+  },
+];
+
+export const specialtyFaqs: Record<string, FaqItem[]> = {
+  orthopedics: [
+    { q: "How soon after surgery can I fly home?", a: "For joint replacement, most patients stay 6–8 days and fly after the first post-op review. Your surgeon and case manager confirm fitness to fly before any booking is made — this is a placeholder guideline." },
+    { q: "Is physiotherapy included after I return?", a: "A physiotherapy plan begins in hospital and is handed to a provider near you before you fly, with scheduled remote check-ins. The local coordination is part of the journey, not an afterthought." },
+  ],
+  fertility: [
+    { q: "Can the cycle be planned around my own calendar?", a: "Yes — that is the point of the fertility pathway. IVF is coordinated around your cycle and schedule, with legal guidance included where it applies and continuous communication with your local specialist." },
+  ],
+  ophthalmology: [
+    { q: "Can I really fly home that quickly?", a: "Most vision procedures allow a return within 2–4 days. Remote follow-ups are scheduled through the stabilization period, and you are cleared to fly before any ticket is booked — a placeholder guideline." },
+  ],
+  cosmetic_reconstruction: [
+    { q: "Will my visit be private and discreet?", a: "Discretion is central to the aesthetic pathway. Private recovery suites, unlisted appointments, and a concierge who manages every transfer preserve your privacy end to end." },
+  ],
+};
+
+export type Testimonial = {
+  quote: string;
+  name: string;
+  care: string;
+};
+
+export const testimonials: Testimonial[] = [
+  {
+    quote: "The difference was having one person who knew my name, my file, and my questions from the first call to the handoff back home.",
+    name: "A. Rivera",
+    care: "Total knee replacement",
+  },
+  {
+    quote: "Every flight, transfer, and appointment moved together. I never had to manage the logistics myself — just the recovery.",
+    name: "M. Okafor",
+    care: "Coronary bypass program",
+  },
+  {
+    quote: "It felt less like buying a procedure and more like being walked through a plan on someone's calendar with mine beside it.",
+    name: "S. Lindqvist",
+    care: "Coordinated IVF cycle",
+  },
+];
+

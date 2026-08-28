@@ -19,7 +19,7 @@ type Inquiry = {
   status: "new" | "read";
 };
 
-type Tab = "overview" | "specialties" | "packages" | "journal" | "inquiries";
+type Tab = "overview" | "specialties" | "packages" | "journal" | "inquiries" | "audience";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -27,6 +27,7 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "packages", label: "Packages" },
   { id: "journal", label: "Journal" },
   { id: "inquiries", label: "Inquiries" },
+  { id: "audience", label: "Audience" },
 ];
 
 export default function AdminDashboard() {
@@ -95,6 +96,7 @@ export default function AdminDashboard() {
         {tab === "packages" && <PackagesEditor />}
         {tab === "journal" && <JournalEditor />}
         {tab === "inquiries" && <InquiriesInbox />}
+        {tab === "audience" && <AudiencePanel />}
       </div>
     </div>
   );
@@ -103,11 +105,15 @@ export default function AdminDashboard() {
 function Overview() {
   const { resolvedSpecialties, resolvedPackages, resolvedPosts, resetAll } = useAdminContent();
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [subscribers, setSubscribers] = useState<string[]>([]);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
       const raw = localStorage.getItem("carte-clinique-inquiries");
       setInquiries(raw ? JSON.parse(raw) : []);
+      setSubscribers(
+        JSON.parse(localStorage.getItem("carte-clinique-subscribers") || "[]"),
+      );
     });
     return () => cancelAnimationFrame(raf);
   }, []);
@@ -121,13 +127,14 @@ function Overview() {
       value: inquiries.filter((i) => i.status === "new").length || 0,
       accent: true,
     },
+    { label: "Subscribers", value: subscribers.length },
   ];
 
   const lastInquiries = inquiries.slice(0, 5);
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {stats.map((s) => (
           <div
             key={s.label}
@@ -437,6 +444,58 @@ function InquiriesInbox() {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function AudiencePanel() {
+  const [subscribers, setSubscribers] = useState<string[]>([]);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      const raw = localStorage.getItem("carte-clinique-subscribers");
+      setSubscribers(raw ? JSON.parse(raw) : []);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const remove = (email: string) => {
+    const next = subscribers.filter((e) => e !== email);
+    setSubscribers(next);
+    localStorage.setItem("carte-clinique-subscribers", JSON.stringify(next));
+  };
+
+  return (
+    <div className="rounded-lg border border-line bg-paper shadow-panel">
+      <div className="flex items-center justify-between border-b border-line px-6 py-4">
+        <div>
+          <h2 className="font-display text-xl font-medium text-ink">Newsletter subscribers</h2>
+          <p className="mt-1 text-sm text-ink/55">Emails captured from the footer signup (demo, localStorage).</p>
+        </div>
+        <span className="rounded-sm bg-paper-deep px-3 py-1.5 font-mono text-xs text-ink/70">
+          {subscribers.length} total
+        </span>
+      </div>
+
+      {subscribers.length === 0 ? (
+        <p className="px-6 py-12 text-center text-sm text-ink/55">
+          No subscribers yet. Sign up via the footer on the live site and they appear here.
+        </p>
+      ) : (
+        <ul className="divide-y divide-line">
+          {subscribers.map((email) => (
+            <li key={email} className="flex items-center justify-between gap-4 px-6 py-3.5">
+              <span className="truncate text-sm text-ink">{email}</span>
+              <button
+                onClick={() => remove(email)}
+                className="shrink-0 font-mono text-[11px] uppercase tracking-wider text-signal hover:underline"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ const nav = [
   { href: "/specialties", label: "Specialties" },
   { href: "/packages", label: "Packages" },
   { href: "/#journey", label: "The journey" },
+  { href: "/faq", label: "FAQ" },
   { href: "/blog", label: "Journal" },
 ];
 
@@ -74,7 +75,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-7 xl:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-6 xl:flex" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.href}

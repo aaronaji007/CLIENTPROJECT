@@ -1,8 +1,21 @@
 import Link from "next/link";
+import { NewsletterForm } from "./newsletter-form";
 
 export function Footer() {
   return (
     <footer className="bg-ink text-paper">
+      <div className="border-b border-paper/12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-sm">
+            <p className="font-display text-xl font-medium">Stay in the loop</p>
+            <p className="mt-2 text-sm leading-relaxed text-paper/60">
+              Occasional notes on planning care abroad — never spam, always in your timezone.
+            </p>
+          </div>
+          <NewsletterForm />
+        </div>
+      </div>
+
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
@@ -23,6 +36,7 @@ export function Footer() {
             <ul className="mt-4 space-y-3 text-sm text-paper/80">
               <li><Link href="/specialties" className="hover:text-paper">Specialties</Link></li>
               <li><Link href="/packages" className="hover:text-paper">Packages</Link></li>
+              <li><Link href="/faq" className="hover:text-paper">FAQ</Link></li>
               <li><Link href="/blog" className="hover:text-paper">Journal</Link></li>
             </ul>
           </div>
@@ -32,8 +46,9 @@ export function Footer() {
               Care
             </p>
             <ul className="mt-4 space-y-3 text-sm text-paper/80">
-              <li><span className="cursor-pointer hover:text-paper">Plan your care</span></li>
-              <li><span className="cursor-pointer hover:text-paper">Book a consult</span></li>
+              <li><Link href="/#consult" className="hover:text-paper">Book a consult</Link></li>
+              <li><Link href="/#journey" className="hover:text-paper">The journey</Link></li>
+              <li><Link href="/admin" className="hover:text-paper">Admin</Link></li>
             </ul>
           </div>
         </div>

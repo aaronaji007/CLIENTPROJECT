@@ -5,7 +5,7 @@ import { ConsultBooking } from "@/components/consult-booking";
 import { Artwork } from "@/components/artwork";
 import { SpecialtyCard } from "@/components/specialty-card";
 import { PackageCard } from "@/components/package-card";
-import { specialties, packages } from "@/lib/data";
+import { specialties, packages, testimonials } from "@/lib/data";
 
 export const metadata = {
   title: "Global Surgery & Care Concierge",
@@ -62,6 +62,43 @@ export default function HomePage() {
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {packages.slice(0, 3).map((p) => (
               <PackageCard key={p.slug} pkg={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-ink text-paper">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
+                Patient stories
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-medium leading-tight text-paper sm:text-4xl">
+                One point of contact, end to end
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-paper/55">
+              Synthetic accounts written for this demonstration. No real patient is quoted.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {testimonials.map((t) => (
+              <figure
+                key={t.name}
+                className="flex flex-col justify-between rounded-lg border border-paper/12 bg-paper/[0.04] p-6"
+              >
+                <blockquote className="font-display text-lg leading-snug text-paper/90">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-6 border-t border-paper/12 pt-4">
+                  <p className="text-sm font-medium text-paper">{t.name}</p>
+                  <p className="mt-0.5 font-mono text-[11px] uppercase tracking-[0.12em] text-paper/50">
+                    {t.care}
+                  </p>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>

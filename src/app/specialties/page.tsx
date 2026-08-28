@@ -1,5 +1,5 @@
 import { specialties } from "@/lib/data";
-import { SpecialtyCard } from "@/components/specialty-card";
+import { SpecialtyCollection } from "@/components/collection-filters";
 
 export const metadata = {
   title: "Specialties",
@@ -19,16 +19,8 @@ export default function SpecialtiesPage() {
         </p>
       </div>
 
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {specialties.map((s) => (
-          <SpecialtyCard
-            key={s.slug}
-            slug={s.slug}
-            category={s.category}
-            name={s.name}
-            summary={s.summary}
-          />
-        ))}
+      <div className="mt-12">
+        <SpecialtyCollection specialties={specialties} />
       </div>
     </div>
   );

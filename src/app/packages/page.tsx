@@ -1,12 +1,19 @@
 import { packages } from "@/lib/data";
-import { PackageCard } from "@/components/package-card";
+import { PackageCollection } from "@/components/collection-filters";
+import { PackageCompare } from "@/components/package-compare";
 
 export const metadata = {
   title: "Packages",
   description: "Coordinated medical travel packages that settle the logistics before you commit.",
 };
 
-export default function PackagesPage() {
+export default async function PackagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
       <div className="max-w-2xl">
@@ -20,10 +27,12 @@ export default function PackagesPage() {
         </p>
       </div>
 
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {packages.map((p) => (
-          <PackageCard key={p.slug} pkg={p} />
-        ))}
+      <div className="mt-12">
+        <PackageCollection packages={packages} initialQuery={q} />
+      </div>
+
+      <div className="mt-20">
+        <PackageCompare packages={packages} />
       </div>
 
       <p className="mt-10 max-w-2xl text-xs leading-relaxed text-ink/50">
