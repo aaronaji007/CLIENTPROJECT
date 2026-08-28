@@ -374,29 +374,70 @@ function JournalEditor() {
 }
 
 function PhotoFieldRow({
+  id,
   label,
   value,
   onChange,
   onReset,
   preview,
 }: {
+  id: string;
   label: string;
   value: string;
   onChange: (v: string) => void;
   onReset: () => void;
   preview?: string;
 }) {
+  const [dragging, setDragging] = useState(false);
+
+  const handleFile = (file: File) => {
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") onChange(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="flex flex-wrap items-start gap-4">
-      <div className="h-24 w-36 shrink-0 overflow-hidden rounded-sm border border-line bg-paper-deep/50">
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          const file = e.dataTransfer.files?.[0];
+          if (file) handleFile(file);
+        }}
+        onClick={() => document.getElementById(`photo-upload-${id}`)?.click()}
+        className={`h-24 w-36 shrink-0 cursor-pointer overflow-hidden rounded-sm border border-dashed bg-paper-deep/50 text-center transition-colors ${
+          dragging ? "border-signal bg-signal/10" : "border-line hover:border-ink/40"
+        }`}
+        title="Drop an image here or click to choose"
+      >
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="" className="h-full w-full object-cover" />
+          <img src={preview} alt="" className="pointer-events-none h-full w-full object-cover" />
         ) : (
-          <div className="flex h-full items-center justify-center font-mono text-[10px] uppercase tracking-wider text-ink/40">
-            No photo
+          <div className="flex h-full items-center justify-center px-1 font-mono text-[10px] uppercase tracking-wider text-ink/40">
+            Drop to set
           </div>
         )}
+        <input
+          id={`photo-upload-${id}`}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleFile(file);
+            e.currentTarget.value = "";
+          }}
+        />
       </div>
       <div className="min-w-[220px] flex-1">
         <label className="block">
@@ -408,9 +449,12 @@ function PhotoFieldRow({
             className="mt-1.5 w-full rounded-sm border border-ink/20 bg-white/40 px-3 py-2 font-mono text-xs text-ink focus:border-ink"
           />
         </label>
+        <p className="mt-2 text-xs leading-relaxed text-ink/45">
+          Drag an image onto the preview, or click it to choose a file from your computer.
+        </p>
         <button
           onClick={onReset}
-          className="mt-2 font-mono text-[11px] uppercase tracking-wider text-ink/45 hover:text-signal"
+          className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/45 hover:text-signal"
         >
           Reset to default
         </button>
@@ -507,6 +551,7 @@ function PhotosEditor() {
               <h3 className="mt-1 font-display text-lg font-medium text-ink">{item.name}</h3>
               <div className="mt-4">
                 <PhotoFieldRow
+                  id={item.slug}
                   label="Photo"
                   value={item.photo}
                   onChange={item.onChange}
