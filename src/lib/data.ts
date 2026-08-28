@@ -9,6 +9,7 @@ export type Specialty = {
   recovery: string;
   outcomes: string;
   travelDays: string;
+  photo: string;
 };
 
 export const specialties: Specialty[] = [
@@ -30,6 +31,7 @@ export const specialties: Specialty[] = [
     recovery: "In-hotel physiotherapy starts within 48 hours of discharge, with a remote check-in at week two, week six, and month three.",
     outcomes: "Every quoted outcome is a placeholder — replace with real published joint-center data before launch.",
     travelDays: "Stay 6–8 days",
+    photo: "/images/orthopedics.webp",
   },
   {
     slug: "cardiology",
@@ -49,6 +51,7 @@ export const specialties: Specialty[] = [
     recovery: "A structured cardiac-rehab program, with telemetry-supported home milestones after you return.",
     outcomes: "Every quoted outcome is a placeholder — replace with real published cardiac-center data before launch.",
     travelDays: "Stay 7–10 days",
+    photo: "/images/cardiology.webp",
   },
   {
     slug: "cosmetic-reconstruction",
@@ -68,6 +71,7 @@ export const specialties: Specialty[] = [
     recovery: "Private recovery suites with 24/7 nursing and scheduled postoperative review at home via telemedicine.",
     outcomes: "Every quoted outcome is a placeholder — replace with real surgeon-reported data before launch.",
     travelDays: "Stay 5–7 days",
+    photo: "/images/cosmetic.webp",
   },
   {
     slug: "fertility",
@@ -87,6 +91,7 @@ export const specialties: Specialty[] = [
     recovery: "Cycle planning prioritizes minimal disruption, with a clear return plan between stimulation and transfer.",
     outcomes: "Every quoted outcome is a placeholder — replace with real clinic-reported data before launch.",
     travelDays: "Stay 5–14 days per cycle",
+    photo: "/images/service-doctor.png",
   },
   {
     slug: "neurosurgery",
@@ -106,6 +111,7 @@ export const specialties: Specialty[] = [
     recovery: "Extended inpatient recovery with rehabilitation and a neuro follow-up schedule that continues at home.",
     outcomes: "Every quoted outcome is a placeholder — replace with real high-volume center data before launch.",
     travelDays: "Stay 8–14 days",
+    photo: "/images/robotic.webp",
   },
   {
     slug: "oncology",
@@ -125,6 +131,7 @@ export const specialties: Specialty[] = [
     recovery: "Treatment schedules are built around your needs, with a shared record your home team can follow.",
     outcomes: "Every quoted outcome is a placeholder — replace with real center data before launch.",
     travelDays: "Variable by treatment plan",
+    photo: "/images/essential.webp",
   },
   {
     slug: "dental",
@@ -144,6 +151,7 @@ export const specialties: Specialty[] = [
     recovery: "Provisional restorations fitted before you leave, with remote check-ins through the integration period.",
     outcomes: "Every quoted outcome is a placeholder — replace with real clinic-reported data before launch.",
     travelDays: "Stay 5–7 days",
+    photo: "/images/tailored.webp",
   },
   {
     slug: "ophthalmology",
@@ -163,6 +171,7 @@ export const specialties: Specialty[] = [
     recovery: "Most patients return within days, with scheduled remote follow-ups through the stabilization period.",
     outcomes: "Every quoted outcome is a placeholder — replace with real clinic data before launch.",
     travelDays: "Stay 2–4 days",
+    photo: "/images/serenity.webp",
   },
 ];
 
@@ -178,6 +187,7 @@ export type TravelPackage = {
   summary: string;
   includes: string[];
   notes: string;
+  photo: string;
 };
 
 export const packages: TravelPackage[] = [
@@ -200,6 +210,7 @@ export const packages: TravelPackage[] = [
       "Companion accommodation",
     ],
     notes: "Price is a placeholder for demonstration — confirm a live quote before publishing.",
+    photo: "/images/orthopedics.webp",
   },
   {
     slug: "hip-replacement",
@@ -220,6 +231,7 @@ export const packages: TravelPackage[] = [
       "Follow-up telemedicine",
     ],
     notes: "Price is a placeholder for demonstration — confirm a live quote before publishing.",
+    photo: "/images/royal.webp",
   },
   {
     slug: "all-on-4-implants",
@@ -239,6 +251,7 @@ export const packages: TravelPackage[] = [
       "Integration-period check-ins",
     ],
     notes: "Price is a placeholder for demonstration — confirm a live quote before publishing.",
+    photo: "/images/tailored.webp",
   },
   {
     slug: "ivf-cycle",
@@ -258,6 +271,7 @@ export const packages: TravelPackage[] = [
       "Legal and logistics guidance",
     ],
     notes: "Price is a placeholder for demonstration — confirm a live quote before publishing.",
+    photo: "/images/serenity.webp",
   },
   {
     slug: "lasik-vision",
@@ -277,6 +291,7 @@ export const packages: TravelPackage[] = [
       "Remote aftercare",
     ],
     notes: "Price is a placeholder for demonstration — confirm a live quote before publishing.",
+    photo: "/images/essential.webp",
   },
   {
     slug: "coronary-bypass",
@@ -296,6 +311,7 @@ export const packages: TravelPackage[] = [
       "Telemetry-supported home follow-up",
     ],
     notes: "Price is a placeholder for demonstration — confirm a live quote before publishing.",
+    photo: "/images/cardiology.webp",
   },
 ];
 
@@ -307,6 +323,7 @@ export type BlogPost = {
   category: string;
   excerpt: string;
   body: string[];
+  photo: string;
 };
 
 export const posts: BlogPost[] = [
@@ -326,6 +343,7 @@ export const posts: BlogPost[] = [
       "Ask who is reachable. Time zones matter. Know, before you travel, exactly who answers and when — in your hours, not theirs.",
       "None of this guarantees a perfect outcome. But it converts an opaque purchase into a plan you can hold, and that is the point of a concierge.",
     ],
+    photo: "/images/blog-hospital.webp",
   },
   {
     slug: "the-travel-phase-explained",
@@ -341,6 +359,7 @@ export const posts: BlogPost[] = [
       "It also has a single point of contact. When your flight changes, your hotel, your transfer, and your hospital appointment should move together — because one person owns the whole thread.",
       "The lesson is simple: the travel phase is not an obstacle to treatment. It is the bridge on which the treatment stands, and it deserves the same planning as the operation itself.",
     ],
+    photo: "/images/backwaters.png",
   },
   {
     slug: "telemedicine-what-happens-next",
@@ -356,6 +375,7 @@ export const posts: BlogPost[] = [
       "Timezone is not a convenience, it is a coordination problem. A good booking flow schedules in your local time, confirms the conversion, and sends reminders in the timezone you live in — not the one the clinic is in.",
       "After the consult, you should hold a written summary: what was discussed, what is recommended, and what happens next, in terms you can take to another doctor.",
     ],
+    photo: "/images/service-doctor.png",
   },
   {
     slug: "recovery-begins-at-home",
@@ -371,6 +391,7 @@ export const posts: BlogPost[] = [
       "Insist on a handoff. Your records should migrate to a provider near you before you fly, not after a problem appears. And schedule the follow-up before you leave, while the momentum exists.",
       "You do not need to be an expert in aftercare. You need one person who owns your file and a calendar that already has the appointments on it.",
     ],
+    photo: "/images/heal-faster.png",
   },
 ];
 

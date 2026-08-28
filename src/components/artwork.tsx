@@ -1,4 +1,5 @@
-import { specialties, packages } from "@/lib/data";
+import Image from "next/image";
+import { specialties, packages, posts } from "@/lib/data";
 
 function hash(str: string) {
   let h = 0;
@@ -12,16 +13,29 @@ function sizeFor(kind: "hero" | "card") {
   return { vw, vh };
 }
 
+export function photoFor(slug: string): string | undefined {
+  const s = specialties.find((x) => x.slug === slug);
+  if (s && s.photo) return s.photo;
+  const p = packages.find((x) => x.slug === slug);
+  if (p && p.photo) return p.photo;
+  const b = posts.find((x) => x.slug === slug);
+  if (b && b.photo) return b.photo;
+  return undefined;
+}
+
 export function Artwork({
   slug,
   kind = "card",
   label,
+  photo,
 }: {
   slug: string;
   kind?: "hero" | "card";
   label?: string;
+  photo?: string | null;
 }) {
   const { vw, vh } = sizeFor(kind);
+  const resolved = photo ?? photoFor(slug);
   const seed = hash(slug);
   const hueA = 190 + (seed % 22);
   const hueB = 205 + ((seed >> 3) % 18);
@@ -32,6 +46,32 @@ export function Artwork({
   const r1 = 30 + (seed % 40);
   const r2 = 8 + ((seed >> 6) % 16);
   const opacity = kind === "hero" ? 0.55 : 0.75;
+  const caption = label || slug.replace(/-/g, " ");
+
+  if (resolved) {
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-ink" aria-hidden="true">
+        <Image
+          src={resolved}
+          alt=""
+          fill
+          sizes={kind === "hero" ? "(min-width: 1024px) 40vw" : "(min-width: 640px) 50vw, 100vw"}
+          className="object-cover"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(14,42,52,0.08) 0%, rgba(14,42,52,0) 40%, rgba(14,42,52,0.62) 100%)",
+          }}
+        />
+        <CornerTicks kind={kind} />
+        <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper drop-shadow-[0_1px_2px_rgba(14,42,52,0.8)]">
+          {caption}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -92,10 +132,8 @@ export function Artwork({
       {/* corner ticks */}
       <CornerTicks kind={kind} />
       {/* mono label */}
-      <span
-        className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/70"
-      >
-        {label || slug.replace(/-/g, " ")}
+      <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/70">
+        {caption}
       </span>
       <span className="absolute bottom-3 right-4 font-mono text-[10px] tracking-[0.18em] text-paper/45">
         {vw}×{vh}

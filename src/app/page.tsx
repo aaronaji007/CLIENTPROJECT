@@ -213,7 +213,7 @@ function Hero() {
           <div className="relative hidden lg:block">
             <div className="sticky top-24 overflow-hidden rounded-lg border border-line shadow-panel">
               <div className="aspect-[4/4.6] w-full">
-                <Artwork slug="carte-clinique" kind="hero" label="Coordinated care" />
+                <Artwork slug="carte-clinique" kind="hero" label="Coordinated care" photo="/images/package-hero.webp" />
               </div>
               <HeroCard />
             </div>
