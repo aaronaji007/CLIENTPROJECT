@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
+@theme {
+  --color-paper: #f6f4ef;
+  --color-paper-deep: #edeae2;
+  --color-ink: #0e2a34;
+  --color-ink-soft: #163a46;
+  --color-sage: #b8c4c0;
+  --color-sage-soft: #e2e7e4;
+  --color-signal: #c94f3d;
+  --color-signal-deep: #b13f2f;
+  --color-line: rgba(14, 42, 52, 0.12);
+  --color-line-invert: rgba(246, 244, 239, 0.16);
+
+  --font-display: var(--font-newsreader);
+  --font-sans: var(--font-instrument);
+  --font-mono: var(--font-plex);
+
+  --tracking-tight: -0.02em;
+
+  --shadow-panel: 0 1.5px 2.5px rgba(14, 42, 52, 0.08),
+    0 12px 32px -12px rgba(14, 42, 52, 0.28);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--color-signal);
+  accent-color: var(--color-signal);
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-sage);
+  border: 3px solid var(--color-paper-deep);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-soft);
+}
+
+.dark-surface {
+  color-scheme: light;
+}
+
+@keyframes attend-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(201, 79, 61, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(201, 79, 61, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(201, 79, 61, 0);
+  }
+}
+
+.attend-primary {
+  animation: attend-pulse 2.6s cubic-bezier(0.66, 0, 0.34, 1) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .attend-primary {
+    animation: none;
+  }
+}
+
+.prose-dark {
+  color: rgba(246, 244, 239, 0.85);
+}
+.prose-dark h1,
+.prose-dark h2,
+.prose-dark h3,
+.prose-dark h4 {
+  color: var(--color-paper);
 }
