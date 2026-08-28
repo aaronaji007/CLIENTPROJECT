@@ -19,13 +19,14 @@ type Inquiry = {
   status: "new" | "read";
 };
 
-type Tab = "overview" | "specialties" | "packages" | "journal" | "inquiries" | "audience";
+type Tab = "overview" | "specialties" | "packages" | "journal" | "photos" | "inquiries" | "audience";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "specialties", label: "Specialties" },
   { id: "packages", label: "Packages" },
   { id: "journal", label: "Journal" },
+  { id: "photos", label: "Photos" },
   { id: "inquiries", label: "Inquiries" },
   { id: "audience", label: "Audience" },
 ];
@@ -58,6 +59,13 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setTab("overview")}
+            className="rounded-sm border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-ink"
+            aria-pressed={tab === "overview"}
+          >
+            Overview
+          </button>
           <Link
             href="/"
             className="rounded-sm border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-ink"
@@ -95,6 +103,7 @@ export default function AdminDashboard() {
         {tab === "specialties" && <SpecialtiesEditor />}
         {tab === "packages" && <PackagesEditor />}
         {tab === "journal" && <JournalEditor />}
+        {tab === "photos" && <PhotosEditor />}
         {tab === "inquiries" && <InquiriesInbox />}
         {tab === "audience" && <AudiencePanel />}
       </div>
@@ -359,6 +368,155 @@ function JournalEditor() {
             />
           </div>
         </div>
+      ))}
+    </div>
+  );
+}
+
+function PhotoFieldRow({
+  label,
+  value,
+  onChange,
+  onReset,
+  preview,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  onReset: () => void;
+  preview?: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-start gap-4">
+      <div className="h-24 w-36 shrink-0 overflow-hidden rounded-sm border border-line bg-paper-deep/50">
+        {preview ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={preview} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full items-center justify-center font-mono text-[10px] uppercase tracking-wider text-ink/40">
+            No photo
+          </div>
+        )}
+      </div>
+      <div className="min-w-[220px] flex-1">
+        <label className="block">
+          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50">{label}</span>
+          <input
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="/images/your-photo.webp"
+            className="mt-1.5 w-full rounded-sm border border-ink/20 bg-white/40 px-3 py-2 font-mono text-xs text-ink focus:border-ink"
+          />
+        </label>
+        <button
+          onClick={onReset}
+          className="mt-2 font-mono text-[11px] uppercase tracking-wider text-ink/45 hover:text-signal"
+        >
+          Reset to default
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PhotosEditor() {
+  const {
+    resolvedSpecialties,
+    resolvedPackages,
+    resolvedPosts,
+    overrides,
+    updateSpecialty,
+    updatePackage,
+    updatePost,
+    resetPhoto,
+  } = useAdminContent();
+
+  const groups: {
+    key: string;
+    title: string;
+    hint: string;
+    items: {
+      slug: string;
+      name: string;
+      sub: string;
+      photo: string;
+      onChange: (v: string) => void;
+      onReset: () => void;
+    }[];
+  }[] = [
+    {
+      key: "specialties",
+      title: "Specialties",
+      hint: "Card & detail-page imagery",
+      items: resolvedSpecialties.map((s) => ({
+        slug: s.slug,
+        name: s.name,
+        sub: s.category,
+        photo: overrides.specialties[s.slug]?.photo ?? s.photo,
+        onChange: (v) => updateSpecialty(s.slug, { photo: v }),
+        onReset: () => resetPhoto("specialties", s.slug),
+      })),
+    },
+    {
+      key: "packages",
+      title: "Packages",
+      hint: "Package card & travel imagery",
+      items: resolvedPackages.map((p) => ({
+        slug: p.slug,
+        name: p.name,
+        sub: `${p.specialty} · ${p.country}`,
+        photo: overrides.packages[p.slug]?.photo ?? p.photo,
+        onChange: (v) => updatePackage(p.slug, { photo: v }),
+        onReset: () => resetPhoto("packages", p.slug),
+      })),
+    },
+    {
+      key: "posts",
+      title: "Journal",
+      hint: "Blog card & article imagery",
+      items: resolvedPosts.map((p) => ({
+        slug: p.slug,
+        name: p.title,
+        sub: p.category,
+        photo: overrides.posts[p.slug]?.photo ?? p.photo,
+        onChange: (v) => updatePost(p.slug, { photo: v }),
+        onReset: () => resetPhoto("posts", p.slug),
+      })),
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="rounded-lg border border-line bg-paper-deep/40 p-6">
+        <h2 className="font-display text-lg font-medium text-ink">Photo library</h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink/60">
+          Change the photograph used on each specialty, package, and journal post. Type any image
+          URL (or a path under <code className="font-mono text-xs text-ink/70">/images/…</code>) and
+          it instantly updates the live site. Changes save to this browser.
+        </p>
+      </div>
+      {groups.map((g) => (
+        <section key={g.key} className="space-y-4">
+          <div className="flex items-baseline justify-between">
+            <h2 className="font-display text-xl font-medium text-ink">{g.title}</h2>
+            <span className="font-mono text-xs text-ink/45">{g.hint}</span>
+          </div>
+          {g.items.map((item) => (
+            <div key={item.slug} className="rounded-lg border border-line bg-paper p-6 shadow-panel">
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-signal">{item.sub}</p>
+              <h3 className="mt-1 font-display text-lg font-medium text-ink">{item.name}</h3>
+              <div className="mt-4">
+                <PhotoFieldRow
+                  label="Photo"
+                  value={item.photo}
+                  onChange={item.onChange}
+                  onReset={item.onReset}
+                  preview={item.photo}
+                />
+              </div>
+            </div>
+          ))}
+        </section>
       ))}
     </div>
   );

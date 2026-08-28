@@ -6,9 +6,9 @@ import { specialties, packages, posts } from "./data";
 const OVERRIDES_KEY = "carte-clinique-content-overrides";
 
 export type ContentOverrides = {
-  specialties: Record<string, { name?: string; summary?: string }>;
-  packages: Record<string, { name?: string; summary?: string; price?: string }>;
-  posts: Record<string, { title?: string; excerpt?: string }>;
+  specialties: Record<string, { name?: string; summary?: string; photo?: string }>;
+  packages: Record<string, { name?: string; summary?: string; price?: string; photo?: string }>;
+  posts: Record<string, { title?: string; excerpt?: string; photo?: string }>;
 };
 
 export const defaultOverrides: ContentOverrides = {
@@ -42,25 +42,35 @@ export function useAdminContent() {
     }
   }, []);
 
-  const updateSpecialty = (slug: string, patch: { name?: string; summary?: string }) => {
+  const updateSpecialty = (slug: string, patch: { name?: string; summary?: string; photo?: string }) => {
     persist({
       ...overrides,
       specialties: { ...overrides.specialties, [slug]: { ...overrides.specialties[slug], ...patch } },
     });
   };
 
-  const updatePackage = (slug: string, patch: { name?: string; summary?: string; price?: string }) => {
+  const updatePackage = (slug: string, patch: { name?: string; summary?: string; price?: string; photo?: string }) => {
     persist({
       ...overrides,
       packages: { ...overrides.packages, [slug]: { ...overrides.packages[slug], ...patch } },
     });
   };
 
-  const updatePost = (slug: string, patch: { title?: string; excerpt?: string }) => {
+  const updatePost = (slug: string, patch: { title?: string; excerpt?: string; photo?: string }) => {
     persist({
       ...overrides,
       posts: { ...overrides.posts, [slug]: { ...overrides.posts[slug], ...patch } },
     });
+  };
+
+  const resetPhoto = (kind: "specialties" | "packages" | "posts", slug: string) => {
+    const list = overrides[kind];
+    const current = list[slug] || {};
+    const cleaned: Record<string, string> = {};
+    for (const [k, v] of Object.entries(current)) {
+      if (k !== "photo") cleaned[k] = v as string;
+    }
+    persist({ ...overrides, [kind]: { ...list, [slug]: cleaned } });
   };
 
   const resetAll = () => persist(defaultOverrides);
@@ -84,6 +94,7 @@ export function useAdminContent() {
     updateSpecialty,
     updatePackage,
     updatePost,
+    resetPhoto,
     resetAll,
     resolvedSpecialties,
     resolvedPackages,
