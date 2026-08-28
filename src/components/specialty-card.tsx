@@ -2,6 +2,7 @@ import Link from "next/link";
 import { specialties } from "@/lib/data";
 import { ArrowIcon } from "./icons";
 import { Artwork } from "./artwork";
+import { OverrideText } from "./override-text";
 
 export function SpecialtyCard({
   slug,
@@ -23,8 +24,16 @@ export function SpecialtyCard({
         <Artwork slug={slug} kind="card" label={category} />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-xl font-medium text-ink">{name}</h3>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/65">{summary}</p>
+        <h3 className="font-display text-xl font-medium text-ink">
+          <OverrideText kind="specialties" slug={slug} field="name">
+            {name}
+          </OverrideText>
+        </h3>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/65">
+          <OverrideText kind="specialties" slug={slug} field="summary">
+            {summary}
+          </OverrideText>
+        </p>
         <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-ink underline-offset-4 group-hover:underline">
           Explore specialist care
           <ArrowIcon />

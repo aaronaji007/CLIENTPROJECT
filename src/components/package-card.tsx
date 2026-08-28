@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TravelPackage } from "@/lib/data";
 import { Artwork } from "./artwork";
+import { OverrideText } from "./override-text";
 
 export function PackageCard({ pkg }: { pkg: TravelPackage }) {
   return (
@@ -18,14 +19,24 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
           </p>
           <p className="font-mono text-xs text-ink/55">{pkg.days} days</p>
         </div>
-        <h3 className="mt-3 font-display text-xl font-medium text-ink">{pkg.name}</h3>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/65">{pkg.summary}</p>
+        <h3 className="mt-3 font-display text-xl font-medium text-ink">
+          <OverrideText kind="packages" slug={pkg.slug} field="name">
+            {pkg.name}
+          </OverrideText>
+        </h3>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/65">
+          <OverrideText kind="packages" slug={pkg.slug} field="summary">
+            {pkg.summary}
+          </OverrideText>
+        </p>
         <div className="mt-5 flex items-end justify-between">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-wider text-ink/45">from</p>
             <p className="font-display text-2xl font-medium text-ink">
               {pkg.currency === "USD" ? "$" : ""}
-              {pkg.price}
+              <OverrideText kind="packages" slug={pkg.slug} field="price">
+                {pkg.price}
+              </OverrideText>
             </p>
           </div>
           <span className="rounded-sm bg-paper-deep px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-ink/65">

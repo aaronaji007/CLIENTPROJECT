@@ -3,6 +3,7 @@ import Link from "next/link";
 import { packages } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
+import { OverrideText } from "@/components/override-text";
 
 export const dynamicParams = false;
 
@@ -47,9 +48,15 @@ export default async function PackagePage({
             {pkg.specialty} · {pkg.country}
           </p>
           <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
-            {pkg.name}
+            <OverrideText kind="packages" slug={pkg.slug} field="name">
+              {pkg.name}
+            </OverrideText>
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-ink/75">{pkg.summary}</p>
+          <p className="mt-4 text-lg leading-relaxed text-ink/75">
+            <OverrideText kind="packages" slug={pkg.slug} field="summary">
+              {pkg.summary}
+            </OverrideText>
+          </p>
 
           <section className="mt-10">
             <h2 className="font-display text-2xl font-medium text-ink">What&apos;s coordinated</h2>
@@ -77,7 +84,9 @@ export default async function PackagePage({
               </p>
               <p className="mt-2 font-display text-3xl font-medium text-paper">
                 {pkg.currency === "USD" ? "$" : ""}
-                {pkg.price}
+                <OverrideText kind="packages" slug={pkg.slug} field="price">
+                  {pkg.price}
+                </OverrideText>
               </p>
               <p className="mt-1 text-xs text-paper/55">placeholder · {pkg.days} days coordinated</p>
               <div className="mt-5 space-y-3 border-t border-paper/15 pt-5 text-sm text-paper/80">

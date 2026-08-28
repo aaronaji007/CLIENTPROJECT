@@ -389,14 +389,25 @@ function PhotoFieldRow({
   preview?: string;
 }) {
   const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     if (!file || !file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") onChange(reader.result);
-    };
-    reader.readAsDataURL(file);
+    setError(null);
+    setUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || "Upload failed");
+      onChange(data.url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -424,7 +435,7 @@ function PhotoFieldRow({
           <img src={preview} alt="" className="pointer-events-none h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center px-1 font-mono text-[10px] uppercase tracking-wider text-ink/40">
-            Drop to set
+            {uploading ? "Uploading…" : "Drop to set"}
           </div>
         )}
         <input
@@ -450,8 +461,12 @@ function PhotoFieldRow({
           />
         </label>
         <p className="mt-2 text-xs leading-relaxed text-ink/45">
-          Drag an image onto the preview, or click it to choose a file from your computer.
+          Drag an image onto the preview, or click it to choose a file. It uploads to the site and
+          updates live.
         </p>
+        {error && (
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-signal">{error}</p>
+        )}
         <button
           onClick={onReset}
           className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/45 hover:text-signal"
@@ -534,9 +549,9 @@ function PhotosEditor() {
       <div className="rounded-lg border border-line bg-paper-deep/40 p-6">
         <h2 className="font-display text-lg font-medium text-ink">Photo library</h2>
         <p className="mt-2 text-sm leading-relaxed text-ink/60">
-          Change the photograph used on each specialty, package, and journal post. Type any image
-          URL (or a path under <code className="font-mono text-xs text-ink/70">/images/…</code>) and
-          it instantly updates the live site. Changes save to this browser.
+          Change the photograph used on each specialty, package, and journal post. Drag an image on,
+          click to choose a file, or paste a URL — it instantly updates the live site. Uploaded
+          photos are saved to the site; the selection is stored in this browser.
         </p>
       </div>
       {groups.map((g) => (

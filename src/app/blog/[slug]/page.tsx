@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { posts } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
+import { OverrideText } from "@/components/override-text";
 
 export const dynamicParams = false;
 
@@ -43,9 +44,15 @@ export default async function BlogPostPage({
           <span>{post.readTime}</span>
         </div>
         <h1 className="mt-4 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
-          {post.title}
+          <OverrideText kind="posts" slug={post.slug} field="title">
+            {post.title}
+          </OverrideText>
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-ink/70">{post.excerpt}</p>
+        <p className="mt-4 text-lg leading-relaxed text-ink/70">
+          <OverrideText kind="posts" slug={post.slug} field="excerpt">
+            {post.excerpt}
+          </OverrideText>
+        </p>
       </header>
 
       <div className="mt-10 space-y-5 border-t border-line pt-10">

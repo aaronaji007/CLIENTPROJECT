@@ -4,6 +4,7 @@ import { specialties, specialtyFaqs } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { FaqAccordion } from "@/components/faq-accordion";
+import { OverrideText } from "@/components/override-text";
 
 export const dynamicParams = false;
 
@@ -48,7 +49,9 @@ export default async function SpecialtyPage({
             {specialty.category}
           </p>
           <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
-            {specialty.name}
+            <OverrideText kind="specialties" slug={specialty.slug} field="name">
+              {specialty.name}
+            </OverrideText>
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-ink/75">{specialty.tagline}</p>
 

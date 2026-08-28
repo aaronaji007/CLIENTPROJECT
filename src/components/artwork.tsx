@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { specialties, packages, posts } from "@/lib/data";
+import { useContentOverrides } from "@/lib/override-context";
 
 function hash(str: string) {
   let h = 0;
@@ -35,7 +38,10 @@ export function Artwork({
   photo?: string | null;
 }) {
   const { vw, vh } = sizeFor(kind);
-  const resolved = photo ?? photoFor(slug);
+  const ov = useContentOverrides();
+  const ovPhoto =
+    ov.specialties[slug]?.photo ?? ov.packages[slug]?.photo ?? ov.posts[slug]?.photo;
+  const resolved = photo ?? ovPhoto ?? photoFor(slug);
   const seed = hash(slug);
   const hueA = 190 + (seed % 22);
   const hueB = 205 + ((seed >> 3) % 18);
@@ -49,15 +55,25 @@ export function Artwork({
   const caption = label || slug.replace(/-/g, " ");
 
   if (resolved) {
+    const unoptimized = resolved.startsWith("data:") || resolved.startsWith("/api/media/");
     return (
       <div className="relative h-full w-full overflow-hidden bg-ink" aria-hidden="true">
-        <Image
-          src={resolved}
-          alt=""
-          fill
-          sizes={kind === "hero" ? "(min-width: 1024px) 40vw" : "(min-width: 640px) 50vw, 100vw"}
-          className="object-cover"
-        />
+        {unoptimized ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={resolved}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <Image
+            src={resolved}
+            alt=""
+            fill
+            sizes={kind === "hero" ? "(min-width: 1024px) 40vw" : "(min-width: 640px) 50vw, 100vw"}
+            className="object-cover"
+          />
+        )}
         <div
           className="absolute inset-0"
           style={{

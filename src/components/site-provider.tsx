@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback } from "react";
+import { ContentOverrideProvider } from "@/lib/override-context";
 
 type ModalState = { open: boolean; intent?: string; session: number };
 
@@ -25,7 +26,7 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <SiteContext.Provider value={{ inquiry, openInquiry, closeInquiry }}>
-      {children}
+      <ContentOverrideProvider>{children}</ContentOverrideProvider>
     </SiteContext.Provider>
   );
 }

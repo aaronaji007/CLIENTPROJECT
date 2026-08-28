@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { posts } from "@/lib/data";
 import { Artwork } from "@/components/artwork";
+import { OverrideText } from "@/components/override-text";
 
 export const metadata = {
   title: "Journal",
@@ -41,9 +42,15 @@ export default function BlogPage() {
                 <span>{post.readTime}</span>
               </div>
               <h2 className="mt-3 font-display text-2xl font-medium text-ink group-hover:underline">
-                {post.title}
+                <OverrideText kind="posts" slug={post.slug} field="title">
+                  {post.title}
+                </OverrideText>
               </h2>
-              <p className="mt-3 max-w-2xl leading-relaxed text-ink/65">{post.excerpt}</p>
+              <p className="mt-3 max-w-2xl leading-relaxed text-ink/65">
+                <OverrideText kind="posts" slug={post.slug} field="excerpt">
+                  {post.excerpt}
+                </OverrideText>
+              </p>
             </div>
           </Link>
         ))}
