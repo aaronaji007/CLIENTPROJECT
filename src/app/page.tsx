@@ -177,7 +177,7 @@ export default async function Home() {
           <AnimatedContent distance={70} className="relative">
             <TiltCard intensity={8} className="overflow-hidden rounded-2xl border border-line bg-ink/5 shadow-[0_30px_80px_-40px_rgba(44,58,43,0.45)]">
               <div className="aspect-[4/5] w-full sm:aspect-[4/3]">
-                <Artwork slug="hero" kind="hero" label="Carte Clinique network" />
+                <Artwork slug="hero" kind="hero" label="Carte Clinique network" photo="/media/hero.jpg" />
               </div>
               <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-ink/70 px-4 py-1.5 backdrop-blur">
                 <ShinyText
