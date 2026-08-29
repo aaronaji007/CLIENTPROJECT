@@ -16,7 +16,7 @@ export function ContentOverrideProvider({ children }: { children: React.ReactNod
     let active = true;
     const load = async () => {
       try {
-        const res = await fetch("/api/overrides");
+        const res = await fetch("/api/overrides", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (active) setOverrides({ ...EMPTY, ...data });
