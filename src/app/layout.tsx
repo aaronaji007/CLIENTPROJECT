@@ -5,6 +5,8 @@ import { SiteProvider } from "@/components/site-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { InquiryModalRoot } from "@/components/inquiry-modal";
+import SplashCursor from "@/components/bits/SplashCursor";
+import { ScrollTriggerRefresh } from "@/components/scroll-trigger-refresh";
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
@@ -41,6 +43,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${newsreader.variable} ${instrument.variable} ${plex.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <SplashCursor TRANSPARENT COLOR="#c94f3d" />
+        <ScrollTriggerRefresh />
         <span
           aria-hidden="true"
           dangerouslySetInnerHTML={{

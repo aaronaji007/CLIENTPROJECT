@@ -13,11 +13,11 @@ const nav = [
   { href: "/blog", label: "Journal" },
 ];
 
-export function Emblem() {
+export function Emblem({ className = "" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 40 40"
-      className="h-9 w-9 text-ink"
+      className={`h-9 w-9 text-ink ${className}`}
       role="img"
       aria-label="Carte Clinique emblem"
     >
