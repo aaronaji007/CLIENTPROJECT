@@ -5,7 +5,6 @@ import { SiteProvider } from "@/components/site-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { InquiryModalRoot } from "@/components/inquiry-modal";
-import { BrandCursor } from "@/components/brand-cursor";
 import { ScrollTriggerRefresh } from "@/components/scroll-trigger-refresh";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -45,7 +44,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${newsreader.variable} ${instrument.variable} ${plex.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <BrandCursor />
         <ScrollTriggerRefresh />
         <a
           href="#main"

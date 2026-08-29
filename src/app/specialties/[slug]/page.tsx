@@ -142,7 +142,7 @@ function FactsPanel({
       </dl>
       <Link
         href={`/packages?q=${name.split(" ")[0].toLowerCase()}`}
-        className="mt-6 block w-full rounded-sm bg-signal px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-signal-deep"
+        className="mt-6 block w-full rounded-sm bg-ink px-4 py-3 text-center text-sm font-semibold text-paper transition-colors hover:bg-ink-soft"
       >
         Plan this care
       </Link>

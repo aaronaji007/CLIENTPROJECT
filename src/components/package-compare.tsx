@@ -128,7 +128,7 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
                   <Link
                     key={r.slug}
                     href={`/packages/${r.slug}`}
-                    className="inline-flex rounded-sm bg-signal px-4 py-2 text-xs font-semibold text-white shadow-panel transition-colors hover:bg-signal-deep"
+                    className="inline-flex rounded-sm bg-ink px-4 py-2 text-xs font-semibold text-paper shadow-panel transition-colors hover:bg-ink-soft"
                   >
                     View package
                   </Link>

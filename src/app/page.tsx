@@ -111,8 +111,8 @@ export default function Home() {
           />
         </div>
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-line" />
-        <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-16 sm:pt-24">
-          <div className="max-w-3xl">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-2">
+          <div className="max-w-xl">
             <div className="mb-6 inline-flex items-center gap-3">
               <Emblem className="h-12 w-12" />
               <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-ink/60">
@@ -127,7 +127,7 @@ export default function Home() {
                 animateBy="words"
               />
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-ink/70">
+            <p className="mt-6 text-lg text-ink/70">
               A medical-travel concierge that connects international patients
               with vetted providers and coordinates the entire journey — calm,
               documented, and accountable from discovery to recovery.
@@ -164,9 +164,9 @@ export default function Home() {
             </div>
           </div>
 
-          <AnimatedContent distance={70} className="mt-14">
+          <AnimatedContent distance={70} className="relative">
             <TiltCard intensity={8} className="overflow-hidden rounded-2xl border border-line bg-ink/5 shadow-[0_30px_80px_-40px_rgba(44,58,43,0.45)]">
-              <div className="aspect-[16/8] w-full">
+              <div className="aspect-[4/5] w-full sm:aspect-[4/3]">
                 <Artwork slug="hero" kind="hero" label="Carte Clinique network" />
               </div>
               <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-ink/70 px-4 py-1.5 backdrop-blur">
@@ -435,12 +435,12 @@ export default function Home() {
                   <CircularText
                     text="PLAN YOUR CARE · PLAN YOUR CARE · "
                     spinDuration={16}
-                    className="absolute -left-16 -top-16 h-32 w-32 text-signal/70"
+                    className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 text-signal/70"
                   />
                   <Magnet>
                     <ClickSpark sparkColor="#b06a3a" sparkSize={11}>
                       <Link href="/consult">
-                        <StarBorder color="#b06a3a" className="px-6 py-3 text-sm">
+                        <StarBorder color="#b06a3a" className="relative z-10 px-6 py-3 text-sm">
                           Start a consult
                         </StarBorder>
                       </Link>

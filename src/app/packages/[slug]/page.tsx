@@ -106,7 +106,7 @@ export default async function PackagePage({
             </div>
             <Link
               href="/#journey"
-              className="block w-full bg-signal px-6 py-4 text-center text-sm font-semibold text-white transition-colors hover:bg-signal-deep"
+              className="block w-full bg-ink px-6 py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-ink-soft"
             >
               Plan this journey
             </Link>

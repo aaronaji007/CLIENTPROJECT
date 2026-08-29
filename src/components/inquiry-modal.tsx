@@ -324,7 +324,7 @@ export function InquiryModal() {
             <button
               type="button"
               onClick={submit}
-              className="rounded-sm bg-signal px-5 py-2.5 text-sm font-semibold text-white hover:bg-signal-deep"
+              className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
             >
               Submit inquiry
             </button>
