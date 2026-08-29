@@ -21,9 +21,10 @@ export function useAdminContent() {
 
   // Still keep local posts since they aren't in DB right now
   const [resolvedPosts, setPosts] = useState(posts);
-  const [overrides, setOverrides] = useState({ posts: {} } as any);
+  const [overrides, setOverrides] = useState({ posts: {}, landing: {}, site: {} } as any);
 
   useEffect(() => {
+    fetch("/api/overrides").then(r => r.json()).then(o => setOverrides(o)).catch(() => {});
     fetchAdminData().then(data => {
       setSpecialties(data.specialties);
       setPackages(data.packages);
@@ -32,6 +33,19 @@ export function useAdminContent() {
       setLoaded(true);
     });
   }, []);
+
+  const updateOverride = async (kind: string, slug: string, field: string, value: string) => {
+    const next = { ...overrides };
+    if (!next[kind]) next[kind] = {};
+    if (!next[kind][slug]) next[kind][slug] = {};
+    next[kind][slug][field] = value;
+    setOverrides(next);
+    await fetch("/api/overrides", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "x-cc-admin": "1" },
+      body: JSON.stringify(next)
+    });
+  };
 
   const updateSpecialty = async (slug: string, patch: any) => {
     const updated = await updateSpecialtyDb(slug, patch);
@@ -74,6 +88,7 @@ export function useAdminContent() {
     setInquiries,
     setSubscribers,
     updateInquiryStatusDb,
-    deleteSubscriberDb
+    deleteSubscriberDb,
+    updateOverride
   };
 }

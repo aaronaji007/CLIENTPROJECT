@@ -19,10 +19,11 @@ type Inquiry = {
   status: "new" | "read";
 };
 
-type Tab = "overview" | "specialties" | "packages" | "journal" | "photos" | "inquiries" | "audience";
+type Tab = "overview" | "site-copy" | "specialties" | "packages" | "journal" | "photos" | "inquiries" | "audience";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
+  { id: "site-copy", label: "Site Copy" },
   { id: "specialties", label: "Specialties" },
   { id: "packages", label: "Packages" },
   { id: "journal", label: "Journal" },
@@ -100,6 +101,7 @@ export default function AdminDashboard() {
 
       <div className="mt-8">
         {tab === "overview" && <Overview />}
+        {tab === "site-copy" && <SiteCopyEditor />}
         {tab === "specialties" && <SpecialtiesEditor />}
         {tab === "packages" && <PackagesEditor />}
         {tab === "journal" && <JournalEditor />}
@@ -242,6 +244,48 @@ function TextAreaRow({
         className="mt-1.5 w-full rounded-sm border border-ink/20 bg-white/40 px-3 py-2 text-sm text-ink focus:border-ink"
       />
     </label>
+  );
+}
+
+function SiteCopyEditor() {
+  const { overrides, updateOverride } = useAdminContent();
+  const landing = overrides.landing?.home || {};
+  const site = overrides.site?.global || {};
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-lg border border-line bg-paper p-6 shadow-panel">
+        <h2 className="font-display text-xl font-medium text-ink">Landing Page Text</h2>
+        <div className="mt-5 grid gap-4">
+          <FieldRow
+            label="Hero Title"
+            value={landing.heroTitle || "Global access to exceptional care."}
+            onChange={(v) => updateOverride("landing", "home", "heroTitle", v)}
+          />
+          <TextAreaRow
+            label="Hero Subtitle"
+            value={landing.heroSubtitle || "Carte Clinique is a private medical concierge connecting patients with Europe and Asia's leading accredited hospitals."}
+            onChange={(v) => updateOverride("landing", "home", "heroSubtitle", v)}
+          />
+          <TextAreaRow
+            label="Scrambled Intro Text"
+            value={landing.scrambledText || "From the first message to your final follow-up, the same person holds the thread. Records move with you. Decisions are documented. Nothing about your care is left to chance or to a call center."}
+            onChange={(v) => updateOverride("landing", "home", "scrambledText", v)}
+          />
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-line bg-paper p-6 shadow-panel">
+        <h2 className="font-display text-xl font-medium text-ink">Global Site Copy</h2>
+        <div className="mt-5 grid gap-4">
+          <FieldRow
+            label="Footer Title"
+            value={site.footerTitle || "Carte Clinique"}
+            onChange={(v) => updateOverride("site", "global", "footerTitle", v)}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 

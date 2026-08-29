@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useContentOverrides } from "@/lib/override-context";
 
-type Kind = "specialties" | "packages" | "posts";
+type Kind = "specialties" | "packages" | "posts" | "landing" | "site";
 
 export function OverrideText({
   kind,

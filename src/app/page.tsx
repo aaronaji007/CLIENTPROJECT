@@ -38,6 +38,7 @@ import ScrambledText from "@/components/bits/ScrambledText";
 import ClickSpark from "@/components/bits/ClickSpark";
 import Magnet from "@/components/bits/Magnet";
 import { TiltCard } from "@/components/bits/TiltCard";
+import { OverrideText } from "@/components/override-text";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -131,16 +132,20 @@ export default async function Home() {
             </div>
             <Eyebrow>Global surgery &amp; care concierge</Eyebrow>
             <h1 className="mt-4 font-display text-5xl font-medium leading-[1.05] tracking-tight text-ink sm:text-6xl md:text-7xl">
-              <BlurText
-                text="Coordinated care across borders"
-                delay={120}
-                animateBy="words"
-              />
+              <OverrideText kind="landing" slug="home" field="heroTitle">
+                <BlurText
+                  text="Coordinated care across borders"
+                  delay={120}
+                  animateBy="words"
+                />
+              </OverrideText>
             </h1>
-            <p className="mt-6 text-lg text-ink/70">
-              A medical-travel concierge that connects international patients
-              with vetted providers and coordinates the entire journey — calm,
-              documented, and accountable from discovery to recovery.
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink/70 sm:mt-8 sm:text-xl">
+              <OverrideText kind="landing" slug="home" field="heroSubtitle">
+                A medical-travel concierge that connects international patients
+                with vetted providers and coordinates the entire journey — calm,
+                documented, and accountable from discovery to recovery.
+              </OverrideText>
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -262,9 +267,11 @@ export default async function Home() {
             scrambleChars=".:"
             className="text-ink/70"
           >
-            From the first message to your final follow-up, the same person
-            holds the thread. Records move with you. Decisions are documented.
-            Nothing about your care is left to chance or to a call center.
+            <OverrideText kind="landing" slug="home" field="scrambledText">
+              From the first message to your final follow-up, the same person
+              holds the thread. Records move with you. Decisions are documented.
+              Nothing about your care is left to chance or to a call center.
+            </OverrideText>
           </ScrambledText>
         </AnimatedContent>
       </section>

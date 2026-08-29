@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NewsletterForm } from "./newsletter-form";
+import { OverrideText } from "./override-text";
 
 export function Footer() {
   return (
@@ -19,7 +20,11 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <p className="font-display text-xl font-medium">Carte Clinique</p>
+            <p className="font-display text-xl font-medium">
+              <OverrideText kind="site" slug="global" field="footerTitle">
+                Carte Clinique
+              </OverrideText>
+            </p>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-paper/80">
               A global surgery and care concierge. We coordinate the journey from
               discovery to recovery — one point of contact across every border.
