@@ -5,6 +5,11 @@ import { ConsultBooking } from "@/components/consult-booking";
 import { Artwork } from "@/components/artwork";
 import { SpecialtyCard } from "@/components/specialty-card";
 import { PackageCard } from "@/components/package-card";
+import { ScrollReveal } from "@/components/bits/ScrollReveal";
+import ShinyText from "@/components/bits/ShinyText";
+import GradientText from "@/components/bits/GradientText";
+import RotatingText from "@/components/bits/RotatingText";
+import StarBorder from "@/components/bits/StarBorder";
 import { specialties, packages, testimonials } from "@/lib/data";
 
 export const metadata = {
@@ -19,9 +24,9 @@ export default function HomePage() {
       <section className="bg-ink text-paper" id="journey">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
           <div className="max-w-2xl">
-            <h2 className="font-display text-3xl font-medium leading-tight sm:text-4xl">
+            <ScrollReveal as="h2" className="font-display text-3xl font-medium leading-tight sm:text-4xl">
               Three phases. One point of contact.
-            </h2>
+            </ScrollReveal>
             <p className="mt-4 text-paper/70">
               From understanding your condition to recovering at home, the whole passage is
               coordinated on one disciplined timeline.
@@ -72,7 +77,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
-                Patient stories
+                <ShinyText text="Patient stories" color="#c94f3d" shineColor="#f6f4ef" speed={3} />
               </p>
               <h2 className="mt-3 font-display text-3xl font-medium leading-tight text-paper sm:text-4xl">
                 One point of contact, end to end
@@ -136,9 +141,13 @@ export default function HomePage() {
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-paper/25">
             <Emblem />
           </div>
-          <p className="mx-auto mt-8 max-w-xl font-display text-3xl font-medium leading-tight sm:text-4xl">
+          <GradientText
+            colors={["#f6f4ef", "#c94f3d", "#f6f4ef"]}
+            animationSpeed={6}
+            className="mt-8 max-w-xl font-display text-3xl font-medium leading-tight text-center sm:text-4xl"
+          >
             The hardest part of seeking care abroad should not be the seeking.
-          </p>
+          </GradientText>
           <p className="mx-auto mt-4 max-w-lg text-paper/65">
             Let one point of contact hold the whole journey — so you can focus on what
             matters: your health.
@@ -186,8 +195,11 @@ function Hero() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink/75">
               We coordinate the full journey of treatment abroad — discovery, travel, and
-              recovery — through a single point of contact who knows your name, your file, and
-              your timeline.
+              recovery — through a single point of contact who knows your{" "}
+              <span className="inline-flex align-baseline text-signal font-medium">
+                <RotatingText texts={["name", "file", "timeline", "story"]} />
+              </span>
+              .
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -261,9 +273,9 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div className="max-w-2xl">
-        <h2 className="font-display text-3xl font-medium leading-tight text-ink sm:text-4xl">
-          {title}
-        </h2>
+          <ScrollReveal as="h2" className="font-display text-3xl font-medium leading-tight text-ink sm:text-4xl">
+              {title}
+            </ScrollReveal>
         <p className="mt-4 text-ink/70">{body}</p>
       </div>
       {cta && (
@@ -291,9 +303,12 @@ function CtaLink({
   return primary ? (
     <Link
       href={href}
-      className="attend-primary inline-flex items-center justify-center rounded-sm bg-signal px-6 py-3 text-base font-semibold text-white shadow-panel transition-colors hover:bg-signal-deep"
+      aria-label={label}
+      className="attend-primary inline-flex items-center justify-center"
     >
-      {label}
+      <StarBorder as="span" speed="5s">
+        {label}
+      </StarBorder>
     </Link>
   ) : (
     <Link
