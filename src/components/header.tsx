@@ -83,7 +83,7 @@ export function Header() {
                 className={`text-sm font-medium transition-colors hover:text-ink ${
                   item.href !== "/#journey" && pathname.startsWith(item.href)
                     ? "text-ink"
-                    : "text-ink/65"
+                    : "text-ink/75"
                 }`}
               >
                 {item.label}
@@ -102,7 +102,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => openInquiry()}
-              className="hidden rounded-sm bg-signal px-4 py-2 text-sm font-semibold text-white shadow-panel transition-colors hover:bg-signal-deep sm:inline-flex"
+              className="hidden rounded-sm bg-ink px-4 py-2 text-sm font-semibold text-paper shadow-panel transition-colors hover:bg-ink-soft sm:inline-flex"
             >
               Plan your care
             </button>
@@ -153,7 +153,7 @@ export function Header() {
                   setMenuOpen(false);
                   openInquiry();
                 }}
-                className="mt-3 rounded-sm bg-signal px-4 py-3 text-base font-semibold text-white"
+                className="mt-3 rounded-sm bg-ink px-4 py-3 text-base font-semibold text-paper hover:bg-ink-soft"
               >
                 Plan your care
               </button>

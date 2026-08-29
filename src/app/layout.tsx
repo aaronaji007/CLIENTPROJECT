@@ -5,8 +5,10 @@ import { SiteProvider } from "@/components/site-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { InquiryModalRoot } from "@/components/inquiry-modal";
-import SplashCursor from "@/components/bits/SplashCursor";
+import { BrandCursor } from "@/components/brand-cursor";
 import { ScrollTriggerRefresh } from "@/components/scroll-trigger-refresh";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
@@ -43,8 +45,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${newsreader.variable} ${instrument.variable} ${plex.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <SplashCursor TRANSPARENT COLOR="#b06a3a" />
+        <BrandCursor />
         <ScrollTriggerRefresh />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-ink focus:px-4 focus:py-2 focus:font-medium focus:text-paper"
+        >
+          Skip to content
+        </a>
         <span
           aria-hidden="true"
           dangerouslySetInnerHTML={{
@@ -53,9 +61,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <SiteProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main id="main" className="flex-1">
+            {children}
+          </main>
           <Footer />
           <InquiryModalRoot />
+          <Analytics />
+          <SpeedInsights />
         </SiteProvider>
       </body>
     </html>

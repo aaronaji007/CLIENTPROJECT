@@ -8,7 +8,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between">
           <div className="max-w-sm">
             <p className="font-display text-xl font-medium">Stay in the loop</p>
-            <p className="mt-2 text-sm leading-relaxed text-paper/60">
+            <p className="mt-2 text-sm leading-relaxed text-paper/75">
               Occasional notes on planning care abroad — never spam, always in your timezone.
             </p>
           </div>
@@ -20,17 +20,17 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <p className="font-display text-xl font-medium">Carte Clinique</p>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-paper/65">
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-paper/80">
               A global surgery and care concierge. We coordinate the journey from
               discovery to recovery — one point of contact across every border.
             </p>
-            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/45">
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/60">
               Concept site — demonstration only
             </p>
           </div>
 
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/50">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/65">
               Explore
             </p>
             <ul className="mt-4 space-y-3 text-sm text-paper/80">
@@ -42,7 +42,7 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/50">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/65">
               Care
             </p>
             <ul className="mt-4 space-y-3 text-sm text-paper/80">
@@ -53,7 +53,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-paper/15 pt-6 text-xs text-paper/45 sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-paper/15 pt-6 text-xs text-paper/60 sm:flex-row sm:items-center">
           <p>&copy; {new Date().getFullYear()} Carte Clinique. All content is placeholder and synthetic.</p>
           <p className="font-mono">Placeholder / never verified medical claims</p>
         </div>

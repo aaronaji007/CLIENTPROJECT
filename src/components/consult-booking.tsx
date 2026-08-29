@@ -46,7 +46,7 @@ export function ConsultBooking() {
   const pick = slots.find((s) => s.utc === selected);
 
   return (
-    <div className="rounded-lg border border-line bg-white/40 p-6 shadow-panel">
+    <div className="rounded-lg border border-line bg-paper p-6 shadow-panel">
       <h3 className="font-display text-2xl font-medium text-ink">Gather with a case manager</h3>
       <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/70">
         Choose a time shown in your local timezone
@@ -86,7 +86,7 @@ export function ConsultBooking() {
               type="button"
               disabled={!selected}
               onClick={() => setConfirmed(true)}
-              className="rounded-sm bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-deep disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
             >
               Confirm this time
             </button>

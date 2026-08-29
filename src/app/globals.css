@@ -194,17 +194,28 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .attend-primary {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
+  .attend-primary,
+  .animate-marquee,
   .animate-star-movement-bottom,
-  .animate-star-movement-top {
+  .animate-star-movement-top,
+  .animate-glitch-after,
+  .animate-glitch-before,
+  .animate-accordion-up,
+  .animate-accordion-down {
     animation: none !important;
   }
 }
 
 .prose-dark {
-  color: rgba(246, 244, 239, 0.85);
+  color: rgba(244, 239, 226, 0.85);
 }
 .prose-dark h1,
 .prose-dark h2,
