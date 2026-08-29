@@ -431,16 +431,16 @@ export default function Home() {
                   clinical lead replies with a realistic path and a written
                   estimate.
                 </p>
-                <div className="relative mt-8 inline-flex">
+                <div className="mt-10 flex flex-col items-center gap-5">
                   <CircularText
                     text="PLAN YOUR CARE · PLAN YOUR CARE · "
                     spinDuration={16}
-                    className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 text-signal/70"
+                    className="h-24 w-24 text-signal/70"
                   />
                   <Magnet>
                     <ClickSpark sparkColor="#b06a3a" sparkSize={11}>
                       <Link href="/consult">
-                        <StarBorder color="#b06a3a" className="relative z-10 px-6 py-3 text-sm">
+                        <StarBorder color="#b06a3a" className="px-6 py-3 text-sm">
                           Start a consult
                         </StarBorder>
                       </Link>

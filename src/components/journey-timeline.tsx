@@ -8,6 +8,7 @@ export function JourneyTimeline({ inverse = false }: { inverse?: boolean }) {
   const phaseRefs = useRef<(HTMLElement | null)[]>([]);
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState(0);
+  const [line, setLine] = useState({ top: 0, len: 0 });
 
   useEffect(() => {
     const el = trackRef.current;
@@ -21,6 +22,15 @@ export function JourneyTimeline({ inverse = false }: { inverse?: boolean }) {
         const total = rect.height - (window.innerHeight * 0.5);
         const scrolled = Math.min(Math.max(-rect.top + window.innerHeight * 0.25, 0), total);
         setProgress(total > 0 ? scrolled / total : 0);
+
+        const nodes = phaseRefs.current;
+        const firstNode = nodes[0];
+        const lastNode = nodes[nodes.length - 1];
+        if (firstNode && lastNode) {
+          const fTop = firstNode.getBoundingClientRect().top - rect.top + 17;
+          const lTop = lastNode.getBoundingClientRect().top - rect.top + 17;
+          setLine({ top: fTop, len: Math.max(lTop - fTop, 0) });
+        }
 
         let current = 0;
         const center = window.innerHeight / 2;
@@ -54,7 +64,8 @@ export function JourneyTimeline({ inverse = false }: { inverse?: boolean }) {
     <div ref={trackRef} className="relative">
       {/* hairline track + scroll-driven fill */}
       <div
-        className={`absolute left-[13px] top-2 bottom-2 w-px ${lineTrack}`}
+        className={`absolute left-[13px] w-px ${lineTrack}`}
+        style={{ top: line.top, height: line.len }}
         aria-hidden="true"
       >
         <div
