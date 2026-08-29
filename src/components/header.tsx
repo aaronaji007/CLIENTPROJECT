@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSite } from "./site-provider";
+import { ThemeToggle } from "./theme-toggle";
+import { SiteSearch } from "./site-search";
 
 const nav = [
   { href: "/specialties", label: "Specialties" },
@@ -92,6 +94,8 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2.5">
+            <SiteSearch />
+            <ThemeToggle />
             <Link
               href="/admin"
               className="hidden items-center gap-2 rounded-sm border border-ink/20 px-3 py-2 text-sm font-medium text-ink transition-colors hover:border-ink md:inline-flex"

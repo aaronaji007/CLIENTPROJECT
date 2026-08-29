@@ -1,7 +1,12 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import type { ContentOverrides } from "./admin-content";
+
+export type ContentOverrides = {
+  specialties: Record<string, { name?: string; summary?: string; photo?: string }>;
+  packages: Record<string, { name?: string; summary?: string; price?: string; photo?: string }>;
+  posts: Record<string, { title?: string; excerpt?: string; photo?: string }>;
+};
 
 const OVERRIDES_KEY = "carte-clinique-content-overrides";
 

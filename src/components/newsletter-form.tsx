@@ -6,23 +6,20 @@ export function NewsletterForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "done" | "error">("idle");
 
-  const subscribe = (e: React.FormEvent) => {
+  const subscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!/\S+@\S+\.\S+/.test(email)) {
       setStatus("error");
       return;
     }
-    if (typeof window !== "undefined") {
-      const existing = JSON.parse(
-        localStorage.getItem("carte-clinique-subscribers") || "[]",
-      ) as string[];
-      if (!existing.includes(email.trim().toLowerCase())) {
-        existing.push(email.trim().toLowerCase());
-        localStorage.setItem("carte-clinique-subscribers", JSON.stringify(existing));
-      }
+    try {
+      const { createSubscriberDb } = await import("@/app/admin/actions");
+      await createSubscriberDb(email.trim().toLowerCase());
+      setStatus("done");
+      setEmail("");
+    } catch (err) {
+      setStatus("error");
     }
-    setStatus("done");
-    setEmail("");
   };
 
   if (status === "done") {

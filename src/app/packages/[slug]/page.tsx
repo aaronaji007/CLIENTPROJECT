@@ -1,19 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { packages } from "@/lib/data";
+import { db } from "@/prisma/db";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { OverrideText } from "@/components/override-text";
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const packages = await db.orm.public.Package.all();
   return packages.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = packages.find((x) => x.slug === slug);
+  const p = await db.orm.public.Package.where({ slug }).first();
   if (!p) return { title: "Package not found" };
   return { title: p.name, description: p.summary };
 }
@@ -24,7 +25,7 @@ export default async function PackagePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const pkg = packages.find((p) => p.slug === slug);
+  const pkg = await db.orm.public.Package.include("specialty").where({ slug }).first();
   if (!pkg) notFound();
 
   return (
@@ -45,7 +46,7 @@ export default async function PackagePage({
       <div className="mt-10 grid gap-10 lg:grid-cols-[1.6fr_1fr]">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
-            {pkg.specialty} · {pkg.country}
+            {(pkg.specialty as any)?.name || pkg.specialtyId} · {pkg.country}
           </p>
           <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
             <OverrideText kind="packages" slug={pkg.slug} field="name">
@@ -96,17 +97,21 @@ export default async function PackagePage({
                 </p>
                 <p className="flex justify-between">
                   <span className="text-paper/55">Specialty</span>
-                  <span>{pkg.specialty}</span>
+                  <span>{(pkg.specialty as any)?.name || pkg.specialtyId}</span>
                 </p>
                 <p className="flex justify-between">
                   <span className="text-paper/55">Length</span>
                   <span>{pkg.days} days</span>
                 </p>
+                <p className="flex justify-between pt-2 border-t border-paper/10">
+                  <span className="text-paper/55">Last updated</span>
+                  <span className="text-xs">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                </p>
               </div>
             </div>
             <Link
               href="/#journey"
-              className="block w-full bg-ink px-6 py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-ink-soft"
+              className="block w-full bg-ink px-6 py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-ink-soft border-t border-paper/10"
             >
               Plan this journey
             </Link>

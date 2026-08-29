@@ -1,4 +1,4 @@
-import { specialties } from "@/lib/data";
+import { db } from "@/prisma/db";
 import { SpecialtyCollection } from "@/components/collection-filters";
 
 export const metadata = {
@@ -6,7 +6,13 @@ export const metadata = {
   description: "Coordinated specialty pathways, each with a dedicated case manager.",
 };
 
-export default function SpecialtiesPage() {
+export default async function SpecialtiesPage() {
+  const rawSpecialties = await db.orm.public.Specialty.all();
+  const allSpecialties = rawSpecialties.map(s => ({
+    ...s,
+    procedures: s.procedures as string[],
+  }));
+
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
       <div className="max-w-2xl">
@@ -20,7 +26,7 @@ export default function SpecialtiesPage() {
       </div>
 
       <div className="mt-12">
-        <SpecialtyCollection specialties={specialties} />
+        <SpecialtyCollection specialties={allSpecialties} />
       </div>
     </div>
   );

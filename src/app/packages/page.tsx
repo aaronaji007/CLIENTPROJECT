@@ -1,4 +1,4 @@
-import { packages } from "@/lib/data";
+import { db } from "@/prisma/db";
 import { PackageCollection } from "@/components/collection-filters";
 import { PackageCompare } from "@/components/package-compare";
 
@@ -13,6 +13,25 @@ export default async function PackagesPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
+  
+  const allPackages = await db.orm.public.Package.include("specialty").all();
+  
+  const mappedPackages = allPackages.map(p => ({
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    country: p.country,
+    city: p.city,
+    price: p.price,
+    currency: p.currency,
+    days: p.days,
+    specialtyId: p.specialtyId,
+    specialty: (p.specialty as any)?.name || p.specialtyId,
+    summary: p.summary,
+    includes: p.includes as string[],
+    notes: p.notes,
+    photo: p.photo,
+  }));
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
@@ -28,11 +47,11 @@ export default async function PackagesPage({
       </div>
 
       <div className="mt-12">
-        <PackageCollection packages={packages} initialQuery={q} />
+        <PackageCollection packages={mappedPackages} initialQuery={q} />
       </div>
 
       <div className="mt-20">
-        <PackageCompare packages={packages} />
+        <PackageCompare packages={mappedPackages} />
       </div>
 
       <p className="mt-10 max-w-2xl text-xs leading-relaxed text-ink/50">

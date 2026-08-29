@@ -112,20 +112,7 @@ export default function AdminDashboard() {
 }
 
 function Overview() {
-  const { resolvedSpecialties, resolvedPackages, resolvedPosts, resetAll } = useAdminContent();
-  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [subscribers, setSubscribers] = useState<string[]>([]);
-
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      const raw = localStorage.getItem("carte-clinique-inquiries");
-      setInquiries(raw ? JSON.parse(raw) : []);
-      setSubscribers(
-        JSON.parse(localStorage.getItem("carte-clinique-subscribers") || "[]"),
-      );
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const { resolvedSpecialties, resolvedPackages, resolvedPosts, resetAll, inquiries, subscribers } = useAdminContent();
 
   const stats = [
     { label: "Specialties", value: resolvedSpecialties.length },
@@ -181,7 +168,7 @@ function Overview() {
                     {i.name} · {i.condition}
                   </p>
                   <p className="truncate text-xs text-ink/55">
-                    {new Date(i.at).toLocaleString()} · {i.timeline}
+                    {new Date(i.createdAt).toLocaleString()} · {i.timeline}
                   </p>
                 </div>
                 <span
@@ -281,12 +268,12 @@ function SpecialtiesEditor() {
           <div className="mt-5 grid gap-4">
             <FieldRow
               label="Display name"
-              value={overrides.specialties[s.slug]?.name ?? s.name}
+              value={s.name}
               onChange={(v) => updateSpecialty(s.slug, { name: v })}
             />
             <TextAreaRow
               label="Summary (card)"
-              value={overrides.specialties[s.slug]?.summary ?? s.summary}
+              value={s.summary}
               onChange={(v) => updateSpecialty(s.slug, { summary: v })}
             />
           </div>
@@ -297,7 +284,7 @@ function SpecialtiesEditor() {
 }
 
 function PackagesEditor() {
-  const { resolvedPackages, overrides, updatePackage } = useAdminContent();
+  const { resolvedPackages, updatePackage } = useAdminContent();
   return (
     <div className="space-y-6">
       {resolvedPackages.map((p) => (
@@ -305,7 +292,7 @@ function PackagesEditor() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-signal">
-                {p.specialty} · {p.country}
+                {p.specialty?.name || p.specialtyId} · {p.country}
               </p>
               <h3 className="mt-1 font-display text-xl font-medium text-ink">{p.name}</h3>
             </div>
@@ -316,18 +303,18 @@ function PackagesEditor() {
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <FieldRow
               label="Display name"
-              value={overrides.packages[p.slug]?.name ?? p.name}
+              value={p.name}
               onChange={(v) => updatePackage(p.slug, { name: v })}
             />
             <FieldRow
               label="Price (numeric)"
-              value={String(overrides.packages[p.slug]?.price ?? p.price)}
+              value={String(p.price)}
               onChange={(v) => updatePackage(p.slug, { price: v })}
             />
             <div className="sm:col-span-2">
               <TextAreaRow
                 label="Summary (card)"
-                value={overrides.packages[p.slug]?.summary ?? p.summary}
+                value={p.summary}
                 onChange={(v) => updatePackage(p.slug, { summary: v })}
               />
             </div>
@@ -339,7 +326,7 @@ function PackagesEditor() {
 }
 
 function JournalEditor() {
-  const { resolvedPosts, overrides, updatePost } = useAdminContent();
+  const { resolvedPosts, updatePost } = useAdminContent();
   return (
     <div className="space-y-6">
       {resolvedPosts.map((p) => (
@@ -358,12 +345,12 @@ function JournalEditor() {
           <div className="mt-5 grid gap-4">
             <FieldRow
               label="Title"
-              value={overrides.posts[p.slug]?.title ?? p.title}
+              value={p.title}
               onChange={(v) => updatePost(p.slug, { title: v })}
             />
             <TextAreaRow
               label="Excerpt"
-              value={overrides.posts[p.slug]?.excerpt ?? p.excerpt}
+              value={p.excerpt}
               onChange={(v) => updatePost(p.slug, { excerpt: v })}
             />
           </div>
@@ -511,7 +498,7 @@ function PhotosEditor() {
         slug: s.slug,
         name: s.name,
         sub: s.category,
-        photo: overrides.specialties[s.slug]?.photo ?? s.photo,
+        photo: overrides.specialties?.[s.slug]?.photo ?? s.photo,
         onChange: (v) => updateSpecialty(s.slug, { photo: v }),
         onReset: () => resetPhoto("specialties", s.slug),
       })),
@@ -524,7 +511,7 @@ function PhotosEditor() {
         slug: p.slug,
         name: p.name,
         sub: `${p.specialty} · ${p.country}`,
-        photo: overrides.packages[p.slug]?.photo ?? p.photo,
+        photo: overrides.packages?.[p.slug]?.photo ?? p.photo,
         onChange: (v) => updatePackage(p.slug, { photo: v }),
         onReset: () => resetPhoto("packages", p.slug),
       })),
@@ -537,7 +524,7 @@ function PhotosEditor() {
         slug: p.slug,
         name: p.title,
         sub: p.category,
-        photo: overrides.posts[p.slug]?.photo ?? p.photo,
+        photo: overrides.posts?.[p.slug]?.photo ?? p.photo,
         onChange: (v) => updatePost(p.slug, { photo: v }),
         onReset: () => resetPhoto("posts", p.slug),
       })),
@@ -583,20 +570,12 @@ function PhotosEditor() {
 }
 
 function InquiriesInbox() {
-  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const { inquiries, setInquiries, updateInquiryStatusDb } = useAdminContent();
 
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      const raw = localStorage.getItem("carte-clinique-inquiries");
-      setInquiries(raw ? JSON.parse(raw) : []);
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const mark = (id: string, status: "read" | "new") => {
+  const mark = async (id: string, status: "read" | "new") => {
     const next = inquiries.map((i) => (i.id === id ? { ...i, status } : i));
     setInquiries(next);
-    localStorage.setItem("carte-clinique-inquiries", JSON.stringify(next));
+    await updateInquiryStatusDb(id, status);
   };
 
   if (inquiries.length === 0) {
@@ -621,7 +600,7 @@ function InquiriesInbox() {
                 {i.name} <span className="font-mono text-xs text-ink/50">({i.email})</span>
               </p>
               <p className="mt-1 text-sm text-ink/55">
-                {new Date(i.at).toLocaleString()} · {i.country || "no country"}
+                {new Date(i.createdAt).toLocaleString()} · {i.country || "no country"}
               </p>
             </div>
             <button
@@ -667,20 +646,12 @@ function InquiriesInbox() {
 }
 
 function AudiencePanel() {
-  const [subscribers, setSubscribers] = useState<string[]>([]);
+  const { subscribers, setSubscribers, deleteSubscriberDb } = useAdminContent();
 
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      const raw = localStorage.getItem("carte-clinique-subscribers");
-      setSubscribers(raw ? JSON.parse(raw) : []);
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const remove = (email: string) => {
-    const next = subscribers.filter((e) => e !== email);
+  const remove = async (email: string) => {
+    const next = subscribers.filter((s) => s.email !== email);
     setSubscribers(next);
-    localStorage.setItem("carte-clinique-subscribers", JSON.stringify(next));
+    await deleteSubscriberDb(email);
   };
 
   return (
@@ -701,11 +672,11 @@ function AudiencePanel() {
         </p>
       ) : (
         <ul className="divide-y divide-line">
-          {subscribers.map((email) => (
-            <li key={email} className="flex items-center justify-between gap-4 px-6 py-3.5">
-              <span className="truncate text-sm text-ink">{email}</span>
+          {subscribers.map((s) => (
+            <li key={s.email} className="flex items-center justify-between gap-4 px-6 py-3.5">
+              <span className="truncate text-sm text-ink">{s.email}</span>
               <button
-                onClick={() => remove(email)}
+                onClick={() => remove(s.email)}
                 className="shrink-0 font-mono text-[11px] uppercase tracking-wider text-signal hover:underline"
               >
                 Remove

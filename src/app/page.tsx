@@ -19,8 +19,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { UserRoundCheck, ShieldCheck, Plane, HeartPulse } from "lucide-react";
-import { specialties, packages, testimonials } from "@/lib/data";
-
+import { testimonials } from "@/lib/data";
 import ShinyText from "@/components/bits/ShinyText";
 import GradientText from "@/components/bits/GradientText";
 import StarBorder from "@/components/bits/StarBorder";
@@ -84,7 +83,9 @@ function SectionHeader({
   );
 }
 
-export default function Home() {
+import { db } from "@/prisma/db";
+
+export default async function Home() {
   const trust = [
     "JCI-Accredited Partners",
     "GDPR-Aligned Records",
@@ -93,6 +94,15 @@ export default function Home() {
     "24/7 Recovery Line",
     "Named Clinical Lead",
   ];
+
+  const specialties = await db.orm.public.Specialty.all();
+  const rawPackagesQuery = await db.orm.public.Package.include("specialty").all();
+  const rawPackages = rawPackagesQuery.sort((a, b) => a.days - b.days);
+  const packages = rawPackages.map(p => ({
+    ...p,
+    specialty: (p.specialty as any)?.name || p.specialtyId,
+    includes: p.includes as string[],
+  }));
 
   return (
     <div className="bg-paper">

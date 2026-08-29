@@ -54,11 +54,9 @@ export function InquiryModal() {
   const next = () => setStep((s) => Math.min(s + 1, steps.length - 1));
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
-  const submit = () => {
+  const submit = async () => {
     if (typeof window !== "undefined") {
       const record = {
-        id: `inq-${Date.now()}`,
-        at: new Date().toISOString(),
         condition: form.condition,
         procedure: form.procedure || "",
         timeline: form.timeline,
@@ -69,10 +67,18 @@ export function InquiryModal() {
         files: files.map((f) => f.name),
         status: "new",
       };
-      const existing = JSON.parse(localStorage.getItem("carte-clinique-inquiries") || "[]");
-      existing.unshift(record);
-      localStorage.setItem("carte-clinique-inquiries", JSON.stringify(existing));
+      
+      try {
+        const { createInquiryDb } = await import("@/app/admin/actions");
+        await createInquiryDb(record);
+        setStep(4); // Show success screen
+      } catch (e) {
+        console.error("Failed to submit inquiry", e);
+      }
     }
+  };
+
+  const resetAndClose = () => {
     setStep(0);
     setForm({
       condition: "",
@@ -127,20 +133,22 @@ export function InquiryModal() {
           </button>
         </div>
 
-        <div className="flex gap-2 px-6 pt-5" aria-hidden="true">
-          {steps.map((label, i) => (
-            <div key={label} className="flex-1">
-              <div
-                className={`h-1 rounded-full transition-colors ${
-                  i <= step ? "bg-ink" : "bg-ink/10"
-                }`}
-              />
-              <span className="mt-1.5 block text-[10px] font-medium uppercase tracking-wide text-ink/50">
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
+        {step < 4 && (
+          <div className="flex gap-2 px-6 pt-5" aria-hidden="true">
+            {steps.map((label, i) => (
+              <div key={label} className="flex-1">
+                <div
+                  className={`h-1 rounded-full transition-colors ${
+                    i <= step ? "bg-ink" : "bg-ink/10"
+                  }`}
+                />
+                <span className="mt-1.5 block text-[10px] font-medium uppercase tracking-wide text-ink/50">
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {step === 0 && (
@@ -301,35 +309,57 @@ export function InquiryModal() {
               </p>
             </div>
           )}
+          {step === 4 && (
+            <div className="space-y-5 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage/20 text-ink">
+                <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <h3 className="font-display text-2xl font-medium text-ink">Inquiry Submitted</h3>
+              <p className="text-sm text-ink/70">
+                Thank you, {form.name}. A case manager will review your information and follow up with you via {form.email} soon.
+              </p>
+              <button
+                type="button"
+                onClick={resetAndClose}
+                className="mt-6 rounded-sm bg-ink px-6 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
+              >
+                Close
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-line px-6 py-4">
-          {step > 0 ? (
-            <button type="button" onClick={back} className="rounded-sm border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-ink">
-              Back
-            </button>
-          ) : (
-            <span />
-          )}
-          {step < steps.length - 1 ? (
-            <button
-              type="button"
-              onClick={next}
-              disabled={!canContinue()}
-              className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Continue
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={submit}
-              className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
-            >
-              Submit inquiry
-            </button>
-          )}
-        </div>
+        {step < 4 && (
+          <div className="flex items-center justify-between gap-3 border-t border-line px-6 py-4">
+            {step > 0 ? (
+              <button type="button" onClick={back} className="rounded-sm border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-ink">
+                Back
+              </button>
+            ) : (
+              <span />
+            )}
+            {step < steps.length - 1 ? (
+              <button
+                type="button"
+                onClick={next}
+                disabled={!canContinue()}
+                className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Continue
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={submit}
+                className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
+              >
+                Submit inquiry
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

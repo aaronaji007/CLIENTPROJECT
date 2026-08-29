@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { specialties, specialtyFaqs } from "@/lib/data";
+import { db } from "@/prisma/db";
+import { specialtyFaqs } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { FaqAccordion } from "@/components/faq-accordion";
@@ -8,13 +9,14 @@ import { OverrideText } from "@/components/override-text";
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const specialties = await db.orm.public.Specialty.all();
   return specialties.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const s = specialties.find((x) => x.slug === slug);
+  const s = await db.orm.public.Specialty.where({ slug }).first();
   if (!s) return { title: "Specialty not found" };
   return { title: s.name, description: s.tagline };
 }
@@ -25,7 +27,7 @@ export default async function SpecialtyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const specialty = specialties.find((s) => s.slug === slug);
+  const specialty = await db.orm.public.Specialty.where({ slug }).first();
   if (!specialty) notFound();
 
   return (
@@ -137,6 +139,12 @@ function FactsPanel({
           <dt className="text-paper/55">Coordination</dt>
           <dd className="mt-1 text-paper/80">
             Dedicated case manager · accredited provider · home handoff
+          </dd>
+        </div>
+        <div className="border-t border-paper/15 pt-4">
+          <dt className="text-paper/55">Last updated</dt>
+          <dd className="mt-1 text-xs text-paper/65">
+            {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </dd>
         </div>
       </dl>

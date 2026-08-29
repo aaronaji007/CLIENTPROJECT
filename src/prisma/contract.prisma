@@ -1,0 +1,53 @@
+
+model Specialty {
+  id         String    @id @default(uuid())
+  slug       String    @unique
+  category   String
+  name       String
+  tagline    String
+  summary    String
+  overview   String
+  procedures String[]
+  recovery   String
+  outcomes   String
+  travelDays String
+  photo      String
+  packages   Package[]
+}
+
+model Package {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  name        String
+  country     String
+  city        String
+  price       String
+  currency    String
+  days        Int
+  specialtyId String
+  specialty   Specialty @relation(fields: [specialtyId], references: [id])
+  summary     String
+  includes    String[]
+  notes       String
+  photo       String
+}
+
+model Inquiry {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  condition String
+  procedure String?
+  timeline  String
+  name      String
+  email     String
+  country   String?
+  notes     String?
+  files     String[]
+  status    String   @default("new") // "new" | "read"
+}
+
+model Subscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

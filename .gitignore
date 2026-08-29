@@ -48,3 +48,6 @@ next-env.d.ts
 
 # runtime-uploaded admin images
 /uploads/
+node_modules/
+dist/
+.env
