@@ -17,6 +17,20 @@ export const defaultOverrides: ContentOverrides = {
   posts: {},
 };
 
+const ADMIN_HEADER = "x-cc-admin";
+let pushTimer: ReturnType<typeof setTimeout> | null = null;
+
+const pushToServer = (next: ContentOverrides) => {
+  if (pushTimer) clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => {
+    fetch("/api/overrides", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", [ADMIN_HEADER]: "1" },
+      body: JSON.stringify(next),
+    }).catch(() => {});
+  }, 400);
+};
+
 export function useAdminContent() {
   const [overrides, setOverrides] = useState<ContentOverrides>(defaultOverrides);
   const [loaded, setLoaded] = useState(false);
@@ -40,6 +54,7 @@ export function useAdminContent() {
     if (typeof window !== "undefined") {
       localStorage.setItem(OVERRIDES_KEY, JSON.stringify(next));
     }
+    pushToServer(next);
   }, []);
 
   const updateSpecialty = (slug: string, patch: { name?: string; summary?: string; photo?: string }) => {

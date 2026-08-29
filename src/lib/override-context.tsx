@@ -13,17 +13,31 @@ export function ContentOverrideProvider({ children }: { children: React.ReactNod
   const [overrides, setOverrides] = useState<ContentOverrides>(EMPTY);
 
   useEffect(() => {
-    const load = () => {
+    let active = true;
+    const load = async () => {
+      try {
+        const res = await fetch("/api/overrides");
+        if (res.ok) {
+          const data = await res.json();
+          if (active) setOverrides({ ...EMPTY, ...data });
+          return;
+        }
+      } catch {
+        /* server unreachable — fall back to localStorage below */
+      }
       try {
         const raw = localStorage.getItem(OVERRIDES_KEY);
-        setOverrides(raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY);
+        if (active) setOverrides(raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY);
       } catch {
-        setOverrides(EMPTY);
+        if (active) setOverrides(EMPTY);
       }
     };
     load();
     window.addEventListener("storage", load);
-    return () => window.removeEventListener("storage", load);
+    return () => {
+      active = false;
+      window.removeEventListener("storage", load);
+    };
   }, []);
 
   return (
