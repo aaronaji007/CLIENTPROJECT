@@ -43,8 +43,8 @@ export function Artwork({
     ov.specialties[slug]?.photo ?? ov.packages[slug]?.photo ?? ov.posts[slug]?.photo;
   const resolved = photo ?? ovPhoto ?? photoFor(slug);
   const seed = hash(slug);
-  const hueA = 190 + (seed % 22);
-  const hueB = 205 + ((seed >> 3) % 18);
+  const hueA = 95 + (seed % 24);
+  const hueB = 80 + ((seed >> 3) % 18);
   const glowX = 20 + (seed % 60);
   const glowY = 15 + ((seed >> 4) % 50);
   const cx = 18 + (seed % 62);
@@ -78,11 +78,11 @@ export function Artwork({
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(14,42,52,0.08) 0%, rgba(14,42,52,0) 40%, rgba(14,42,52,0.62) 100%)",
+              "linear-gradient(180deg, rgba(44,58,43,0.08) 0%, rgba(44,58,43,0) 40%, rgba(44,58,43,0.62) 100%)",
           }}
         />
         <CornerTicks kind={kind} />
-        <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper drop-shadow-[0_1px_2px_rgba(14,42,52,0.8)]">
+        <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper drop-shadow-[0_1px_2px_rgba(44,58,43,0.8)]">
           {caption}
         </span>
       </div>
@@ -112,7 +112,7 @@ export function Artwork({
         className="absolute inset-0 opacity-[0.10]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(246,244,239,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(246,244,239,.5) 1px, transparent 1px)",
+            "linear-gradient(rgba(244,239,226,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(244,239,226,.5) 1px, transparent 1px)",
           backgroundSize: kind === "hero" ? "46px 46px" : "30px 30px",
         }}
       />
@@ -133,7 +133,7 @@ export function Artwork({
             style={{
               width: r * 2,
               height: r * 2,
-              border: `1px solid rgba(246,244,239,${0.5 - i * 0.14})`,
+              border: `1px solid rgba(244,239,226,${0.5 - i * 0.14})`,
             }}
           />
         ))}
@@ -161,7 +161,7 @@ export function Artwork({
 function CornerTicks({ kind }: { kind: "hero" | "card" }) {
   const n = kind === "hero" ? 26 : 18;
   const pad = kind === "hero" ? 22 : 14;
-  const color = "rgba(246,244,239,0.55)";
+  const color = "rgba(244,239,226,0.55)";
   return (
     <svg
       className="pointer-events-none absolute inset-0 h-full w-full"

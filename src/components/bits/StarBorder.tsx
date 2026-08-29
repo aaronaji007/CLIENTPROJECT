@@ -17,12 +17,12 @@ type StarBorderProps<T extends React.ElementType> = React.ComponentPropsWithoutR
 const StarBorder = <T extends React.ElementType = "button">({
   as,
   className = "",
-  color = "#c94f3d",
+  color = "#b06a3a",
   speed = "6s",
   thickness = 1,
-  backgroundColor = "#0e2a34",
-  textColor = "#f6f4ef",
-  borderColor = "rgba(201,79,61,0.45)",
+  backgroundColor = "#2c3a2b",
+  textColor = "#fbf6ea",
+  borderColor = "rgba(176,106,58,0.45)",
   children,
   ...rest
 }: StarBorderProps<T>) => {

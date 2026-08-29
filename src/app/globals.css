@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f6f4ef;
-  --color-paper-deep: #edeae2;
-  --color-ink: #0e2a34;
-  --color-ink-soft: #163a46;
-  --color-sage: #b8c4c0;
-  --color-sage-soft: #e2e7e4;
-  --color-signal: #c94f3d;
-  --color-signal-deep: #b13f2f;
-  --color-line: rgba(14, 42, 52, 0.12);
-  --color-line-invert: rgba(246, 244, 239, 0.16);
+  --color-paper: #f4efe2;
+  --color-paper-deep: #e9e1cf;
+  --color-ink: #2c3a2b;
+  --color-ink-soft: #3e4f3a;
+  --color-sage: #9aab87;
+  --color-sage-soft: #dde3d2;
+  --color-signal: #b06a3a;
+  --color-signal-deep: #904f27;
+  --color-line: rgba(44, 58, 43, 0.14);
+  --color-line-invert: rgba(244, 239, 226, 0.18);
 
   --font-display: var(--font-newsreader);
   --font-sans: var(--font-instrument);
@@ -90,23 +90,23 @@
   --background: var(--color-paper);
   --foreground: var(--color-ink);
 
-  --card: #ffffff;
-  --card-foreground: #0e2a34;
-  --popover: #f6f4ef;
-  --popover-foreground: #0e2a34;
-  --primary: #c94f3d;
-  --primary-foreground: #f6f4ef;
-  --secondary: #e2e7e4;
-  --secondary-foreground: #0e2a34;
-  --muted: #edeae2;
-  --muted-foreground: rgba(14, 42, 52, 0.65);
-  --accent: #b8c4c0;
-  --accent-foreground: #0e2a34;
-  --destructive: #b13f2f;
-  --destructive-foreground: #f6f4ef;
-  --border: rgba(14, 42, 52, 0.12);
-  --input: rgba(14, 42, 52, 0.18);
-  --ring: #c94f3d;
+  --card: #fbf6ea;
+  --card-foreground: #2c3a2b;
+  --popover: #fbf6ea;
+  --popover-foreground: #2c3a2b;
+  --primary: #b06a3a;
+  --primary-foreground: #fbf6ea;
+  --secondary: #dde3d2;
+  --secondary-foreground: #2c3a2b;
+  --muted: #e9e1cf;
+  --muted-foreground: rgba(44, 58, 43, 0.7);
+  --accent: #9aab87;
+  --accent-foreground: #2c3a2b;
+  --destructive: #a8492f;
+  --destructive-foreground: #fbf6ea;
+  --border: rgba(44, 58, 43, 0.14);
+  --input: rgba(44, 58, 43, 0.2);
+  --ring: #b06a3a;
   --radius: 0.25rem;
 }
 

@@ -103,7 +103,7 @@ export default function Home() {
           aria-hidden="true"
         >
           <LightRays
-            raysColor="#163a46"
+            raysColor="#3e4f3a"
             raysOrigin="top-center"
             raysSpeed={0.8}
             lightMode={false}
@@ -135,10 +135,10 @@ export default function Home() {
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Magnet>
-                <ClickSpark sparkColor="#c94f3d" sparkSize={11} sparkRadius={18}>
+                <ClickSpark sparkColor="#b06a3a" sparkSize={11} sparkRadius={18}>
                   <Link href="/consult">
                     <StarBorder
-                      color="#c94f3d"
+                      color="#b06a3a"
                       className="px-6 py-3 text-sm font-medium"
                     >
                       Plan your care
@@ -165,7 +165,7 @@ export default function Home() {
           </div>
 
           <AnimatedContent distance={70} className="mt-14">
-            <TiltCard intensity={8} className="overflow-hidden rounded-2xl border border-line bg-ink/5 shadow-[0_30px_80px_-40px_rgba(14,42,52,0.45)]">
+            <TiltCard intensity={8} className="overflow-hidden rounded-2xl border border-line bg-ink/5 shadow-[0_30px_80px_-40px_rgba(44,58,43,0.45)]">
               <div className="aspect-[16/8] w-full">
                 <Artwork slug="hero" kind="hero" label="Carte Clinique network" />
               </div>
@@ -197,8 +197,8 @@ export default function Home() {
       {/* PRESSURE WORD BAND */}
       <section className="overflow-hidden border-y border-line bg-paper py-8">
         <TextPressure
-          text="Carte Clinique"
-          textColor="#0e2a34"
+          text="Across every border"
+          textColor="#2c3a2b"
           className="text-center"
         />
       </section>
@@ -305,8 +305,8 @@ export default function Home() {
           aria-hidden="true"
         >
           <DotGrid
-            baseColor="rgba(246,244,239,0.16)"
-            activeColor="#c94f3d"
+            baseColor="rgba(244,239,226,0.16)"
+            activeColor="#b06a3a"
             className="h-full w-full"
           />
         </div>
@@ -438,9 +438,9 @@ export default function Home() {
                     className="absolute -left-16 -top-16 h-32 w-32 text-signal/70"
                   />
                   <Magnet>
-                    <ClickSpark sparkColor="#c94f3d" sparkSize={11}>
+                    <ClickSpark sparkColor="#b06a3a" sparkSize={11}>
                       <Link href="/consult">
-                        <StarBorder color="#c94f3d" className="px-6 py-3 text-sm">
+                        <StarBorder color="#b06a3a" className="px-6 py-3 text-sm">
                           Start a consult
                         </StarBorder>
                       </Link>
