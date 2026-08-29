@@ -47,9 +47,89 @@
   }
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee linear infinite;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
 :root {
   --background: var(--color-paper);
   --foreground: var(--color-ink);
+
+  --card: #ffffff;
+  --card-foreground: #0e2a34;
+  --popover: #f6f4ef;
+  --popover-foreground: #0e2a34;
+  --primary: #c94f3d;
+  --primary-foreground: #f6f4ef;
+  --secondary: #e2e7e4;
+  --secondary-foreground: #0e2a34;
+  --muted: #edeae2;
+  --muted-foreground: rgba(14, 42, 52, 0.65);
+  --accent: #b8c4c0;
+  --accent-foreground: #0e2a34;
+  --destructive: #b13f2f;
+  --destructive-foreground: #f6f4ef;
+  --border: rgba(14, 42, 52, 0.12);
+  --input: rgba(14, 42, 52, 0.18);
+  --ring: #c94f3d;
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 html {
