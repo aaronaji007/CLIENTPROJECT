@@ -124,17 +124,17 @@ export default async function Home() {
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-line" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-2">
           <div className="max-w-xl">
-            <div className="mb-6 inline-flex items-center gap-3">
-              <Emblem className="h-12 w-12" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-ink/60">
-                The Clinic Charter
+            <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-line bg-paper-deep/60 px-4 py-2 backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-signal animate-pulse" />
+              <span className="font-mono text-xs uppercase tracking-[0.24em] font-semibold text-signal">
+                MedicalCare Beyond Borders
               </span>
             </div>
-            <Eyebrow>Global surgery &amp; care concierge</Eyebrow>
+            <Eyebrow>MedyCare 2₹ism · Healthcare &amp; Medical Tourism</Eyebrow>
             <h1 className="mt-4 font-display text-5xl font-medium leading-[1.05] tracking-tight text-ink sm:text-6xl md:text-7xl">
               <OverrideText kind="landing" slug="home" field="heroTitle">
                 <BlurText
-                  text="Coordinated care across borders"
+                  text="MedicalCare Beyond Borders"
                   delay={120}
                   animateBy="words"
                 />
@@ -142,8 +142,8 @@ export default async function Home() {
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink/70 sm:mt-8 sm:text-xl">
               <OverrideText kind="landing" slug="home" field="heroSubtitle">
-                A medical-travel concierge that connects international patients
-                with vetted providers and coordinates the entire journey — calm,
+                MedyCare 2₹ism is a premier medical-travel concierge connecting international patients
+                with vetted world-class hospitals and coordinating the entire journey — calm,
                 documented, and accountable from discovery to recovery.
               </OverrideText>
             </p>
@@ -182,7 +182,7 @@ export default async function Home() {
           <AnimatedContent distance={70} className="relative">
             <TiltCard intensity={8} className="overflow-hidden rounded-2xl border border-line bg-ink/5 shadow-[0_30px_80px_-40px_rgba(44,58,43,0.45)]">
               <div className="aspect-[4/5] w-full sm:aspect-[4/3]">
-                <Artwork slug="hero" kind="hero" label="Carte Clinique network" photo="/media/hero.jpg" />
+                <Artwork slug="hero" kind="hero" label="MedyCare 2₹ism network" photo="/media/hero.jpg" />
               </div>
               <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-ink/70 px-4 py-1.5 backdrop-blur">
                 <ShinyText
@@ -212,7 +212,7 @@ export default async function Home() {
       {/* PRESSURE WORD BAND */}
       <section className="overflow-hidden border-y border-line bg-paper py-8">
         <TextPressure
-          text="Across every border"
+          text="MedicalCare Beyond Borders"
           textColor="#2c3a2b"
           className="text-center"
         />
@@ -221,8 +221,8 @@ export default async function Home() {
       {/* WHY */}
       <section className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
         <SectionHeader
-          title="Why Carte Clinique"
-          body="We refuse the crowded medical-travel template. This is a clinic delivering coordinated care — calm, documented, and accountable."
+          title="Why MedyCare 2₹ism"
+          body="We refuse the crowded medical-travel template. This is healthcare delivering coordinated care — calm, documented, and accountable beyond borders."
         />
         <AnimatedContent distance={80} className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {[
@@ -409,7 +409,7 @@ export default async function Home() {
             {[
               {
                 q: "Do you perform the surgery?",
-                a: "No. We coordinate. Carte Clinique connects you with accredited partner hospitals and specialists; your treating clinician remains independent and fully accountable for your care.",
+                a: "No. We coordinate. MedyCare 2₹ism connects you with accredited partner hospitals and specialists; your treating clinician remains independent and fully accountable for your care.",
               },
               {
                 q: "How is pricing kept transparent?",

@@ -35,11 +35,19 @@ const plex = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Carte Clinique — Global Surgery & Care Concierge",
-    template: "%s — Carte Clinique",
+    default: "MedyCare 2₹ism — MedicalCare Beyond Borders",
+    template: "%s — MedyCare 2₹ism",
   },
   description:
-    "A medical tourism and healthcare concierge connecting international patients with vetted providers, coordinated care, and a guided journey from discovery to recovery.",
+    "MedyCare 2₹ism — MedicalCare Beyond Borders. A premier medical tourism and healthcare concierge connecting international patients with world-class accredited hospitals, top specialists, and seamless care coordination across borders.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/images/medycare-logo.png", type: "image/png" },
+    ],
+    apple: "/images/medycare-logo.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

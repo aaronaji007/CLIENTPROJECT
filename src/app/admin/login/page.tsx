@@ -30,8 +30,8 @@ export default function AdminLoginPage() {
             </span>
             <div>
               <h1 className="font-display text-xl font-medium text-ink">Admin sign in</h1>
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55">
-                Carte Clinique
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-signal font-semibold">
+                MedyCare 2₹ism
               </p>
             </div>
           </div>

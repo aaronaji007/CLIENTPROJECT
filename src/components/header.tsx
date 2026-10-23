@@ -17,29 +17,11 @@ const nav = [
 
 export function Emblem({ className = "" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 40 40"
-      className={`h-9 w-9 text-ink ${className}`}
-      role="img"
-      aria-label="Carte Clinique emblem"
-    >
-      <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="20" cy="20" r="15.5" fill="none" stroke="currentColor" strokeWidth="0.75" />
-      <path
-        d="M20 8.5 C27 12 31 16 31 22 C31 26.5 27 30 20 31.5 C13 30 9 26.5 9 22 C9 16 13 12 20 8.5 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path d="M12.5 22 H27.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-      <path
-        d="M20 13.5 C22.2 16.5 23 19.5 23 22 C23 24.5 22.2 27.5 20 30.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.9"
-      />
-      <circle cx="20" cy="22" r="1.4" fill="currentColor" />
-    </svg>
+    <img
+      src="/images/medycare-logo.png"
+      alt="MedyCare 2₹ism emblem"
+      className={`h-9 w-auto object-contain ${className}`}
+    />
   );
 }
 
@@ -53,9 +35,8 @@ export function Header() {
       <div className="bg-ink text-paper">
         <div className="mx-auto flex max-w-6xl items-center justify-center gap-3 px-5 py-2 text-center">
           <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
-          <p className="text-xs text-paper/80">
-            Coordinating care abroad since 2026 · Concept demonstration site — all data is
-            placeholder
+          <p className="text-xs font-medium text-paper/90">
+            <span className="font-semibold text-paper">MedyCare 2₹ism</span> · MedicalCare Beyond Borders
           </p>
           <span className="hidden h-1.5 w-1.5 rounded-full bg-signal sm:block" aria-hidden="true" />
         </div>
@@ -63,17 +44,14 @@ export function Header() {
 
       <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link href="/" className="flex items-center gap-3" onClick={() => setMenuOpen(false)}>
-            <span className="grid h-10 w-10 place-items-center rounded-full border border-ink/20">
-              <Emblem />
-            </span>
-            <span className="leading-none">
-              <span className="block font-display text-lg font-medium tracking-tight text-ink">
-                Carte Clinique
-              </span>
-              <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
-                Global Care Concierge
-              </span>
+          <Link href="/" className="flex flex-col items-start gap-1 py-1 group" onClick={() => setMenuOpen(false)}>
+            <img
+              src="/images/medycare-logo.png"
+              alt="MedyCare 2₹ism"
+              className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+            />
+            <span className="font-mono text-[8.5px] sm:text-[9.5px] uppercase tracking-[0.18em] text-signal font-semibold leading-none">
+              MedicalCare Beyond Borders
             </span>
           </Link>
 

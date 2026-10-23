@@ -426,7 +426,7 @@ export type FaqItem = {
 
 export const generalFaqs: FaqItem[] = [
   {
-    q: "Is Carte Clinique a hospital or a clinic?",
+    q: "Is MedyCare 2₹ism a hospital or a clinic?",
     a: "Neither, in the traditional sense. We are a concierge that coordinates your care across vetted providers, hospitals, and surgical centers in other countries. We are the single point of contact who owns your file, your travel, and your timeline — not a place that performs the surgery itself.",
   },
   {

@@ -52,7 +52,7 @@ export default function AdminDashboard() {
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">Admin console</p>
           <h1 className="mt-2 font-display text-3xl font-medium text-ink sm:text-4xl">
-            Carte Clinique dashboard
+            MedyCare 2₹ism dashboard
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/60">
             Content edits are stored in your browser (localStorage) and structured to swap to a real
@@ -264,7 +264,7 @@ function SiteCopyEditor() {
           />
           <TextAreaRow
             label="Hero Subtitle"
-            value={landing.heroSubtitle || "Carte Clinique is a private medical concierge connecting patients with Europe and Asia's leading accredited hospitals."}
+            value={landing.heroSubtitle || "MedyCare 2₹ism is a premier medical concierge connecting patients with leading accredited hospitals across borders."}
             onChange={(v) => updateOverride("landing", "home", "heroSubtitle", v)}
           />
           <TextAreaRow
@@ -280,7 +280,7 @@ function SiteCopyEditor() {
         <div className="mt-5 grid gap-4">
           <FieldRow
             label="Footer Title"
-            value={site.footerTitle || "Carte Clinique"}
+            value={site.footerTitle || "MedyCare 2₹ism"}
             onChange={(v) => updateOverride("site", "global", "footerTitle", v)}
           />
         </div>

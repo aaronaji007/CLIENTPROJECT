@@ -4,19 +4,19 @@ import { ConsultBooking } from "@/components/consult-booking";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "Plan your care",
+  title: "Plan your care — MedyCare 2₹ism",
   description:
-    "Start a confidential care conversation with a Carte Clinique clinical lead.",
+    "Start a confidential care conversation with a MedyCare 2₹ism clinical lead.",
 };
 
 export default function ConsultPage() {
   return (
     <div className="bg-paper">
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
-        <div className="mb-6 inline-flex items-center gap-3">
-          <Emblem className="h-10 w-10" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-ink/60">
-            The Clinic Charter
+        <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-line bg-paper-deep/60 px-4 py-2 backdrop-blur">
+          <span className="h-2 w-2 rounded-full bg-signal" />
+          <span className="font-mono text-xs uppercase tracking-[0.24em] font-semibold text-signal">
+            MedicalCare Beyond Borders
           </span>
         </div>
         <h1 className="font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
