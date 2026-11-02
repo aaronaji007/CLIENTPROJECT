@@ -63,17 +63,31 @@ export default async function SpecialtyPage({
           </section>
 
           <section className="mt-10">
-            <h2 className="font-display text-2xl font-medium text-ink">Procedures</h2>
+            <h2 className="font-display text-2xl font-medium text-ink">
+              Procedures &amp; Period of Stay
+            </h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {specialty.procedures.map((p) => (
-                <li
-                  key={p}
-                  className="flex items-center gap-3 rounded-sm border border-line bg-white/40 px-4 py-3 text-sm text-ink"
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
-                  {p}
-                </li>
-              ))}
+              {specialty.procedures.map((p) => {
+                const parts = p.split(/\s*·\s*|\s*—\s*/);
+                const procName = parts[0];
+                const stay = parts[1];
+                return (
+                  <li
+                    key={p}
+                    className="flex items-center justify-between gap-3 rounded-sm border border-line bg-white/40 px-4 py-3 text-sm text-ink shadow-sm"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-signal shrink-0" aria-hidden="true" />
+                      <span className="font-medium">{procName}</span>
+                    </div>
+                    {stay && (
+                      <span className="shrink-0 rounded-full border border-line bg-paper-deep/70 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-signal font-semibold">
+                        {stay}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </section>
 

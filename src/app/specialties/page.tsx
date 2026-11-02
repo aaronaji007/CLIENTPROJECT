@@ -17,7 +17,7 @@ export default async function SpecialtiesPage() {
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
       <div className="max-w-2xl">
         <h1 className="font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
-          Eight pathways, one standard of care
+          Specialized pathways, one standard of care
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-ink/70">
           Every specialty is matched to an accredited provider and a dedicated case manager

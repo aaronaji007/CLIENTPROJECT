@@ -177,14 +177,13 @@ export function InquiryModal() {
                   className="mt-2 w-full rounded-sm border border-ink/20 bg-white/40 px-3 py-2.5 text-ink focus:border-ink"
                 >
                   <option value="">Not sure yet</option>
-                  <option>Orthopedics</option>
-                  <option>Cardiology</option>
-                  <option>Aesthetic & Reconstructive</option>
-                  <option>Fertility</option>
-                  <option>Neurosurgery</option>
-                  <option>Oncology</option>
-                  <option>Dental & Maxillofacial</option>
-                  <option>Ophthalmology</option>
+                  <option>Orthopedics & Joint Surgery</option>
+                  <option>Aesthetic & Plastic Surgery</option>
+                  <option>Fertility & Reproductive Medicine</option>
+                  <option>Urology & Men's Health</option>
+                  <option>Oncology & Precision Treatment</option>
+                  <option>Dental & Maxillofacial Care</option>
+                  <option>Ophthalmology & Vision</option>
                 </select>
               </div>
               <div>
