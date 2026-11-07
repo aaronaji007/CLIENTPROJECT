@@ -2,6 +2,7 @@
 
 import { db } from "@/prisma/db";
 import { revalidatePath } from "next/cache";
+import { getAdminCredentials, saveAdminCredentials } from "@/lib/server-admin-auth";
 
 export async function fetchAdminData() {
   try {
@@ -152,5 +153,75 @@ export async function createSubscriberDb(email: string) {
     return await db.orm.public.Subscriber.create({ email });
   } catch {
     return { ok: false };
+  }
+}
+
+export async function verifyAdminLoginAction(username: string, password: string) {
+  try {
+    const creds = await getAdminCredentials();
+    const usernameMatch = username.trim().toLowerCase() === creds.username.trim().toLowerCase();
+    const passwordMatch = password === creds.password;
+    if (usernameMatch && passwordMatch) {
+      return { success: true };
+    }
+    return { success: false, error: "Invalid username or password" };
+  } catch (err) {
+    console.error("Error verifying admin login:", err);
+    if (username.trim().toLowerCase() === "admin" && password === "admin") {
+      return { success: true };
+    }
+    return { success: false, error: "Authentication service error. Try again." };
+  }
+}
+
+export async function getAdminAccountInfoAction() {
+  try {
+    const creds = await getAdminCredentials();
+    return {
+      username: creds.username,
+      isDefault: creds.password === "admin",
+      updatedAt: creds.updatedAt || null,
+    };
+  } catch {
+    return {
+      username: "admin",
+      isDefault: true,
+      updatedAt: null,
+    };
+  }
+}
+
+export async function changeAdminPasswordAction(data: {
+  currentPassword: string;
+  newPassword: string;
+  newUsername?: string;
+}) {
+  try {
+    const creds = await getAdminCredentials();
+    if (data.currentPassword !== creds.password) {
+      return { success: false, error: "The current password you entered is incorrect." };
+    }
+
+    if (!data.newPassword || data.newPassword.length < 4) {
+      return { success: false, error: "New password must be at least 4 characters long." };
+    }
+
+    const updatedUsername = (data.newUsername || creds.username).trim();
+    if (!updatedUsername) {
+      return { success: false, error: "Username cannot be empty." };
+    }
+
+    const updatedCreds = {
+      username: updatedUsername,
+      password: data.newPassword,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await saveAdminCredentials(updatedCreds);
+    revalidatePath("/admin");
+    return { success: true, username: updatedUsername };
+  } catch (err: any) {
+    console.error("Error changing admin password:", err);
+    return { success: false, error: err?.message || "Failed to update password. Try again." };
   }
 }

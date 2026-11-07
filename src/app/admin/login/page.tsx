@@ -7,7 +7,7 @@ import { useAdminAuth } from "@/lib/admin-auth";
 import { Emblem } from "@/components/header";
 
 export default function AdminLoginPage() {
-  const { authed, login, error } = useAdminAuth();
+  const { authed, login, loading, error } = useAdminAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -36,16 +36,15 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          <p className="mt-6 text-sm leading-relaxed text-ink/60">
-            Mock credentials for this demonstration — swap for a real provider (e.g. Firebase) in
-            the auth layer.
+          <p className="mt-4 text-sm leading-relaxed text-ink/65">
+            Sign in to access the MedyCare Control Panel and content management system.
           </p>
 
           <form
             className="mt-6 space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
-              login(username, password);
+              if (!loading) login(username, password);
             }}
           >
             <label className="block">
@@ -56,6 +55,7 @@ export default function AdminLoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
+                placeholder="admin"
                 className="mt-1.5 w-full rounded-sm border border-line bg-white/50 px-3 py-2.5 text-sm text-ink outline-none focus:border-ink"
               />
             </label>
@@ -69,6 +69,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
+                placeholder="••••••••"
                 className="mt-1.5 w-full rounded-sm border border-line bg-white/50 px-3 py-2.5 text-sm text-ink outline-none focus:border-ink"
               />
             </label>
@@ -81,14 +82,15 @@ export default function AdminLoginPage() {
 
             <button
               type="submit"
-              className="w-full rounded-sm bg-ink px-4 py-2.5 text-sm font-semibold text-paper shadow-panel transition-colors hover:bg-ink-soft"
+              disabled={loading}
+              className="w-full rounded-sm bg-ink px-4 py-2.5 text-sm font-semibold text-paper shadow-panel transition-colors hover:bg-ink-soft disabled:opacity-50"
             >
-              Sign in
+              {loading ? "Signing in…" : "Sign in"}
             </button>
           </form>
 
           <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-            Demo · admin / admin
+            Default credentials: admin / admin
           </p>
         </div>
 

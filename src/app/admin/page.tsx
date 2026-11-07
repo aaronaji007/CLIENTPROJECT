@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/admin-auth";
 import { useAdminContent } from "@/lib/admin-content";
 import type { TestimonialItem, FaqItem, StatItem, JourneyPhaseItem, PostItem } from "@/lib/override-context";
+import { getAdminAccountInfoAction, changeAdminPasswordAction } from "./actions";
 
 type Tab =
   | "overview"
@@ -19,7 +20,8 @@ type Tab =
   | "footer"
   | "photos"
   | "inquiries"
-  | "audience";
+  | "audience"
+  | "security";
 
 const tabs: { id: Tab; label: string; badge?: string }[] = [
   { id: "overview", label: "Overview" },
@@ -35,6 +37,7 @@ const tabs: { id: Tab; label: string; badge?: string }[] = [
   { id: "photos", label: "Media Library" },
   { id: "inquiries", label: "Inquiries Inbox" },
   { id: "audience", label: "Subscribers" },
+  { id: "security", label: "Security & Password", badge: "AUTH" },
 ];
 
 export default function AdminDashboard() {
@@ -68,17 +71,24 @@ export default function AdminDashboard() {
             Control surgeries, procedures, pricing, packages, testimonials, FAQs, and site-wide copy. Changes are saved to the database and global storage instantly.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Link
             href="/"
             target="_blank"
-            className="rounded-sm border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-ink hover:bg-white/40 transition-colors"
+            className="rounded-sm border border-ink/20 px-3.5 py-2 text-xs font-medium text-ink hover:border-ink hover:bg-white/40 transition-colors"
           >
             Preview live site ↗
           </Link>
           <button
+            onClick={() => setTab("security")}
+            className="rounded-sm border border-signal/30 bg-signal/10 px-3.5 py-2 text-xs font-semibold text-signal hover:bg-signal/20 transition-colors flex items-center gap-1.5"
+          >
+            <LockIcon className="h-3.5 w-3.5" />
+            <span>Change Password</span>
+          </button>
+          <button
             onClick={logout}
-            className="rounded-sm bg-ink px-4 py-2 text-sm font-semibold text-paper hover:bg-ink-soft transition-colors"
+            className="rounded-sm bg-ink px-3.5 py-2 text-xs font-semibold text-paper hover:bg-ink-soft transition-colors"
           >
             Sign out
           </button>
@@ -123,6 +133,7 @@ export default function AdminDashboard() {
         {tab === "photos" && <PhotosEditor />}
         {tab === "inquiries" && <InquiriesInbox />}
         {tab === "audience" && <AudiencePanel />}
+        {tab === "security" && <SecurityEditor />}
       </div>
     </div>
   );
@@ -254,6 +265,13 @@ function Overview({ onSelectTab }: { onSelectTab: (t: Tab) => void }) {
               >
                 <span>💬 Edit Patient Stories</span>
                 <span className="font-mono text-[10px] text-ink/40">CMS</span>
+              </button>
+              <button
+                onClick={() => onSelectTab("security")}
+                className="w-full text-left rounded-sm border border-line bg-paper-deep/40 px-3 py-2 text-xs text-ink hover:border-ink transition-colors flex items-center justify-between"
+              >
+                <span>🔒 Change Admin Password</span>
+                <span className="font-mono text-[10px] text-signal font-semibold">AUTH</span>
               </button>
             </div>
           </div>
@@ -2277,6 +2295,286 @@ function AudiencePanel() {
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+// -------------------------------------------------------------
+// 13. ADMIN SECURITY & PASSWORD
+// -------------------------------------------------------------
+function LockIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+    </svg>
+  );
+}
+
+function EyeIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+function EyeOffIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+    </svg>
+  );
+}
+
+function SecurityEditor() {
+  const [accountInfo, setAccountInfo] = useState<{
+    username: string;
+    isDefault: boolean;
+    updatedAt: string | null;
+  } | null>(null);
+
+  const [username, setUsername] = useState("admin");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    getAdminAccountInfoAction().then((info) => {
+      if (mounted) {
+        setAccountInfo(info);
+        setUsername(info.username);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!currentPassword) {
+      setError("Please enter your current password.");
+      return;
+    }
+
+    if (!newPassword) {
+      setError("Please enter a new password.");
+      return;
+    }
+
+    if (newPassword.length < 4) {
+      setError("New password must be at least 4 characters long.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("New password and confirmation do not match.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await changeAdminPasswordAction({
+        currentPassword,
+        newPassword,
+        newUsername: username,
+      });
+
+      if (res.success) {
+        setSuccess("Password changed successfully! Keep your new credentials safe.");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        const refreshed = await getAdminAccountInfoAction();
+        setAccountInfo(refreshed);
+      } else {
+        setError(res.error || "Failed to change password.");
+      }
+    } catch (err: any) {
+      setError(err?.message || "An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-3xl space-y-6">
+      {/* Status Card */}
+      <div className="rounded-lg border border-line bg-paper shadow-panel p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-signal/10 text-signal border border-signal/20">
+              <LockIcon className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="font-display text-xl font-medium text-ink">Admin Security &amp; Credentials</h2>
+              <p className="text-xs text-ink/60">Manage your administrative login credentials and access password.</p>
+            </div>
+          </div>
+          {accountInfo && (
+            <span
+              className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase font-semibold tracking-wider ${
+                accountInfo.isDefault
+                  ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30"
+                  : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
+              }`}
+            >
+              {accountInfo.isDefault ? "⚠️ Using Default Demo Password" : "🔒 Custom Password Active"}
+            </span>
+          )}
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 text-xs">
+          <div className="rounded-sm border border-line bg-paper-deep/30 p-3">
+            <span className="font-mono uppercase tracking-wider text-ink/50 text-[10px]">Active Username</span>
+            <p className="mt-1 font-mono text-sm font-semibold text-ink">{accountInfo?.username || "admin"}</p>
+          </div>
+          <div className="rounded-sm border border-line bg-paper-deep/30 p-3">
+            <span className="font-mono uppercase tracking-wider text-ink/50 text-[10px]">Last Updated</span>
+            <p className="mt-1 font-mono text-xs text-ink/75">
+              {accountInfo?.updatedAt ? new Date(accountInfo.updatedAt).toLocaleString() : "Never (Default demo)"}
+            </p>
+          </div>
+        </div>
+
+        {accountInfo?.isDefault && (
+          <div className="mt-4 rounded-sm border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-900 dark:text-amber-300">
+            <strong>Security Recommendation:</strong> You are currently using the default demo password (<code className="font-mono font-bold">admin</code>). We recommend setting a secure personal password below.
+          </div>
+        )}
+      </div>
+
+      {/* Change Password Form */}
+      <div className="rounded-lg border border-line bg-paper shadow-panel p-6">
+        <h3 className="font-display text-lg font-medium text-ink">Change Admin Password</h3>
+        <p className="mt-1 text-xs text-ink/60">
+          Enter your existing password to verify identity, then set your new password.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div>
+            <label className="block">
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60">
+                Admin Username
+              </span>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin"
+                className="mt-1.5 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink outline-none focus:border-ink font-mono"
+              />
+              <span className="mt-1 block text-[11px] text-ink/45">
+                You can keep this as &apos;admin&apos; or change to your preferred administrator handle.
+              </span>
+            </label>
+          </div>
+
+          <div>
+            <label className="block">
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60">
+                Current Password
+              </span>
+              <div className="relative mt-1.5">
+                <input
+                  type={showCurrent ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password (default: admin)"
+                  autoComplete="current-password"
+                  className="w-full rounded-sm border border-line bg-white/50 px-3 py-2 pr-10 text-sm text-ink outline-none focus:border-ink font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrent(!showCurrent)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink"
+                  aria-label="Toggle password visibility"
+                >
+                  {showCurrent ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
+            </label>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="block">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60">
+                  New Password
+                </span>
+                <div className="relative mt-1.5">
+                  <input
+                    type={showNew ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Min 4 characters"
+                    autoComplete="new-password"
+                    className="w-full rounded-sm border border-line bg-white/50 px-3 py-2 pr-10 text-sm text-ink outline-none focus:border-ink font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNew(!showNew)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink"
+                    aria-label="Toggle password visibility"
+                  >
+                    {showNew ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <label className="block">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60">
+                  Confirm New Password
+                </span>
+                <input
+                  type={showNew ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter new password"
+                  autoComplete="new-password"
+                  className="mt-1.5 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink outline-none focus:border-ink font-mono"
+                />
+              </label>
+            </div>
+          </div>
+
+          {error && (
+            <div className="rounded-sm border border-signal/30 bg-signal/10 px-4 py-2.5 text-xs text-signal font-medium">
+              ⚠️ {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs text-emerald-800 dark:text-emerald-300 font-medium">
+              ✓ {success}
+            </div>
+          )}
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="rounded-sm bg-signal px-6 py-2.5 text-sm font-semibold text-white shadow-panel transition-colors hover:bg-signal-deep disabled:opacity-50"
+            >
+              {submitting ? "Updating Password…" : "Update Password"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
