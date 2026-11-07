@@ -45,7 +45,7 @@ export function SpecialtyCollection({ specialties }: { specialties: Specialty[] 
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search specialties…"
-            className="w-full rounded-sm border border-ink/20 bg-white/40 py-2.5 pl-9 pr-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink"
+            className="w-full rounded-sm border border-ink/20 bg-white/40 dark:bg-paper-deep/60 py-2.5 pl-9 pr-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink"
           />
         </label>
 
@@ -132,7 +132,7 @@ export function PackageCollection({
   }, [packages, q, spec, country, sort]);
 
   const selectCls =
-    "rounded-sm border border-ink/20 bg-white/40 px-3 py-2.5 text-sm text-ink focus:border-ink";
+    "rounded-sm border border-ink/20 bg-white/40 dark:bg-paper-deep/60 px-3 py-2.5 text-sm text-ink focus:border-ink";
   const labelCls = "font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50";
 
   return (
@@ -146,7 +146,7 @@ export function PackageCollection({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search packages…"
-            className="w-full rounded-sm border border-ink/20 bg-white/40 py-2.5 pl-9 pr-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink"
+            className="w-full rounded-sm border border-ink/20 bg-white/40 dark:bg-paper-deep/60 py-2.5 pl-9 pr-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink"
           />
         </label>
 

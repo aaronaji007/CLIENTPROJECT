@@ -67,7 +67,7 @@ export function HomeStatsBand() {
   const stats = ov.stats && ov.stats.length > 0 ? ov.stats : defaultStats;
 
   return (
-    <section className="relative overflow-hidden border-y border-line bg-ink py-16 text-paper">
+    <section className="relative overflow-hidden border-y border-line bg-ink dark:bg-[#101412] py-16 text-paper dark:text-ink">
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
         aria-hidden="true"
@@ -81,11 +81,11 @@ export function HomeStatsBand() {
       <div className="relative mx-auto grid max-w-5xl grid-cols-2 gap-10 px-6 md:grid-cols-4">
         {stats.map((stat, i) => (
           <AnimatedContent key={i} distance={50} className="text-center">
-            <div className="font-display text-4xl font-medium text-paper sm:text-5xl">
+            <div className="font-display text-4xl font-medium text-paper dark:text-ink sm:text-5xl">
               <CountUp to={stat.v} />
               <GradientText className="text-signal">{stat.s}</GradientText>
             </div>
-            <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-paper/60">
+            <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-paper/60 dark:text-ink/65">
               {stat.l}
             </div>
           </AnimatedContent>

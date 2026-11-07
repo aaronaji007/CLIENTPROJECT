@@ -79,14 +79,14 @@ export default async function SpecialtyPage({
                 return (
                   <li
                     key={p}
-                    className="flex items-center justify-between gap-3 rounded-sm border border-line bg-white/40 px-4 py-3 text-sm text-ink shadow-sm"
+                    className="flex items-center justify-between gap-3 rounded-sm border border-line bg-white/40 dark:bg-paper-deep/60 px-4 py-3 text-sm text-ink shadow-sm"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="h-1.5 w-1.5 rounded-full bg-signal shrink-0" aria-hidden="true" />
                       <span className="font-medium">{procName}</span>
                     </div>
                     {stay && (
-                      <span className="shrink-0 rounded-full border border-line bg-paper-deep/70 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-signal font-semibold">
+                      <span className="shrink-0 rounded-full border border-line bg-paper-deep/70 dark:bg-paper-deep px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-signal font-semibold">
                         {stay}
                       </span>
                     )}
@@ -141,35 +141,35 @@ function FactsPanel({
   name: string;
 }) {
   return (
-    <div className="rounded-lg border border-line bg-ink p-6 text-paper">
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/50">
+    <div className="rounded-lg border border-line bg-[#18231c] dark:bg-[#121614] p-6 text-paper dark:text-ink">
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/60 dark:text-ink/60">
         At a glance
       </p>
       <dl className="mt-4 space-y-4 text-sm">
         <div>
-          <dt className="text-paper/55">Typical stay</dt>
-          <dd className="mt-1 font-mono text-lg text-paper">{travelDays}</dd>
+          <dt className="text-paper/60 dark:text-ink/60">Typical stay</dt>
+          <dd className="mt-1 font-mono text-lg text-paper dark:text-ink">{travelDays}</dd>
         </div>
-        <div className="border-t border-paper/15 pt-4">
-          <dt className="text-paper/55">Outcomes</dt>
-          <dd className="mt-1 text-xs leading-relaxed text-paper/65">{outcomes}</dd>
+        <div className="border-t border-paper/15 dark:border-line pt-4">
+          <dt className="text-paper/60 dark:text-ink/60">Outcomes</dt>
+          <dd className="mt-1 text-xs leading-relaxed text-paper/75 dark:text-ink/75">{outcomes}</dd>
         </div>
-        <div className="border-t border-paper/15 pt-4">
-          <dt className="text-paper/55">Coordination</dt>
-          <dd className="mt-1 text-paper/80">
+        <div className="border-t border-paper/15 dark:border-line pt-4">
+          <dt className="text-paper/60 dark:text-ink/60">Coordination</dt>
+          <dd className="mt-1 text-paper/85 dark:text-ink/85">
             Dedicated case manager · accredited provider · home handoff
           </dd>
         </div>
-        <div className="border-t border-paper/15 pt-4">
-          <dt className="text-paper/55">Last updated</dt>
-          <dd className="mt-1 text-xs text-paper/65">
+        <div className="border-t border-paper/15 dark:border-line pt-4">
+          <dt className="text-paper/60 dark:text-ink/60">Last updated</dt>
+          <dd className="mt-1 text-xs text-paper/70 dark:text-ink/70">
             {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </dd>
         </div>
       </dl>
       <Link
         href={`/packages?q=${name.split(" ")[0].toLowerCase()}`}
-        className="mt-6 block w-full rounded-sm bg-ink px-4 py-3 text-center text-sm font-semibold text-paper transition-colors hover:bg-ink-soft"
+        className="mt-6 block w-full rounded-sm bg-signal px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-signal-deep"
       >
         Plan this care
       </Link>

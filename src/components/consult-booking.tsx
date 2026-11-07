@@ -46,7 +46,7 @@ export function ConsultBooking() {
   const pick = slots.find((s) => s.utc === selected);
 
   return (
-    <div className="rounded-lg border border-line bg-paper p-6 shadow-panel">
+    <div className="rounded-lg border border-line bg-paper dark:bg-[#1a201c] p-6 shadow-panel">
       <h3 className="font-display text-2xl font-medium text-ink">Gather with a case manager</h3>
       <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/70">
         Choose a time shown in your local timezone
@@ -70,8 +70,8 @@ export function ConsultBooking() {
                 aria-pressed={selected === slot.utc}
                 className={`rounded-sm border px-3 py-2.5 text-left text-sm transition-colors ${
                   selected === slot.utc
-                    ? "border-ink bg-ink text-paper"
-                    : "border-ink/20 text-ink hover:border-ink"
+                    ? "border-signal bg-signal text-white font-medium"
+                    : "border-line bg-white/40 dark:bg-paper-deep/60 text-ink hover:border-ink"
                 }`}
               >
                 {slot.label}
@@ -86,14 +86,14 @@ export function ConsultBooking() {
               type="button"
               disabled={!selected}
               onClick={() => setConfirmed(true)}
-              className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-sm bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-deep disabled:cursor-not-allowed disabled:opacity-40"
             >
               Confirm this time
             </button>
           </div>
         </>
       ) : (
-        <div className="mt-6 rounded-sm border border-line bg-paper p-5">
+        <div className="mt-6 rounded-sm border border-line bg-paper-deep/50 p-5">
           <p className="font-display text-lg font-medium text-ink">Consultation requested</p>
           {pick && (
             <p className="mt-1 text-sm text-ink/70">

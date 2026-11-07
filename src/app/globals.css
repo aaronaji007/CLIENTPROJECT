@@ -87,6 +87,17 @@
 }
 
 :root {
+  --color-paper: #f4efe2;
+  --color-paper-deep: #e9e1cf;
+  --color-ink: #2c3a2b;
+  --color-ink-soft: #3e4f3a;
+  --color-sage: #9aab87;
+  --color-sage-soft: #dde3d2;
+  --color-signal: #b06a3a;
+  --color-signal-deep: #904f27;
+  --color-line: rgba(44, 58, 43, 0.14);
+  --color-line-invert: rgba(244, 239, 226, 0.18);
+
   --background: var(--color-paper);
   --foreground: var(--color-ink);
 
@@ -111,40 +122,51 @@
 }
 
 .dark {
-  --color-paper: #1c211e;
-  --color-paper-deep: #161a18;
+  --color-paper: #161a18;
+  --color-paper-deep: #1e2420;
   --color-ink: #f4efe2;
   --color-ink-soft: #c4ccbe;
   --color-sage: #384234;
   --color-sage-soft: #272e24;
-  --color-signal: #b06a3a;
-  --color-signal-deep: #904f27;
+  --color-signal: #c27643;
+  --color-signal-deep: #a85e2f;
   --color-line: rgba(244, 239, 226, 0.14);
   --color-line-invert: rgba(44, 58, 43, 0.18);
 
-  --background: var(--color-paper);
-  --foreground: var(--color-ink);
+  --background: #161a18;
+  --foreground: #f4efe2;
 
-  --card: #1c211e;
+  --card: #1c221e;
   --card-foreground: #f4efe2;
-  --popover: #1c211e;
+  --popover: #1c221e;
   --popover-foreground: #f4efe2;
-  --primary: #b06a3a;
-  --primary-foreground: #f4efe2;
-  --secondary: #384234;
+  --primary: #c27643;
+  --primary-foreground: #ffffff;
+  --secondary: #272e24;
   --secondary-foreground: #f4efe2;
-  --muted: #161a18;
+  --muted: #1e2420;
   --muted-foreground: rgba(244, 239, 226, 0.7);
-  --accent: #384234;
+  --accent: #272e24;
   --accent-foreground: #f4efe2;
   --destructive: #a8492f;
   --destructive-foreground: #fbf6ea;
   --border: rgba(244, 239, 226, 0.14);
-  --input: rgba(244, 239, 226, 0.2);
-  --ring: #b06a3a;
+  --input: rgba(244, 239, 226, 0.15);
+  --ring: #c27643;
 }
 
 @theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-deep: var(--color-paper-deep);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-sage: var(--color-sage);
+  --color-sage-soft: var(--color-sage-soft);
+  --color-signal: var(--color-signal);
+  --color-signal-deep: var(--color-signal-deep);
+  --color-line: var(--color-line);
+  --color-line-invert: var(--color-line-invert);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -164,6 +186,42 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+}
+
+.dark [class*="bg-white/"],
+.dark .bg-white {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #f4efe2 !important;
+  border-color: rgba(244, 239, 226, 0.16) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgba(244, 239, 226, 0.4) !important;
+}
+
+.dark select option {
+  background-color: #1c221e;
+  color: #f4efe2;
+}
+
+.dark .bg-ink\/50 {
+  background-color: rgba(0, 0, 0, 0.72) !important;
+}
+
+.dark .bg-ink\/\[0\.02\],
+.dark .bg-ink\/\[0\.03\] {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.dark .shadow-panel {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.55), 0 2px 6px -1px rgba(0, 0, 0, 0.35);
 }
 
 html {

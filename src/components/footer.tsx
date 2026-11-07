@@ -9,12 +9,12 @@ export function Footer() {
   const site = ov.site?.global || {};
 
   return (
-    <footer className="bg-ink text-paper">
-      <div className="border-b border-paper/12">
+    <footer className="bg-[#18231c] dark:bg-[#101412] text-paper dark:text-ink border-t border-line">
+      <div className="border-b border-paper/12 dark:border-line">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between">
           <div className="max-w-sm">
             <p className="font-display text-xl font-medium">Stay in the loop</p>
-            <p className="mt-2 text-sm leading-relaxed text-paper/75">
+            <p className="mt-2 text-sm leading-relaxed text-paper/75 dark:text-ink/75">
               Occasional notes on planning care abroad — never spam, always in your timezone.
             </p>
           </div>
@@ -25,7 +25,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2 space-y-3">
-            <div className="inline-block rounded-xl bg-paper px-3 py-2 shadow-sm">
+            <div className="inline-block rounded-xl bg-white/95 dark:bg-[#1a201c] px-3 py-2 shadow-sm border border-line">
               <img
                 src="/images/medycare-logo.png"
                 alt={site.brandName || "MedyCare 2₹ism"}

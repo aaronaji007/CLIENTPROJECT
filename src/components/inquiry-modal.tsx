@@ -101,7 +101,7 @@ export function InquiryModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/65 p-0 backdrop-blur-sm sm:items-center sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label="Start your inquiry"
@@ -139,7 +139,7 @@ export function InquiryModal() {
               <div key={label} className="flex-1">
                 <div
                   className={`h-1 rounded-full transition-colors ${
-                    i <= step ? "bg-ink" : "bg-ink/10"
+                    i <= step ? "bg-signal" : "bg-ink/15"
                   }`}
                 />
                 <span className="mt-1.5 block text-[10px] font-medium uppercase tracking-wide text-ink/50">
@@ -201,8 +201,8 @@ export function InquiryModal() {
                       aria-pressed={form.timeline === val}
                       className={`rounded-sm border px-3 py-2 text-sm transition-colors ${
                         form.timeline === val
-                          ? "border-ink bg-ink text-paper"
-                          : "border-ink/20 text-ink hover:border-ink"
+                          ? "border-signal bg-signal text-white font-medium"
+                          : "border-line bg-white/40 dark:bg-paper-deep text-ink hover:border-ink"
                       }`}
                     >
                       {label}
@@ -322,7 +322,7 @@ export function InquiryModal() {
               <button
                 type="button"
                 onClick={resetAndClose}
-                className="mt-6 rounded-sm bg-ink px-6 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
+                className="mt-6 rounded-sm bg-signal px-6 py-2.5 text-sm font-semibold text-white hover:bg-signal-deep"
               >
                 Close
               </button>
@@ -344,7 +344,7 @@ export function InquiryModal() {
                 type="button"
                 onClick={next}
                 disabled={!canContinue()}
-                className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-sm bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-deep disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Continue
               </button>
@@ -352,7 +352,7 @@ export function InquiryModal() {
               <button
                 type="button"
                 onClick={submit}
-                className="rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
+                className="rounded-sm bg-signal px-5 py-2.5 text-sm font-semibold text-white hover:bg-signal-deep"
               >
                 Submit inquiry
               </button>

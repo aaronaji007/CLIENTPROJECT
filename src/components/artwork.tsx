@@ -82,7 +82,7 @@ export function Artwork({
           }}
         />
         <CornerTicks kind={kind} />
-        <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper drop-shadow-[0_1px_2px_rgba(44,58,43,0.8)]">
+        <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#f4efe2] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
           {caption}
         </span>
       </div>
@@ -142,16 +142,16 @@ export function Artwork({
           style={{ width: 9, height: 9, boxShadow: "0 0 0 5px rgba(201,79,61,.15)" }}
         />
         {/* crosshair lines */}
-        <span className="absolute left-1/2 top-1/2 h-px w-16 -translate-x-1/2 -translate-y-1/2 bg-paper/30" />
-        <span className="absolute left-1/2 top-1/2 h-16 w-px -translate-x-1/2 -translate-y-1/2 bg-paper/30" />
+        <span className="absolute left-1/2 top-1/2 h-px w-16 -translate-x-1/2 -translate-y-1/2 bg-[#f4efe2]/30" />
+        <span className="absolute left-1/2 top-1/2 h-16 w-px -translate-x-1/2 -translate-y-1/2 bg-[#f4efe2]/30" />
       </div>
       {/* corner ticks */}
       <CornerTicks kind={kind} />
       {/* mono label */}
-      <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/70">
+      <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#f4efe2]/80">
         {caption}
       </span>
-      <span className="absolute bottom-3 right-4 font-mono text-[10px] tracking-[0.18em] text-paper/45">
+      <span className="absolute bottom-3 right-4 font-mono text-[10px] tracking-[0.18em] text-[#f4efe2]/60">
         {vw}×{vh}
       </span>
     </div>

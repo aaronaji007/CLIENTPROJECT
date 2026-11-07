@@ -63,7 +63,7 @@ export function SiteSearch() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-ink/50 p-4 pt-24 backdrop-blur-sm sm:p-6 sm:pt-32">
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 p-4 pt-24 backdrop-blur-sm sm:p-6 sm:pt-32">
           <div className="relative w-full max-w-xl overflow-hidden rounded-lg bg-paper shadow-panel ring-1 ring-line">
             <div className="flex items-center border-b border-line px-4">
               <Search className="h-5 w-5 text-ink/50" />

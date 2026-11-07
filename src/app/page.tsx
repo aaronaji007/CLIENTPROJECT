@@ -125,7 +125,7 @@ export default async function Home() {
               </Link>
               <Link
                 href="/specialties"
-                className="inline-flex items-center gap-2 rounded-sm border border-ink/20 bg-white/50 px-5 py-3.5 text-sm font-medium text-ink hover:border-ink hover:bg-white/80 transition-all"
+                className="inline-flex items-center gap-2 rounded-sm border border-ink/20 bg-white/50 dark:bg-paper-deep dark:text-ink px-5 py-3.5 text-sm font-medium text-ink hover:border-ink hover:bg-white/80 dark:hover:bg-paper-deep/80 transition-all"
               >
                 Browse specialties &amp; surgeries
               </Link>
@@ -150,7 +150,7 @@ export default async function Home() {
           <div className="lg:col-span-5">
             <div className="rounded-2xl border border-line bg-paper-deep/70 p-6 sm:p-8 shadow-panel backdrop-blur space-y-5">
               <div className="flex items-center gap-3 border-b border-line pb-4">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-white p-1 border border-line shadow-sm">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-white dark:bg-paper-deep p-1 border border-line shadow-sm">
                   <Emblem className="h-7 w-auto" />
                 </span>
                 <div>
@@ -346,19 +346,19 @@ export default async function Home() {
       {/* CONSULT */}
       <section id="consult" className="mx-auto max-w-6xl px-6 pb-20 sm:pb-24">
         <AnimatedContent distance={70}>
-          <Card className="overflow-hidden rounded-3xl border-line bg-ink text-paper">
+          <Card className="overflow-hidden rounded-3xl border border-line bg-[#18231c] dark:bg-[#121614] text-paper dark:text-ink">
             <CardContent className="grid gap-8 p-8 md:grid-cols-2 md:p-12">
               <div>
                 <Eyebrow>Your first step</Eyebrow>
-                <h2 className="mt-3 font-display text-3xl font-medium text-paper sm:text-4xl">
+                <h2 className="mt-3 font-display text-3xl font-medium text-paper dark:text-ink sm:text-4xl">
                   Tell us what you need
                 </h2>
-                <p className="mt-4 text-paper/70">
+                <p className="mt-4 text-paper/70 dark:text-ink/75">
                   A short, confidential form. No commitment, no sales call — a
                   clinical lead replies with a realistic path and a written
                   estimate.
                 </p>
-                <div className="mt-8 flex flex-col gap-3 font-mono text-xs uppercase tracking-wider text-paper/80">
+                <div className="mt-8 flex flex-col gap-3 font-mono text-xs uppercase tracking-wider text-paper/80 dark:text-ink/80">
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-signal" />
                     Board-certified clinical lead assigned to your case
@@ -374,7 +374,7 @@ export default async function Home() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-paper/10 bg-paper/5 p-6 backdrop-blur sm:p-8">
+              <div className="rounded-2xl border border-paper/10 dark:border-line bg-paper/5 dark:bg-white/5 p-6 backdrop-blur sm:p-8">
                 <ConsultBooking />
               </div>
             </CardContent>

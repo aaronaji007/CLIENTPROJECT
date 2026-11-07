@@ -83,40 +83,40 @@ export default async function PackagePage({
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="overflow-hidden rounded-lg border border-line bg-ink text-paper">
+          <div className="overflow-hidden rounded-lg border border-line bg-[#18231c] dark:bg-[#121614] text-paper dark:text-ink">
             <div className="p-6">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/50">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/60 dark:text-ink/60">
                 Package
               </p>
-              <p className="mt-2 font-display text-3xl font-medium text-paper">
+              <p className="mt-2 font-display text-3xl font-medium text-paper dark:text-ink">
                 {pkg.currency === "USD" ? "$" : ""}
                 <OverrideText kind="packages" slug={pkg.slug} field="price">
                   {pkg.price}
                 </OverrideText>
               </p>
-              <p className="mt-1 text-xs text-paper/55">placeholder · {pkg.days} days coordinated</p>
-              <div className="mt-5 space-y-3 border-t border-paper/15 pt-5 text-sm text-paper/80">
+              <p className="mt-1 text-xs text-paper/60 dark:text-ink/60">placeholder · {pkg.days} days coordinated</p>
+              <div className="mt-5 space-y-3 border-t border-paper/15 dark:border-line pt-5 text-sm text-paper/85 dark:text-ink/85">
                 <p className="flex justify-between">
-                  <span className="text-paper/55">Destination</span>
+                  <span className="text-paper/60 dark:text-ink/60">Destination</span>
                   <span>{pkg.city}, {pkg.country}</span>
                 </p>
                 <p className="flex justify-between">
-                  <span className="text-paper/55">Specialty</span>
+                  <span className="text-paper/60 dark:text-ink/60">Specialty</span>
                   <span>{(pkg.specialty as any)?.name || pkg.specialtyId}</span>
                 </p>
                 <p className="flex justify-between">
-                  <span className="text-paper/55">Length</span>
+                  <span className="text-paper/60 dark:text-ink/60">Length</span>
                   <span>{pkg.days} days</span>
                 </p>
-                <p className="flex justify-between pt-2 border-t border-paper/10">
-                  <span className="text-paper/55">Last updated</span>
+                <p className="flex justify-between pt-2 border-t border-paper/10 dark:border-line">
+                  <span className="text-paper/60 dark:text-ink/60">Last updated</span>
                   <span className="text-xs">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                 </p>
               </div>
             </div>
             <Link
               href="/#journey"
-              className="block w-full bg-ink px-6 py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-ink-soft border-t border-paper/10"
+              className="block w-full bg-signal px-6 py-4 text-center text-sm font-semibold text-white transition-colors hover:bg-signal-deep border-t border-paper/10 dark:border-line"
             >
               Plan this journey
             </Link>
