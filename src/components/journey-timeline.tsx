@@ -2,8 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { journeyPhases } from "@/lib/data";
+import { useContentOverrides } from "@/lib/override-context";
 
 export function JourneyTimeline({ inverse = false }: { inverse?: boolean }) {
+  const ov = useContentOverrides();
+  const phases = ov.journey && ov.journey.length > 0 ? ov.journey : journeyPhases;
   const trackRef = useRef<HTMLDivElement>(null);
   const phaseRefs = useRef<(HTMLElement | null)[]>([]);
   const [progress, setProgress] = useState(0);
@@ -75,7 +78,7 @@ export function JourneyTimeline({ inverse = false }: { inverse?: boolean }) {
       </div>
 
       <div className="space-y-16 sm:space-y-20">
-        {journeyPhases.map((phase, i) => {
+        {phases.map((phase, i) => {
           const isActive = i === active;
           const isPast = i < active;
           return (

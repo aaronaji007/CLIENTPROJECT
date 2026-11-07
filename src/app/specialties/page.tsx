@@ -1,5 +1,8 @@
 import { db } from "@/prisma/db";
 import { SpecialtyCollection } from "@/components/collection-filters";
+import { specialties as fallbackSpecialties } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Specialties",
@@ -7,11 +10,17 @@ export const metadata = {
 };
 
 export default async function SpecialtiesPage() {
-  const rawSpecialties = await db.orm.public.Specialty.all();
-  const allSpecialties = rawSpecialties.map(s => ({
-    ...s,
-    procedures: s.procedures as string[],
-  }));
+  let allSpecialties = [];
+  try {
+    const rawSpecialties = await db.orm.public.Specialty.all();
+    allSpecialties = rawSpecialties.map((s) => ({
+      ...s,
+      procedures: (s.procedures as string[]) || [],
+    }));
+  } catch (e) {
+    console.error("Error fetching specialties:", e);
+    allSpecialties = fallbackSpecialties;
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">

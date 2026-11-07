@@ -80,6 +80,7 @@ export function SpecialtyCollection({ specialties }: { specialties: Specialty[] 
               category={s.category}
               name={s.name}
               summary={s.summary}
+              photo={s.photo}
             />
           ))}
         </div>

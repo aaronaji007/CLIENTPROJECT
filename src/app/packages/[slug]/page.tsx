@@ -5,11 +5,16 @@ import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { OverrideText } from "@/components/override-text";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  const packages = await db.orm.public.Package.all();
-  return packages.map((p) => ({ slug: p.slug }));
+  try {
+    const packages = await db.orm.public.Package.all();
+    return packages.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -39,7 +44,7 @@ export default async function PackagePage({
 
       <div className="mt-8 overflow-hidden rounded-lg border border-line shadow-panel">
         <div className="aspect-[21/7] w-full">
-          <Artwork slug={pkg.slug} kind="hero" label={`${pkg.city}, ${pkg.country}`} />
+          <Artwork slug={pkg.slug} kind="hero" label={`${pkg.city}, ${pkg.country}`} photo={pkg.photo} />
         </div>
       </div>
 

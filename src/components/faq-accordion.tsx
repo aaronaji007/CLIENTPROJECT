@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import type { FaqItem } from "@/lib/data";
+import { useContentOverrides } from "@/lib/override-context";
 
-export function FaqAccordion({ items }: { items: FaqItem[] }) {
+export function FaqAccordion({ items, useGlobalOverrides = false }: { items?: FaqItem[]; useGlobalOverrides?: boolean }) {
+  const ov = useContentOverrides();
+  const effectiveItems = useGlobalOverrides && ov.faqs && ov.faqs.length > 0 ? ov.faqs : items || [];
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <div className="divide-y divide-line border-y border-line">
-      {items.map((item, i) => {
+      {effectiveItems.map((item, i) => {
         const isOpen = open === i;
         return (
           <div key={item.q}>

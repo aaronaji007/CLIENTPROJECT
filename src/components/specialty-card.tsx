@@ -9,11 +9,13 @@ export function SpecialtyCard({
   category,
   name,
   summary,
+  photo,
 }: {
   slug: string;
   category: string;
   name: string;
   summary: string;
+  photo?: string;
 }) {
   return (
     <Link
@@ -21,7 +23,7 @@ export function SpecialtyCard({
       className="group flex flex-col overflow-hidden rounded-lg border border-line bg-paper shadow-panel transition-transform hover:-translate-y-0.5"
     >
       <div className="aspect-[4/3] w-full">
-        <Artwork slug={slug} kind="card" label={category} />
+        <Artwork slug={slug} kind="card" label={category} photo={photo} />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <h3 className="font-display text-xl font-medium text-ink">

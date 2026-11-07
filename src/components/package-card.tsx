@@ -4,13 +4,28 @@ import { Artwork } from "./artwork";
 import { OverrideText } from "./override-text";
 
 export function PackageCard({ pkg }: { pkg: TravelPackage }) {
+  const currencySymbol =
+    pkg.currency === "USD"
+      ? "$"
+      : pkg.currency === "AUD"
+      ? "$"
+      : pkg.currency === "EUR"
+      ? "€"
+      : pkg.currency === "GBP"
+      ? "£"
+      : pkg.currency === "INR"
+      ? "₹"
+      : pkg.currency
+      ? `${pkg.currency} `
+      : "$";
+
   return (
     <Link
       href={`/packages/${pkg.slug}`}
       className="group flex flex-col overflow-hidden rounded-lg border border-line bg-paper shadow-panel transition-transform hover:-translate-y-0.5"
     >
       <div className="aspect-[16/10] w-full">
-        <Artwork slug={pkg.slug} kind="card" label={`${pkg.city} · ${pkg.country}`} />
+        <Artwork slug={pkg.slug} kind="card" label={`${pkg.city} · ${pkg.country}`} photo={pkg.photo} />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center justify-between">
@@ -33,7 +48,7 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
           <div>
             <p className="font-mono text-[11px] uppercase tracking-wider text-ink/45">from</p>
             <p className="font-display text-2xl font-medium text-ink">
-              {pkg.currency === "USD" ? "$" : ""}
+              {currencySymbol}
               <OverrideText kind="packages" slug={pkg.slug} field="price">
                 {pkg.price}
               </OverrideText>

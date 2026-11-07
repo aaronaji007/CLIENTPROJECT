@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { NewsletterForm } from "./newsletter-form";
-import { OverrideText } from "./override-text";
+import { useContentOverrides } from "@/lib/override-context";
 
 export function Footer() {
+  const ov = useContentOverrides();
+  const site = ov.site?.global || {};
+
   return (
     <footer className="bg-ink text-paper">
       <div className="border-b border-paper/12">
@@ -23,16 +28,23 @@ export function Footer() {
             <div className="inline-block rounded-xl bg-paper px-3 py-2 shadow-sm">
               <img
                 src="/images/medycare-logo.png"
-                alt="MedyCare 2₹ism"
+                alt={site.brandName || "MedyCare 2₹ism"}
                 className="h-9 w-auto object-contain"
               />
             </div>
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal font-semibold">
-              MedicalCare Beyond Borders
+              {site.brandTagline || "MedicalCare Beyond Borders"}
             </p>
             <p className="max-w-sm text-sm leading-relaxed text-paper/80">
-              A premier global healthcare &amp; medical tourism concierge. Coordinating every step of your medical journey from discovery to recovery across borders.
+              {site.footerDisclaimer ||
+                "A premier global healthcare & medical tourism concierge. Coordinating every step of your medical journey from discovery to recovery across borders."}
             </p>
+            {(site.email || site.emergencyPhone) && (
+              <div className="pt-2 font-mono text-xs text-paper/70 space-y-1">
+                {site.email && <p>📧 {site.email}</p>}
+                {site.emergencyPhone && <p>📞 Emergency Recovery: {site.emergencyPhone}</p>}
+              </div>
+            )}
           </div>
 
           <div>
@@ -40,8 +52,8 @@ export function Footer() {
               Explore
             </p>
             <ul className="mt-4 space-y-3 text-sm text-paper/80">
-              <li><Link href="/specialties" className="hover:text-paper">Specialties</Link></li>
-              <li><Link href="/packages" className="hover:text-paper">Packages</Link></li>
+              <li><Link href="/specialties" className="hover:text-paper">Specialties &amp; Surgeries</Link></li>
+              <li><Link href="/packages" className="hover:text-paper">Care Packages &amp; Pricing</Link></li>
               <li><Link href="/faq" className="hover:text-paper">FAQ</Link></li>
               <li><Link href="/blog" className="hover:text-paper">Journal</Link></li>
             </ul>
@@ -54,14 +66,14 @@ export function Footer() {
             <ul className="mt-4 space-y-3 text-sm text-paper/80">
               <li><Link href="/#consult" className="hover:text-paper">Book a consult</Link></li>
               <li><Link href="/#journey" className="hover:text-paper">The journey</Link></li>
-              <li><Link href="/admin" className="hover:text-paper">Admin</Link></li>
+              <li><Link href="/admin" className="hover:text-paper">Admin Console</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-paper/15 pt-6 text-xs text-paper/60 sm:flex-row sm:items-center">
-          <p>&copy; {new Date().getFullYear()} MedyCare 2₹ism · MedicalCare Beyond Borders. All rights reserved.</p>
-          <p className="font-mono">Placeholder / never verified medical claims</p>
+          <p>&copy; {new Date().getFullYear()} {site.brandName || "MedyCare 2₹ism"} · {site.brandTagline || "MedicalCare Beyond Borders"}. All rights reserved.</p>
+          <p className="font-mono">Coordinated Care Across Borders</p>
         </div>
       </div>
     </footer>

@@ -27,7 +27,7 @@ export default function FaqPage() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-medium text-ink">About the service</h2>
         <div className="mt-4">
-          <FaqAccordion items={generalFaqs} />
+          <FaqAccordion items={generalFaqs} useGlobalOverrides={true} />
         </div>
       </section>
 

@@ -7,11 +7,16 @@ import { Artwork } from "@/components/artwork";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { OverrideText } from "@/components/override-text";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  const specialties = await db.orm.public.Specialty.all();
-  return specialties.map((s) => ({ slug: s.slug }));
+  try {
+    const specialties = await db.orm.public.Specialty.all();
+    return specialties.map((s) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -41,7 +46,7 @@ export default async function SpecialtyPage({
 
       <div className="mt-8 overflow-hidden rounded-lg border border-line shadow-panel">
         <div className="aspect-[21/7] w-full">
-          <Artwork slug={specialty.slug} kind="hero" label={specialty.category} />
+          <Artwork slug={specialty.slug} kind="hero" label={specialty.category} photo={specialty.photo} />
         </div>
       </div>
 
