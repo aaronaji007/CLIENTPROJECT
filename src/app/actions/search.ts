@@ -1,5 +1,6 @@
 "use server";
 import { db } from "@/prisma/db";
+import { specialties as fallbackSpecialties, packages as fallbackPackages } from "@/lib/data";
 
 export async function searchDb(query: string) {
   if (typeof query !== "string" || query.length < 2) return [];
@@ -8,10 +9,15 @@ export async function searchDb(query: string) {
 
   const lowerQuery = query.toLowerCase();
   
-  // Since we don't have full text search setup, we fetch all and filter in memory for this demo.
-  // In a real app we'd use Postgres full text search or a search service.
-  const specialties = await db.orm.public.Specialty.all();
-  const packages = await db.orm.public.Package.all();
+  let specialties: any[] = [];
+  let packages: any[] = [];
+  try {
+    specialties = await db.orm.public.Specialty.all();
+    packages = await db.orm.public.Package.all();
+  } catch {
+    specialties = fallbackSpecialties;
+    packages = fallbackPackages;
+  }
 
   const results = [];
 

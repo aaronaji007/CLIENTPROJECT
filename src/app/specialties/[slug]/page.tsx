@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/prisma/db";
-import { specialtyFaqs } from "@/lib/data";
+import { specialtyFaqs, specialties as fallbackSpecialties } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { FaqAccordion } from "@/components/faq-accordion";
@@ -15,13 +15,19 @@ export async function generateStaticParams() {
     const specialties = await db.orm.public.Specialty.all();
     return specialties.map((s) => ({ slug: s.slug }));
   } catch {
-    return [];
+    return fallbackSpecialties.map((s) => ({ slug: s.slug }));
   }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const s = await db.orm.public.Specialty.where({ slug }).first();
+  let s: any = null;
+  try {
+    s = await db.orm.public.Specialty.where({ slug }).first();
+  } catch {
+    s = fallbackSpecialties.find((item) => item.slug === slug);
+  }
+  if (!s) s = fallbackSpecialties.find((item) => item.slug === slug);
   if (!s) return { title: "Specialty not found" };
   return { title: s.name, description: s.tagline };
 }
@@ -32,7 +38,15 @@ export default async function SpecialtyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const specialty = await db.orm.public.Specialty.where({ slug }).first();
+  let specialty: any = null;
+  try {
+    specialty = await db.orm.public.Specialty.where({ slug }).first();
+  } catch {
+    specialty = fallbackSpecialties.find((s) => s.slug === slug);
+  }
+  if (!specialty) {
+    specialty = fallbackSpecialties.find((s) => s.slug === slug);
+  }
   if (!specialty) notFound();
 
   return (
@@ -72,7 +86,7 @@ export default async function SpecialtyPage({
               Procedures &amp; Period of Stay
             </h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {specialty.procedures.map((p) => {
+              {specialty.procedures.map((p: string) => {
                 const parts = p.split(/\s*·\s*|\s*—\s*/);
                 const procName = parts[0];
                 const stay = parts[1];

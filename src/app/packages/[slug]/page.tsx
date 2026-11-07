@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/prisma/db";
+import { packages as fallbackPackages } from "@/lib/data";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { OverrideText } from "@/components/override-text";
@@ -13,13 +14,19 @@ export async function generateStaticParams() {
     const packages = await db.orm.public.Package.all();
     return packages.map((p) => ({ slug: p.slug }));
   } catch {
-    return [];
+    return fallbackPackages.map((p) => ({ slug: p.slug }));
   }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = await db.orm.public.Package.where({ slug }).first();
+  let p: any = null;
+  try {
+    p = await db.orm.public.Package.where({ slug }).first();
+  } catch {
+    p = fallbackPackages.find((item) => item.slug === slug);
+  }
+  if (!p) p = fallbackPackages.find((item) => item.slug === slug);
   if (!p) return { title: "Package not found" };
   return { title: p.name, description: p.summary };
 }
@@ -30,7 +37,15 @@ export default async function PackagePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const pkg = await db.orm.public.Package.include("specialty").where({ slug }).first();
+  let pkg: any = null;
+  try {
+    pkg = await db.orm.public.Package.include("specialty").where({ slug }).first();
+  } catch {
+    pkg = fallbackPackages.find((p) => p.slug === slug);
+  }
+  if (!pkg) {
+    pkg = fallbackPackages.find((p) => p.slug === slug);
+  }
   if (!pkg) notFound();
 
   return (
@@ -67,7 +82,7 @@ export default async function PackagePage({
           <section className="mt-10">
             <h2 className="font-display text-2xl font-medium text-ink">What&apos;s coordinated</h2>
             <ul className="mt-4 space-y-3">
-              {pkg.includes.map((item) => (
+              {pkg.includes.map((item: string) => (
                 <li key={item} className="flex items-start gap-3 text-ink/80">
                   <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
                   <span>{item}</span>
