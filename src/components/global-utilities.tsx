@@ -1,16 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useScroll, useSpring } from "motion/react";
 
 export function GlobalUtilities() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -27,10 +19,6 @@ export function GlobalUtilities() {
 
   return (
     <>
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-signal z-50 origin-left print:hidden"
-        style={{ scaleX }}
-      />
       {showBackToTop && (
         <button
           onClick={scrollToTop}

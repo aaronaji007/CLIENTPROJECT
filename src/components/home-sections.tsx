@@ -50,12 +50,14 @@ export function HomePressureBand() {
   const text = ov.landing?.home?.pressureText || "MedicalCare Beyond Borders";
 
   return (
-    <section className="overflow-hidden border-y border-line bg-paper py-8">
-      <TextPressure
-        text={text}
-        textColor="#2c3a2b"
-        className="text-center"
-      />
+    <section className="border-y border-line bg-paper-deep/40 py-6 text-center">
+      <div className="mx-auto max-w-4xl px-4 flex items-center justify-center gap-4">
+        <span className="hidden sm:block h-px w-12 bg-signal/40" />
+        <p className="font-display text-xl sm:text-2xl font-medium tracking-tight text-ink">
+          {text}
+        </p>
+        <span className="hidden sm:block h-px w-12 bg-signal/40" />
+      </div>
     </section>
   );
 }

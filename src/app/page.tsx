@@ -14,18 +14,9 @@ import {
 } from "@/components/ui/card";
 import { UserRoundCheck, ShieldCheck, Plane, HeartPulse } from "lucide-react";
 import { specialties as fallbackSpecialties, packages as fallbackPackages } from "@/lib/data";
-import ShinyText from "@/components/bits/ShinyText";
-import GradientText from "@/components/bits/GradientText";
-import StarBorder from "@/components/bits/StarBorder";
 import SpotlightCard from "@/components/bits/SpotlightCard";
-import BlurText from "@/components/bits/BlurText";
-import LightRays from "@/components/bits/LightRays";
 import ScrollFloat from "@/components/bits/ScrollFloat";
-import DecryptedText from "@/components/bits/DecryptedText";
 import AnimatedContent from "@/components/bits/AnimatedContent";
-import ScrambledText from "@/components/bits/ScrambledText";
-import ClickSpark from "@/components/bits/ClickSpark";
-import Magnet from "@/components/bits/Magnet";
 import { TiltCard } from "@/components/bits/TiltCard";
 import { OverrideText } from "@/components/override-text";
 import { db } from "@/prisma/db";
@@ -42,12 +33,9 @@ export const dynamic = "force-dynamic";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <DecryptedText
-      text={typeof children === "string" ? children : ""}
-      animateOn="view"
-      speed={40}
-      className="font-mono text-xs uppercase tracking-[0.28em] text-signal"
-    />
+    <p className="font-mono text-xs uppercase tracking-[0.22em] text-signal font-semibold">
+      {children}
+    </p>
   );
 }
 
@@ -111,95 +99,105 @@ export default async function Home() {
   return (
     <div className="bg-paper">
       {/* HERO */}
-      <section className="relative overflow-hidden bg-paper">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-25"
-          aria-hidden="true"
-        >
-          <LightRays
-            raysColor="#3e4f3a"
-            raysOrigin="top-center"
-            raysSpeed={0.8}
-            lightMode={false}
-            className="h-full w-full"
-          />
-        </div>
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-line" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-2">
-          <div className="max-w-xl">
+      <section className="relative overflow-hidden bg-paper border-b border-line">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 py-14 sm:py-20 lg:grid-cols-12">
+          <div className="max-w-xl lg:col-span-7">
             <HomeHeroBadge />
-            <Eyebrow>MedyCare 2₹ism · Healthcare &amp; Medical Tourism</Eyebrow>
-            <h1 className="mt-4 font-display text-5xl font-medium leading-[1.05] tracking-tight text-ink sm:text-6xl md:text-7xl">
+            <Eyebrow>Healthcare &amp; Medical Tourism Concierge</Eyebrow>
+            <h1 className="mt-3 font-display text-4xl font-medium leading-[1.08] tracking-tight text-ink sm:text-5xl md:text-6xl">
               <OverrideText kind="landing" slug="home" field="heroTitle">
-                <BlurText
-                  text="MedicalCare Beyond Borders"
-                  delay={120}
-                  animateBy="words"
-                />
+                MedicalCare Beyond Borders
               </OverrideText>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink/70 sm:mt-8 sm:text-xl">
+            <p className="mt-5 text-base sm:text-lg leading-relaxed text-ink/75 max-w-xl">
               <OverrideText kind="landing" slug="home" field="heroSubtitle">
-                MedyCare 2₹ism is a premier medical-travel concierge connecting international patients
-                with vetted world-class hospitals and coordinating the entire journey — calm,
-                documented, and accountable from discovery to recovery.
+                MedyCare 2₹ism connects patients with leading accredited hospitals across borders. Clear clinical paths, documented pricing, and a single coordinator from first review through full recovery.
               </OverrideText>
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Magnet>
-                <ClickSpark sparkColor="#b06a3a" sparkSize={11} sparkRadius={18}>
-                  <Link href="/consult">
-                    <StarBorder
-                      color="#b06a3a"
-                      className="px-6 py-3 text-sm font-medium"
-                    >
-                      Plan your care
-                    </StarBorder>
-                  </Link>
-                </ClickSpark>
-              </Magnet>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href="/consult"
+                className="inline-flex items-center gap-2 rounded-sm bg-signal px-6 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-signal-deep transition-all hover:translate-y-[-1px]"
+              >
+                Plan your care
+                <span>→</span>
+              </Link>
               <Link
                 href="/specialties"
-                className="font-mono text-xs uppercase tracking-[0.2em] text-ink/70 hover:text-ink"
+                className="inline-flex items-center gap-2 rounded-sm border border-ink/20 bg-white/50 px-5 py-3.5 text-sm font-medium text-ink hover:border-ink hover:bg-white/80 transition-all"
               >
-                Browse specialties →
+                Browse specialties &amp; surgeries
               </Link>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-6 pt-6 border-t border-line/60 text-xs text-ink/65 font-mono">
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+                <span>Zero Waitlists</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+                <span>Board-Certified Surgeons</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+                <span>Transparent Flat Pricing</span>
+              </div>
             </div>
           </div>
 
-          <AnimatedContent distance={60}>
-            <TiltCard
-              intensity={12}
-              className="relative overflow-hidden rounded-3xl border border-line bg-paper-deep p-8 shadow-panel"
-            >
-              <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-full border border-ink/20">
-                  <Emblem />
+          <div className="lg:col-span-5">
+            <div className="rounded-2xl border border-line bg-paper-deep/70 p-6 sm:p-8 shadow-panel backdrop-blur space-y-5">
+              <div className="flex items-center gap-3 border-b border-line pb-4">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-white p-1 border border-line shadow-sm">
+                  <Emblem className="h-7 w-auto" />
                 </span>
                 <div>
-                  <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink/60">
-                    The Promise
-                  </div>
-                  <div className="font-display text-xl font-medium text-ink">
-                    Continuity of Care
-                  </div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-signal font-semibold">
+                    The Concierge Promise
+                  </p>
+                  <h3 className="font-display text-xl font-medium text-ink">
+                    Continuity of Care Guarantee
+                  </h3>
                 </div>
               </div>
-              <div className="mt-6 rounded-2xl bg-ink p-6 text-paper">
-                <ScrambledText
-                  speed={0.5}
-                  className="font-mono text-xs tracking-wide text-paper"
-                >
-                  <p>
-                    <OverrideText kind="landing" slug="home" field="scrambledText">
-                      From the first message to your final follow-up, the same person holds the thread. Records move with you. Decisions are documented. Nothing about your care is left to chance or to a call center.
-                    </OverrideText>
-                  </p>
-                </ScrambledText>
+
+              <p className="text-sm leading-relaxed text-ink/75">
+                <OverrideText kind="landing" slug="home" field="scrambledText">
+                  From the first message to your final follow-up, the same dedicated case manager holds the thread. Records move with you. Decisions are documented. Nothing about your care is left to chance or to a call center.
+                </OverrideText>
+              </p>
+
+              <div className="space-y-2.5 pt-2 border-t border-line/60">
+                <div className="flex items-start gap-2.5 text-xs text-ink/80">
+                  <span className="text-signal font-bold">✓</span>
+                  <span><strong>Named Coordinator:</strong> Communicates directly in your local timezone</span>
+                </div>
+                <div className="flex items-start gap-2.5 text-xs text-ink/80">
+                  <span className="text-signal font-bold">✓</span>
+                  <span><strong>JCI-Accredited Centers:</strong> Vetted partner surgical hospitals</span>
+                </div>
+                <div className="flex items-start gap-2.5 text-xs text-ink/80">
+                  <span className="text-signal font-bold">✓</span>
+                  <span><strong>Fixed Care Plan:</strong> Written surgical and travel estimates upfront</span>
+                </div>
+                <div className="flex items-start gap-2.5 text-xs text-ink/80">
+                  <span className="text-signal font-bold">✓</span>
+                  <span><strong>Home Handoff:</strong> Telemetry reviews and structured physiotherapy</span>
+                </div>
               </div>
-            </TiltCard>
-          </AnimatedContent>
+
+              <div className="pt-2">
+                <Link
+                  href="/#journey"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-signal hover:underline font-semibold"
+                >
+                  Explore the 3-phase journey timeline →
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* TRUST BADGES MARQUEE */}
@@ -353,7 +351,7 @@ export default async function Home() {
               <div>
                 <Eyebrow>Your first step</Eyebrow>
                 <h2 className="mt-3 font-display text-3xl font-medium text-paper sm:text-4xl">
-                  <BlurText text="Tell us what you need" delay={80} animateBy="words" />
+                  Tell us what you need
                 </h2>
                 <p className="mt-4 text-paper/70">
                   A short, confidential form. No commitment, no sales call — a
