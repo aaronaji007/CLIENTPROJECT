@@ -5,7 +5,6 @@ import { defaultTrust, defaultStats } from "@/lib/admin-content";
 import { testimonials as defaultTestimonials, generalFaqs as defaultFaqs } from "@/lib/data";
 import { Marquee } from "@/components/bits/Marquee";
 import TextPressure from "@/components/bits/TextPressure";
-import DotGrid from "@/components/bits/DotGrid";
 import AnimatedContent from "@/components/bits/AnimatedContent";
 import CountUp from "@/components/bits/CountUp";
 import GradientText from "@/components/bits/GradientText";
@@ -67,29 +66,21 @@ export function HomeStatsBand() {
   const stats = ov.stats && ov.stats.length > 0 ? ov.stats : defaultStats;
 
   return (
-    <section className="relative overflow-hidden border-y border-line bg-ink dark:bg-[#101412] py-16 text-paper dark:text-ink">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        aria-hidden="true"
-      >
-        <DotGrid
-          baseColor="rgba(244,239,226,0.16)"
-          activeColor="#b06a3a"
-          className="h-full w-full"
-        />
-      </div>
-      <div className="relative mx-auto grid max-w-5xl grid-cols-2 gap-10 px-6 md:grid-cols-4">
-        {stats.map((stat, i) => (
-          <AnimatedContent key={i} distance={50} className="text-center">
-            <div className="font-display text-4xl font-medium text-paper dark:text-ink sm:text-5xl">
-              <CountUp to={stat.v} />
-              <GradientText className="text-signal">{stat.s}</GradientText>
-            </div>
-            <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-paper/60 dark:text-ink/65">
-              {stat.l}
-            </div>
-          </AnimatedContent>
-        ))}
+    <section className="relative overflow-hidden border-y border-line bg-paper-deep/50 dark:bg-[#121614] py-14 sm:py-16 text-ink transition-colors">
+      <div className="relative mx-auto max-w-6xl px-6">
+        <div className="grid grid-cols-2 gap-8 divide-line sm:gap-10 md:grid-cols-4 md:divide-x">
+          {stats.map((stat, i) => (
+            <AnimatedContent key={i} distance={30} className={`text-center ${i > 0 ? "md:pl-8" : ""}`}>
+              <div className="font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+                <CountUp to={stat.v} />
+                <span className="text-signal font-semibold">{stat.s}</span>
+              </div>
+              <div className="mt-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink/70">
+                {stat.l}
+              </div>
+            </AnimatedContent>
+          ))}
+        </div>
       </div>
     </section>
   );
