@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
           </form>
 
           <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40">
-            Default credentials: admin / admin
+            Authorised staff only · attempts are rate limited
           </p>
         </div>
 

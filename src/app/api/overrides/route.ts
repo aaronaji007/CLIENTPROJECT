@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { put, list, del } from "@vercel/blob";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { requireAdmin } from "@/lib/server-admin-auth";
 
 export const runtime = "nodejs";
 
 const PREFIX = "carte-clinique/overrides";
-const ADMIN_HEADER = "x-cc-admin";
+const MAX_BYTES = 1_000_000; // 1 MB of site copy is plenty
 const EMPTY = { specialties: {}, packages: {}, posts: {} };
 
 async function readLocal(): Promise<object> {
@@ -56,20 +57,41 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  if (req.headers.get(ADMIN_HEADER) !== "1") {
+  // Real server-side session check (the old "x-cc-admin: 1" header was trivially spoofable).
+  try {
+    await requireAdmin();
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  // Basic CSRF defence in addition to the SameSite=Strict cookie.
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin && host && new URL(origin).host !== host) {
+    return NextResponse.json({ error: "Bad origin" }, { status: 403 });
+  }
+  const len = Number(req.headers.get("content-length") || 0);
+  if (len > MAX_BYTES) {
+    return NextResponse.json({ error: "Payload too large" }, { status: 413 });
   }
   let body: unknown;
   try {
-    body = await req.json();
+    const text = await req.text();
+    if (text.length > MAX_BYTES) {
+      return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    }
+    body = JSON.parse(text);
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
   try {
     if (process.env.BLOB_READ_WRITE_TOKEN) await writeBlob(body as object);
     else await writeLocal(body as object);
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error("[overrides] save failed", e);
+    return NextResponse.json({ error: "Save failed" }, { status: 500 });
   }
 }

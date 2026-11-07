@@ -74,6 +74,7 @@ export function InquiryModal() {
         setStep(4); // Show success screen
       } catch (e) {
         console.error("Failed to submit inquiry", e);
+        alert("We couldn't submit your inquiry. Please check your details and try again in a little while.");
       }
     }
   };

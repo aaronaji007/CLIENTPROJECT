@@ -41,7 +41,7 @@ const tabs: { id: Tab; label: string; badge?: string }[] = [
 ];
 
 export default function AdminDashboard() {
-  const { authed, logout } = useAdminAuth();
+  const { authed, logout, mustChangePassword, refresh } = useAdminAuth();
   const [tab, setTab] = useState<Tab>("overview");
 
   if (authed !== true) {
@@ -50,6 +50,26 @@ export default function AdminDashboard() {
         <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink/50">
           Checking your session…
         </p>
+      </div>
+    );
+  }
+
+  // Signed in with the default/bootstrap password: the server blocks every
+  // other admin action until a real password is set, so only show this screen.
+  if (mustChangePassword) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+        <div className="mx-auto mb-6 max-w-3xl rounded-lg border border-signal/40 bg-signal/10 p-5">
+          <h1 className="font-display text-2xl font-medium text-ink">Set a new admin password</h1>
+          <p className="mt-2 text-sm leading-relaxed text-ink/75">
+            You signed in with the default password. For security, the control panel stays locked until
+            you choose a new password (at least 10 characters).
+          </p>
+          <button onClick={logout} className="mt-3 font-mono text-xs uppercase tracking-wider text-signal hover:underline">
+            Sign out
+          </button>
+        </div>
+        <SecurityEditor onChanged={refresh} />
       </div>
     );
   }
@@ -2327,7 +2347,7 @@ function EyeOffIcon({ className = "h-4 w-4" }: { className?: string }) {
   );
 }
 
-function SecurityEditor() {
+function SecurityEditor({ onChanged }: { onChanged?: () => void | Promise<void> } = {}) {
   const [accountInfo, setAccountInfo] = useState<{
     username: string;
     isDefault: boolean;
@@ -2374,8 +2394,8 @@ function SecurityEditor() {
       return;
     }
 
-    if (newPassword.length < 4) {
-      setError("New password must be at least 4 characters long.");
+    if (newPassword.length < 10) {
+      setError("New password must be at least 10 characters long.");
       return;
     }
 
@@ -2393,12 +2413,13 @@ function SecurityEditor() {
       });
 
       if (res.success) {
-        setSuccess("Password changed successfully! Keep your new credentials safe.");
+        setSuccess("Password changed successfully! All other sessions have been signed out.");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
         const refreshed = await getAdminAccountInfoAction();
         setAccountInfo(refreshed);
+        await onChanged?.();
       } else {
         setError(res.error || "Failed to change password.");
       }
@@ -2431,7 +2452,7 @@ function SecurityEditor() {
                   : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
               }`}
             >
-              {accountInfo.isDefault ? "⚠️ Using Default Demo Password" : "🔒 Custom Password Active"}
+              {accountInfo.isDefault ? "⚠️ Bootstrap Password — Change Required" : "🔒 Custom Password Active"}
             </span>
           )}
         </div>
@@ -2451,7 +2472,7 @@ function SecurityEditor() {
 
         {accountInfo?.isDefault && (
           <div className="mt-4 rounded-sm border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-900 dark:text-amber-300">
-            <strong>Security Recommendation:</strong> You are currently using the default demo password (<code className="font-mono font-bold">admin</code>). We recommend setting a secure personal password below.
+            <strong>Security Recommendation:</strong> You are still using the bootstrap password. Set a strong personal password below to unlock the control panel.
           </div>
         )}
       </div>
@@ -2492,7 +2513,7 @@ function SecurityEditor() {
                   type={showCurrent ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Enter current password (default: admin)"
+                  placeholder="Enter current password"
                   autoComplete="current-password"
                   className="w-full rounded-sm border border-line bg-white/50 px-3 py-2 pr-10 text-sm text-ink outline-none focus:border-ink font-mono"
                 />
@@ -2519,7 +2540,7 @@ function SecurityEditor() {
                     type={showNew ? "text" : "password"}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Min 4 characters"
+                    placeholder="Min 10 characters"
                     autoComplete="new-password"
                     className="w-full rounded-sm border border-line bg-white/50 px-3 py-2 pr-10 text-sm text-ink outline-none focus:border-ink font-mono"
                   />

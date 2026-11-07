@@ -85,11 +85,19 @@ export function useAdminContent() {
       localStorage.setItem(OVERRIDES_KEY, JSON.stringify(next));
     } catch {}
     try {
-      await fetch("/api/overrides", {
+      const res = await fetch("/api/overrides", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", "x-cc-admin": "1" },
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify(next),
       });
+      if (!res.ok) {
+        const msg =
+          res.status === 401
+            ? "Your admin session has expired. Please sign in again — changes were NOT published."
+            : "Saving failed on the server — changes were NOT published.";
+        alert(msg);
+      }
     } catch (e) {
       console.error("Failed to save overrides to backend:", e);
     }

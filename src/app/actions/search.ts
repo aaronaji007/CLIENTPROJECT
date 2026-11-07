@@ -2,7 +2,9 @@
 import { db } from "@/prisma/db";
 
 export async function searchDb(query: string) {
-  if (!query || query.length < 2) return [];
+  if (typeof query !== "string" || query.length < 2) return [];
+  // Cap input size — this endpoint is public and loads tables into memory.
+  if (query.length > 80) query = query.slice(0, 80);
 
   const lowerQuery = query.toLowerCase();
   
