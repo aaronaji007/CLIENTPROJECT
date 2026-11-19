@@ -1172,7 +1172,7 @@ function PackageRowItem({
                 </span>
                 <span className="text-ink/30">·</span>
                 <span className="font-mono text-xs text-ink/60">
-                  {p.city}, {p.country} ({p.days} Days)
+                  {p.city}, {p.country}
                 </span>
               </div>
               <h3 className="mt-1 font-display text-2xl font-medium text-ink">{p.name}</h3>

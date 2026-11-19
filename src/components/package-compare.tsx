@@ -41,7 +41,7 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
             Compare packages side by side
           </h2>
           <p className="mt-3 text-ink/70">
-            Select up to {MAX} to weigh price, length, and what is coordinated at a glance.
+            Select up to {MAX} to weigh price, destination, and what is coordinated at a glance.
           </p>
         </div>
         <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/45">
@@ -101,10 +101,6 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
             </thead>
             <tbody>
               <CompareRow label="Price" values={rows.map((r) => `$${r.price}`)} bold />
-              <CompareRow
-                label="Length"
-                values={rows.map((r) => `${r.days} days`)}
-              />
               <CompareRow
                 label="Destination"
                 values={rows.map((r) => `${r.city}, ${r.country}`)}

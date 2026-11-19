@@ -269,15 +269,15 @@ export const packages: TravelPackage[] = [
     currency: "USD",
     days: 16,
     specialty: "Fertility",
-    summary: "A complete 15–20 day IVF cycle planned around your calendar with legal and logistical guidance included.",
+    summary: "A complete IVF cycle planned around your calendar with legal and logistical guidance included.",
     includes: [
       "Initial fertility assessment & ultrasound scan",
       "Ovarian stimulation & hormone monitoring",
       "Ovum retrieval & blastocyst transfer",
-      "Accommodation and transfers for 16 days",
+      "Accommodation and clinical transfers",
       "Continuous case manager coordination",
     ],
-    notes: "Stay duration adjusted to 15–20 days for optimal stimulation and transfer pacing.",
+    notes: "Coordinated pacing for optimal stimulation and transfer pacing.",
     photo: "/images/serenity.webp",
   },
   {
@@ -460,20 +460,20 @@ export const generalFaqs: FaqItem[] = [
 
 export const specialtyFaqs: Record<string, FaqItem[]> = {
   orthopedics: [
-    { q: "How soon after surgery can I fly home?", a: "For sports-medicine procedures like ACL/MCL or arthroscopy, stays are 3–4 days. For joint replacements, stays are 6–8 days. Your surgeon and case manager confirm fitness to fly before departure." },
+    { q: "How soon after surgery can I fly home?", a: "Your surgeon and dedicated case manager confirm clinical fitness to fly and post-operative healing milestones before departure." },
     { q: "Is physiotherapy included after I return?", a: "A physiotherapy protocol begins immediately in hospital and is handed over to a provider near you, with scheduled remote milestones." },
   ],
   fertility: [
-    { q: "How long should I plan to stay for an IVF cycle?", a: "A complete IVF cycle is typically sequenced over a 15–20 day stay to encompass ovarian stimulation, serial ultrasound monitoring, egg retrieval, and embryo transfer without rushed pacing." },
+    { q: "How is an IVF cycle scheduled abroad?", a: "A complete IVF cycle is carefully sequenced to encompass ovarian stimulation, serial ultrasound monitoring, egg retrieval, and embryo transfer without rushed pacing." },
     { q: "Can the cycle be planned around my own calendar?", a: "Yes — IVF is coordinated around your personal cycle and schedule, with legal guidance and continuous communication with your home doctor." },
   ],
   urology: [
     { q: "What urological procedures are available?", a: "Our partner centers specialize in minimally invasive laser kidney stone surgery (RIRS/PCNL), advanced prostate laser surgery (HoLEP/TURP), and reconstructive urology." },
-    { q: "How long is the typical stay for urology surgery?", a: "Most laser stone and prostate procedures require a 5–10 day stay to ensure catheter removal, normal voiding, and travel clearance." },
+    { q: "What post-operative care is provided for urology surgery?", a: "Most laser stone and prostate procedures include in-hospital monitoring, catheter removal, normal voiding review, and travel clearance." },
   ],
   ophthalmology: [
     { q: "What is the cost comparison for Cataract Surgery?", a: "In private Australian healthcare, cataract surgery can cost $2,500–$4,500 AUD per eye with long public hospital waitlists. Through our coordinated Indian medical centers, advanced phacoemulsification with premium multifocal IOLs is provided promptly at a fraction of the cost." },
-    { q: "Can I really fly home after eye surgery?", a: "Most vision correction and cataract patients can fly home within 3–5 days following their post-operative slit-lamp review and stabilization check." },
+    { q: "Can I really fly home after eye surgery?", a: "Most vision correction and cataract patients can fly home following their post-operative slit-lamp review and clinical stabilization check." },
   ],
   cosmetic_reconstruction: [
     { q: "Will my visit be private and discreet?", a: "Discretion is central to our aesthetic and plastic surgery pathway. Private recovery suites, unlisted appointments, and private transfers preserve your confidentiality end to end." },

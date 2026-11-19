@@ -99,7 +99,7 @@ export function PackageCollection({
   const [q, setQ] = useState(initialQuery ?? "");
   const [spec, setSpec] = useState("all");
   const [country, setCountry] = useState("all");
-  const [sort, setSort] = useState<"featured" | "price-asc" | "price-desc" | "days-asc">(
+  const [sort, setSort] = useState<"featured" | "price-asc" | "price-desc">(
     "featured",
   );
 
@@ -127,7 +127,6 @@ export function PackageCollection({
     });
     if (sort === "price-asc") list = [...list].sort((a, b) => parsePrice(a) - parsePrice(b));
     if (sort === "price-desc") list = [...list].sort((a, b) => parsePrice(b) - parsePrice(a));
-    if (sort === "days-asc") list = [...list].sort((a, b) => a.days - b.days);
     return list;
   }, [packages, q, spec, country, sort]);
 
@@ -192,7 +191,6 @@ export function PackageCollection({
             <option value="featured">Featured</option>
             <option value="price-asc">Price: low → high</option>
             <option value="price-desc">Price: high → low</option>
-            <option value="days-asc">Shortest stay</option>
           </select>
         </label>
       </div>

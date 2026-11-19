@@ -32,7 +32,6 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-signal">
             {pkg.specialty}
           </p>
-          <p className="font-mono text-xs text-ink/55">{pkg.days} days</p>
         </div>
         <h3 className="mt-3 font-display text-xl font-medium text-ink">
           <OverrideText kind="packages" slug={pkg.slug} field="name">

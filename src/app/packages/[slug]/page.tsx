@@ -109,7 +109,7 @@ export default async function PackagePage({
                   {pkg.price}
                 </OverrideText>
               </p>
-              <p className="mt-1 text-xs text-paper/60 dark:text-ink/60">placeholder · {pkg.days} days coordinated</p>
+              <p className="mt-1 text-xs text-paper/60 dark:text-ink/60">placeholder · all-inclusive coordinated care</p>
               <div className="mt-5 space-y-3 border-t border-paper/15 dark:border-line pt-5 text-sm text-paper/85 dark:text-ink/85">
                 <p className="flex justify-between">
                   <span className="text-paper/60 dark:text-ink/60">Destination</span>
@@ -118,10 +118,6 @@ export default async function PackagePage({
                 <p className="flex justify-between">
                   <span className="text-paper/60 dark:text-ink/60">Specialty</span>
                   <span>{(pkg.specialty as any)?.name || pkg.specialtyId}</span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="text-paper/60 dark:text-ink/60">Length</span>
-                  <span>{pkg.days} days</span>
                 </p>
                 <p className="flex justify-between pt-2 border-t border-paper/10 dark:border-line">
                   <span className="text-paper/60 dark:text-ink/60">Last updated</span>

@@ -84,7 +84,7 @@ export default async function Home() {
     }));
 
     const rawPackagesQuery = await db.orm.public.Package.include("specialty").all();
-    const rawPackages = rawPackagesQuery.sort((a, b) => a.days - b.days);
+    const rawPackages = rawPackagesQuery;
     packages = rawPackages.map((p) => ({
       ...p,
       specialty: (p.specialty as any)?.name || p.specialtyId,
