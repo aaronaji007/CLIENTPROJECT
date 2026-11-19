@@ -83,27 +83,18 @@ export default async function SpecialtyPage({
 
           <section className="mt-10">
             <h2 className="font-display text-2xl font-medium text-ink">
-              Procedures &amp; Period of Stay
+              Procedures
             </h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               {specialty.procedures.map((p: string) => {
-                const parts = p.split(/\s*·\s*|\s*—\s*/);
-                const procName = parts[0];
-                const stay = parts[1];
+                const procName = p.split(/\s*·\s*|\s*—\s*/)[0].trim();
                 return (
                   <li
                     key={p}
-                    className="flex items-center justify-between gap-3 rounded-sm border border-line bg-white/40 dark:bg-paper-deep/60 px-4 py-3 text-sm text-ink shadow-sm"
+                    className="flex items-center gap-2.5 rounded-sm border border-line bg-white/40 dark:bg-paper-deep/60 px-4 py-3 text-sm text-ink shadow-sm"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-signal shrink-0" aria-hidden="true" />
-                      <span className="font-medium">{procName}</span>
-                    </div>
-                    {stay && (
-                      <span className="shrink-0 rounded-full border border-line bg-paper-deep/70 dark:bg-paper-deep px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-signal font-semibold">
-                        {stay}
-                      </span>
-                    )}
+                    <span className="h-1.5 w-1.5 rounded-full bg-signal shrink-0" aria-hidden="true" />
+                    <span className="font-medium">{procName}</span>
                   </li>
                 );
               })}
@@ -135,7 +126,6 @@ export default async function SpecialtyPage({
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <FactsPanel
-            travelDays={specialty.travelDays}
             outcomes={specialty.outcomes}
             name={specialty.name}
           />
@@ -146,11 +136,9 @@ export default async function SpecialtyPage({
 }
 
 function FactsPanel({
-  travelDays,
   outcomes,
   name,
 }: {
-  travelDays: string;
   outcomes: string;
   name: string;
 }) {
@@ -161,10 +149,6 @@ function FactsPanel({
       </p>
       <dl className="mt-4 space-y-4 text-sm">
         <div>
-          <dt className="text-paper/60 dark:text-ink/60">Typical stay</dt>
-          <dd className="mt-1 font-mono text-lg text-paper dark:text-ink">{travelDays}</dd>
-        </div>
-        <div className="border-t border-paper/15 dark:border-line pt-4">
           <dt className="text-paper/60 dark:text-ink/60">Outcomes</dt>
           <dd className="mt-1 text-xs leading-relaxed text-paper/75 dark:text-ink/75">{outcomes}</dd>
         </div>
