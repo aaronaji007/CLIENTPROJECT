@@ -59,14 +59,14 @@ export default async function PackagePage({
 
       <div className="mt-8 overflow-hidden rounded-lg border border-line shadow-panel">
         <div className="aspect-[21/7] w-full">
-          <Artwork slug={pkg.slug} kind="hero" label={`${pkg.city}, ${pkg.country}`} photo={pkg.photo} />
+          <Artwork slug={pkg.slug} kind="hero" label={(pkg.specialty as any)?.name || pkg.specialtyId || pkg.name} photo={pkg.photo} />
         </div>
       </div>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1.6fr_1fr]">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
-            {(pkg.specialty as any)?.name || pkg.specialtyId} · {pkg.country}
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-signal">
+            {(pkg.specialty as any)?.name || pkg.specialtyId}
           </p>
           <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
             <OverrideText kind="packages" slug={pkg.slug} field="name">
@@ -111,10 +111,6 @@ export default async function PackagePage({
               </p>
               <p className="mt-1 text-xs text-paper/60 dark:text-ink/60">placeholder · all-inclusive coordinated care</p>
               <div className="mt-5 space-y-3 border-t border-paper/15 dark:border-line pt-5 text-sm text-paper/85 dark:text-ink/85">
-                <p className="flex justify-between">
-                  <span className="text-paper/60 dark:text-ink/60">Destination</span>
-                  <span>{pkg.city}, {pkg.country}</span>
-                </p>
                 <p className="flex justify-between">
                   <span className="text-paper/60 dark:text-ink/60">Specialty</span>
                   <span>{(pkg.specialty as any)?.name || pkg.specialtyId}</span>

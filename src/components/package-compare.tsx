@@ -84,7 +84,7 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
                 {rows.map((r) => (
                   <th key={r.slug} className="bg-paper p-4">
                     <div className="relative aspect-[16/9] w-full overflow-hidden rounded-sm">
-                      <Artwork slug={r.slug} kind="card" label={r.city} />
+                      <Artwork slug={r.slug} kind="card" label={r.specialty} />
                     </div>
                     <Link
                       href={`/packages/${r.slug}`}
@@ -101,10 +101,6 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
             </thead>
             <tbody>
               <CompareRow label="Price" values={rows.map((r) => `$${r.price}`)} bold />
-              <CompareRow
-                label="Destination"
-                values={rows.map((r) => `${r.city}, ${r.country}`)}
-              />
               <CompareRow
                 label="Included"
                 values={rows.map((r) => (

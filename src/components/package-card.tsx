@@ -25,7 +25,7 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
       className="group flex flex-col overflow-hidden rounded-lg border border-line bg-paper shadow-panel transition-transform hover:-translate-y-0.5"
     >
       <div className="aspect-[16/10] w-full">
-        <Artwork slug={pkg.slug} kind="card" label={`${pkg.city} · ${pkg.country}`} photo={pkg.photo} />
+        <Artwork slug={pkg.slug} kind="card" label={pkg.specialty} photo={pkg.photo} />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center justify-between">
@@ -53,9 +53,6 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
               </OverrideText>
             </p>
           </div>
-          <span className="rounded-sm bg-paper-deep px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-ink/65">
-            {pkg.country}
-          </span>
         </div>
       </div>
     </Link>

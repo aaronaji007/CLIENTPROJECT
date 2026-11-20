@@ -98,7 +98,6 @@ export function PackageCollection({
 }) {
   const [q, setQ] = useState(initialQuery ?? "");
   const [spec, setSpec] = useState("all");
-  const [country, setCountry] = useState("all");
   const [sort, setSort] = useState<"featured" | "price-asc" | "price-desc">(
     "featured",
   );
@@ -107,28 +106,23 @@ export function PackageCollection({
     () => [...new Set(packages.map((p) => p.specialty))].sort(),
     [packages],
   );
-  const countries = useMemo(
-    () => [...new Set(packages.map((p) => p.country))].sort(),
-    [packages],
-  );
   const parsePrice = (p: TravelPackage) => Number(p.price.replace(/[^0-9]/g, "")) || 0;
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
     let list = packages.filter((p) => {
       const matchS = spec === "all" || p.specialty === spec;
-      const matchC = country === "all" || p.country === country;
       const matchQ =
         !term ||
-        [p.name, p.city, p.country, p.specialty, p.summary].some((t) =>
+        [p.name, p.specialty, p.summary].some((t) =>
           t.toLowerCase().includes(term),
         );
-      return matchS && matchC && matchQ;
+      return matchS && matchQ;
     });
     if (sort === "price-asc") list = [...list].sort((a, b) => parsePrice(a) - parsePrice(b));
     if (sort === "price-desc") list = [...list].sort((a, b) => parsePrice(b) - parsePrice(a));
     return list;
-  }, [packages, q, spec, country, sort]);
+  }, [packages, q, spec, sort]);
 
   const selectCls =
     "rounded-sm border border-ink/20 bg-white/40 dark:bg-paper-deep/60 px-3 py-2.5 text-sm text-ink focus:border-ink";
@@ -136,7 +130,7 @@ export function PackageCollection({
 
   return (
     <div>
-      <div className="grid items-end gap-4 border-b border-line pb-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="grid items-end gap-4 border-b border-line pb-6 md:grid-cols-[1.5fr_1fr_1fr]">
         <label className="relative block">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/40">
             <SearchIcon />
@@ -160,22 +154,6 @@ export function PackageCollection({
             {specialties.map((s) => (
               <option key={s} value={s}>
                 {s}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block">
-          <span className={labelCls}>Destination</span>
-          <select
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            className={`mt-1 w-full ${selectCls}`}
-          >
-            <option value="all">All countries</option>
-            {countries.map((c) => (
-              <option key={c} value={c}>
-                {c}
               </option>
             ))}
           </select>
