@@ -1,18 +1,24 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { posts } from "@/lib/data";
+import { posts as defaultPosts } from "@/lib/data";
+import { readOverrides } from "@/lib/server-overrides";
+import type { PostItem } from "@/lib/override-context";
 import { ArrowIcon } from "@/components/icons";
 import { OverrideText } from "@/components/override-text";
 
-export const dynamicParams = false;
+export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
+async function findPost(slug: string): Promise<PostItem | null> {
+  const ov = await readOverrides();
+  const list: PostItem[] = ov.allPosts && ov.allPosts.length > 0 ? ov.allPosts : defaultPosts;
+  const found = list.find((p) => p.slug === slug);
+  if (found) return found;
+  return defaultPosts.find((p) => p.slug === slug) ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const post = await findPost(slug);
   if (!post) return { title: "Post not found" };
   return { title: post.title, description: post.excerpt };
 }
@@ -23,8 +29,16 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const post = await findPost(slug);
   if (!post) notFound();
+
+  const paragraphs =
+    post.body && post.body.length > 0
+      ? post.body
+      : (post.content || post.excerpt || "")
+          .split(/\n{2,}/)
+          .map((s) => s.trim())
+          .filter(Boolean);
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-16 sm:py-24">
@@ -56,7 +70,7 @@ export default async function BlogPostPage({
       </header>
 
       <div className="mt-10 space-y-5 border-t border-line pt-10">
-        {post.body.map((paragraph, i) => (
+        {paragraphs.map((paragraph, i) => (
           <p
             key={i}
             className={`leading-relaxed text-ink/80 ${i === 0 ? "text-lg text-ink/85" : ""}`}
@@ -73,7 +87,7 @@ export default async function BlogPostPage({
           decided on a first consult.
         </p>
         <Link
-          href="/#consult"
+          href="/consult"
           className="mt-4 inline-block rounded-sm bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft"
         >
           Book a consultation

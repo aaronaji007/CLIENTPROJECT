@@ -13,10 +13,13 @@ export default async function SpecialtiesPage() {
   let allSpecialties = [];
   try {
     const rawSpecialties = await db.orm.public.Specialty.all();
-    allSpecialties = rawSpecialties.map((s) => ({
-      ...s,
-      procedures: (s.procedures as string[]) || [],
-    }));
+    allSpecialties =
+      rawSpecialties.length > 0
+        ? rawSpecialties.map((s) => ({
+            ...s,
+            procedures: [...s.procedures],
+          }))
+        : fallbackSpecialties;
   } catch (e) {
     console.error("Error fetching specialties:", e);
     allSpecialties = fallbackSpecialties;

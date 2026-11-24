@@ -110,11 +110,11 @@ async function writeBlob(creds: StoredCredentials) {
   }
 }
 
-const useBlob = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const hasBlobStorage = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
 async function readRaw(): Promise<RawRecord | null> {
   try {
-    return useBlob() ? await readBlob() : await readLocal();
+    return hasBlobStorage() ? await readBlob() : await readLocal();
   } catch (err) {
     console.error("[admin-auth] failed to read credentials", err);
     return null;
@@ -122,7 +122,7 @@ async function readRaw(): Promise<RawRecord | null> {
 }
 
 async function saveCredentials(creds: StoredCredentials) {
-  if (useBlob()) await writeBlob(creds);
+  if (hasBlobStorage()) await writeBlob(creds);
   else await writeLocal(creds);
 }
 

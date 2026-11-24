@@ -2,14 +2,10 @@ import Link from "next/link";
 import { Emblem } from "@/components/header";
 import { JourneyTimeline } from "@/components/journey-timeline";
 import { ConsultBooking } from "@/components/consult-booking";
-import { Artwork } from "@/components/artwork";
 import { SpecialtyCard } from "@/components/specialty-card";
 import { PackageCard } from "@/components/package-card";
-import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
 } from "@/components/ui/card";
 import { UserRoundCheck, ShieldCheck, Plane, HeartPulse } from "lucide-react";
@@ -78,18 +74,26 @@ export default async function Home() {
 
   try {
     const rawSpecialties = await db.orm.public.Specialty.all();
-    specialties = rawSpecialties.map((s) => ({
-      ...s,
-      procedures: (s.procedures as string[]) || [],
-    }));
+    specialties =
+      rawSpecialties.length > 0
+        ? rawSpecialties.map((s) => ({
+            ...s,
+            procedures: [...s.procedures],
+          }))
+        : fallbackSpecialties;
 
-    const rawPackagesQuery = await db.orm.public.Package.include("specialty").all();
-    const rawPackages = rawPackagesQuery;
-    packages = rawPackages.map((p) => ({
-      ...p,
-      specialty: (p.specialty as any)?.name || p.specialtyId,
-      includes: (p.includes as string[]) || [],
-    }));
+    const rawPackages = await db.orm.public.Package.include("specialty").all();
+    packages =
+      rawPackages.length > 0
+        ? rawPackages.map((p) => {
+            const specObj = p.specialty as { name?: string } | null | undefined;
+            return {
+              ...p,
+              specialty: specObj?.name || p.specialtyId,
+              includes: [...p.includes],
+            };
+          })
+        : fallbackPackages;
   } catch (err) {
     console.error("Home DB fetch error:", err);
     specialties = fallbackSpecialties;

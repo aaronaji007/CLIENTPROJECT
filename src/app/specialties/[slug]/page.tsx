@@ -7,27 +7,34 @@ import { Artwork } from "@/components/artwork";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { OverrideText } from "@/components/override-text";
 
-export const dynamicParams = true;
 export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
+type ResolvedSpecialty = {
+  slug: string;
+  category: string;
+  name: string;
+  tagline: string;
+  summary: string;
+  overview: string;
+  procedures: readonly string[];
+  recovery: string;
+  outcomes: string;
+  photo: string;
+};
+
+async function findSpecialty(slug: string): Promise<ResolvedSpecialty | null> {
   try {
-    const specialties = await db.orm.public.Specialty.all();
-    return specialties.map((s) => ({ slug: s.slug }));
+    const dbRow = await db.orm.public.Specialty.where({ slug }).first();
+    if (dbRow) return dbRow;
   } catch {
-    return fallbackSpecialties.map((s) => ({ slug: s.slug }));
+    /* fallback below */
   }
+  return fallbackSpecialties.find((s) => s.slug === slug) ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  let s: any = null;
-  try {
-    s = await db.orm.public.Specialty.where({ slug }).first();
-  } catch {
-    s = fallbackSpecialties.find((item) => item.slug === slug);
-  }
-  if (!s) s = fallbackSpecialties.find((item) => item.slug === slug);
+  const s = await findSpecialty(slug);
   if (!s) return { title: "Specialty not found" };
   return { title: s.name, description: s.tagline };
 }
@@ -38,15 +45,7 @@ export default async function SpecialtyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let specialty: any = null;
-  try {
-    specialty = await db.orm.public.Specialty.where({ slug }).first();
-  } catch {
-    specialty = fallbackSpecialties.find((s) => s.slug === slug);
-  }
-  if (!specialty) {
-    specialty = fallbackSpecialties.find((s) => s.slug === slug);
-  }
+  const specialty = await findSpecialty(slug);
   if (!specialty) notFound();
 
   return (
@@ -86,7 +85,7 @@ export default async function SpecialtyPage({
               Procedures
             </h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {specialty.procedures.map((p: string) => {
+              {specialty.procedures.map((p) => {
                 const procName = p.split(/\s*·\s*|\s*—\s*/)[0].trim();
                 return (
                   <li
@@ -143,30 +142,24 @@ function FactsPanel({
   name: string;
 }) {
   return (
-    <div className="rounded-lg border border-line bg-[#18231c] dark:bg-[#121614] p-6 text-paper dark:text-ink">
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/60 dark:text-ink/60">
+    <div className="rounded-lg border border-line bg-[#18231c] dark:bg-[#121614] p-6 text-[#f4efe2]">
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#f4efe2]/60">
         At a glance
       </p>
       <dl className="mt-4 space-y-4 text-sm">
         <div>
-          <dt className="text-paper/60 dark:text-ink/60">Outcomes</dt>
-          <dd className="mt-1 text-xs leading-relaxed text-paper/75 dark:text-ink/75">{outcomes}</dd>
+          <dt className="text-[#f4efe2]/60">Outcomes</dt>
+          <dd className="mt-1 text-xs leading-relaxed text-[#f4efe2]/80">{outcomes}</dd>
         </div>
-        <div className="border-t border-paper/15 dark:border-line pt-4">
-          <dt className="text-paper/60 dark:text-ink/60">Coordination</dt>
-          <dd className="mt-1 text-paper/85 dark:text-ink/85">
+        <div className="border-t border-[#f4efe2]/15 pt-4">
+          <dt className="text-[#f4efe2]/60">Coordination</dt>
+          <dd className="mt-1 text-[#f4efe2]/90">
             Dedicated case manager · accredited provider · home handoff
-          </dd>
-        </div>
-        <div className="border-t border-paper/15 dark:border-line pt-4">
-          <dt className="text-paper/60 dark:text-ink/60">Last updated</dt>
-          <dd className="mt-1 text-xs text-paper/70 dark:text-ink/70">
-            {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </dd>
         </div>
       </dl>
       <Link
-        href={`/packages?q=${name.split(" ")[0].toLowerCase()}`}
+        href={`/packages?q=${encodeURIComponent(name.split(" ")[0].toLowerCase())}`}
         className="mt-6 block w-full rounded-sm bg-signal px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-signal-deep"
       >
         Plan this care

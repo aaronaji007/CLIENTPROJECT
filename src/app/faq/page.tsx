@@ -1,14 +1,25 @@
 import Link from "next/link";
-import { generalFaqs, specialtyFaqs, specialties } from "@/lib/data";
+import { db } from "@/prisma/db";
+import { generalFaqs, specialtyFaqs, specialties as fallbackSpecialties } from "@/lib/data";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { ArrowIcon } from "@/components/icons";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "FAQ",
   description: "Answers to common questions about planning coordinated care abroad.",
 };
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  let specialties: Array<{ slug: string; category: string; name: string }> = fallbackSpecialties;
+  try {
+    const dbSpecs = await db.orm.public.Specialty.all();
+    if (dbSpecs.length > 0) specialties = dbSpecs;
+  } catch {
+    /* fallback */
+  }
+
   const onFaq = specialties.filter((s) => specialtyFaqs[s.slug]);
 
   return (
@@ -20,7 +31,7 @@ export default function FaqPage() {
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-ink/70">
           The questions people most often ask before planning care abroad — answered in plain
-          terms. This is a concept site, so clinical details remain labeled placeholders.
+          terms, without clinical ambiguity.
         </p>
       </div>
 
@@ -64,7 +75,7 @@ export default function FaqPage() {
           Send it to a case manager and we will follow up in your local time.
         </p>
         <Link
-          href="/#consult"
+          href="/consult"
           className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink underline-offset-4 hover:underline"
         >
           Begin with a conversation <ArrowIcon />

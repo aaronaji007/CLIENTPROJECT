@@ -1,19 +1,35 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { posts as defaultPosts, testimonials as defaultTestimonials, generalFaqs as defaultFaqs, journeyPhases as defaultJourney } from "./data";
-import { 
-  fetchAdminData, 
+import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  posts as defaultPosts,
+  testimonials as defaultTestimonials,
+  generalFaqs as defaultFaqs,
+  journeyPhases as defaultJourney,
+} from "./data";
+import {
+  fetchAdminData,
   createSpecialtyDb,
-  updateSpecialtyDb, 
+  updateSpecialtyDb,
   deleteSpecialtyDb,
   createPackageDb,
   updatePackageDb,
   deletePackageDb,
   updateInquiryStatusDb,
-  deleteSubscriberDb 
+  deleteSubscriberDb,
+  type SpecialtyRow,
+  type PackageRow,
+  type InquiryRow,
+  type SubscriberRow,
 } from "@/app/admin/actions";
-import type { ContentOverrides, TestimonialItem, FaqItem, StatItem, JourneyPhaseItem, PostItem } from "./override-context";
+import type {
+  ContentOverrides,
+  TestimonialItem,
+  FaqItem,
+  StatItem,
+  JourneyPhaseItem,
+  PostItem,
+} from "./override-context";
 
 const OVERRIDES_KEY = "carte-clinique-content-overrides";
 
@@ -33,11 +49,14 @@ export const defaultTrust = [
   "Named Clinical Lead",
 ];
 
+type CreateSpecialtyInput = Parameters<typeof createSpecialtyDb>[0];
+type CreatePackageInput = Parameters<typeof createPackageDb>[0];
+
 export function useAdminContent() {
-  const [resolvedSpecialties, setSpecialties] = useState<any[]>([]);
-  const [resolvedPackages, setPackages] = useState<any[]>([]);
-  const [inquiries, setInquiries] = useState<any[]>([]);
-  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [resolvedSpecialties, setSpecialties] = useState<SpecialtyRow[]>([]);
+  const [resolvedPackages, setPackages] = useState<PackageRow[]>([]);
+  const [inquiries, setInquiries] = useState<InquiryRow[]>([]);
+  const [subscribers, setSubscribers] = useState<SubscriberRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
@@ -48,6 +67,12 @@ export function useAdminContent() {
     landing: {},
     site: {},
   });
+
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const overridesRef = useRef<ContentOverrides>(overrides);
+  useEffect(() => {
+    overridesRef.current = overrides;
+  }, [overrides]);
 
   const refreshDbData = useCallback(async () => {
     try {
@@ -64,26 +89,46 @@ export function useAdminContent() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/overrides")
+    let active = true;
+
+    const loadOverrides = fetch("/api/overrides")
       .then((r) => r.json())
-      .then((o) => {
-        if (o && typeof o === "object") setOverrides(o);
+      .then((o: unknown) => {
+        if (active && o && typeof o === "object") {
+          setOverrides((prev) => ({ ...prev, ...(o as Partial<ContentOverrides>) }));
+        }
       })
       .catch(() => {
         try {
           const raw = localStorage.getItem(OVERRIDES_KEY);
-          if (raw) setOverrides(JSON.parse(raw));
-        } catch {}
+          if (active && raw) setOverrides((prev) => ({ ...prev, ...JSON.parse(raw) }));
+        } catch {
+          /* ignore */
+        }
       });
 
-    refreshDbData().finally(() => setLoaded(true));
-  }, [refreshDbData]);
+    const loadDb = fetchAdminData()
+      .then((data) => {
+        if (active && data) {
+          setSpecialties(data.specialties || []);
+          setPackages(data.packages || []);
+          setInquiries(data.inquiries || []);
+          setSubscribers(data.subscribers || []);
+        }
+      })
+      .catch((err) => console.error("Failed to load DB admin data:", err));
 
-  const saveOverrides = async (next: ContentOverrides) => {
-    setOverrides(next);
-    try {
-      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(next));
-    } catch {}
+    Promise.all([loadOverrides, loadDb]).finally(() => {
+      if (active) setLoaded(true);
+    });
+
+    return () => {
+      active = false;
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
+
+  const persistOverridesToServer = async (next: ContentOverrides) => {
     try {
       const res = await fetch("/api/overrides", {
         method: "PUT",
@@ -103,16 +148,42 @@ export function useAdminContent() {
     }
   };
 
-  const updateOverride = async (kind: string, slug: string, field: string, value: string) => {
-    const next: any = { ...overrides };
-    if (!next[kind]) next[kind] = {};
-    if (!next[kind][slug]) next[kind][slug] = {};
-    next[kind][slug][field] = value;
-    await saveOverrides(next);
+  const saveOverrides = async (next: ContentOverrides) => {
+    setOverrides(next);
+    try {
+      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    await persistOverridesToServer(next);
+  };
+
+  const updateOverride = (
+    kind: "specialties" | "packages" | "posts" | "landing" | "site",
+    slug: string,
+    field: string,
+    value: string,
+  ) => {
+    const prev = overridesRef.current;
+    const bucket = { ...(prev[kind] || {}) } as Record<string, Record<string, unknown>>;
+    bucket[slug] = { ...(bucket[slug] || {}), [field]: value };
+    const next = { ...prev, [kind]: bucket } as ContentOverrides;
+    overridesRef.current = next;
+    setOverrides(next);
+    try {
+      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      void persistOverridesToServer(next);
+    }, 450);
   };
 
   // Specialties CRUD
-  const addSpecialty = async (data: any) => {
+  const addSpecialty = async (data: CreateSpecialtyInput) => {
     setLoadingAction("addSpecialty");
     try {
       const created = await createSpecialtyDb(data);
@@ -120,19 +191,25 @@ export function useAdminContent() {
         setSpecialties((prev) => [created, ...prev]);
         return created;
       }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to create specialty.");
     } finally {
       setLoadingAction(null);
     }
   };
 
-  const updateSpecialty = async (slug: string, patch: any) => {
+  const updateSpecialty = async (slug: string, patch: Record<string, unknown>) => {
     setLoadingAction(`updateSpecialty-${slug}`);
     try {
       const updated = await updateSpecialtyDb(slug, patch);
       if (updated) {
-        setSpecialties((prev) => prev.map((s) => (s.slug === slug ? { ...s, ...patch } : s)));
+        setSpecialties((prev) =>
+          prev.map((s) => (s.slug === slug ? ({ ...s, ...patch } as SpecialtyRow) : s)),
+        );
         return updated;
       }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to update specialty.");
     } finally {
       setLoadingAction(null);
     }
@@ -142,16 +219,21 @@ export function useAdminContent() {
     if (!confirm(`Are you sure you want to delete specialty "${slug}" and all its linked packages?`)) return;
     setLoadingAction(`deleteSpecialty-${slug}`);
     try {
+      const target = resolvedSpecialties.find((s) => s.slug === slug);
       await deleteSpecialtyDb(slug);
       setSpecialties((prev) => prev.filter((s) => s.slug !== slug));
-      setPackages((prev) => prev.filter((p) => p.specialtyId !== slug && p.specialty?.slug !== slug));
+      setPackages((prev) =>
+        prev.filter((p) => (target ? p.specialtyId !== target.id : p.specialtyId !== slug)),
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete specialty.");
     } finally {
       setLoadingAction(null);
     }
   };
 
   // Packages CRUD
-  const addPackage = async (data: any) => {
+  const addPackage = async (data: CreatePackageInput) => {
     setLoadingAction("addPackage");
     try {
       const created = await createPackageDb(data);
@@ -159,12 +241,14 @@ export function useAdminContent() {
         await refreshDbData();
         return created;
       }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to create package.");
     } finally {
       setLoadingAction(null);
     }
   };
 
-  const updatePackage = async (slug: string, patch: any) => {
+  const updatePackage = async (slug: string, patch: Record<string, unknown>) => {
     setLoadingAction(`updatePackage-${slug}`);
     try {
       const updated = await updatePackageDb(slug, patch);
@@ -172,6 +256,8 @@ export function useAdminContent() {
         await refreshDbData();
         return updated;
       }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to update package.");
     } finally {
       setLoadingAction(null);
     }
@@ -183,6 +269,8 @@ export function useAdminContent() {
     try {
       await deletePackageDb(slug);
       setPackages((prev) => prev.filter((p) => p.slug !== slug));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete package.");
     } finally {
       setLoadingAction(null);
     }
@@ -190,13 +278,21 @@ export function useAdminContent() {
 
   // Inquiries & Subscribers
   const updateInquiryStatus = async (id: string, status: "new" | "read") => {
-    await updateInquiryStatusDb(id, status);
-    setInquiries((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)));
+    try {
+      await updateInquiryStatusDb(id, status);
+      setInquiries((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to update inquiry.");
+    }
   };
 
   const deleteSubscriber = async (email: string) => {
-    await deleteSubscriberDb(email);
-    setSubscribers((prev) => prev.filter((s) => s.email !== email));
+    try {
+      await deleteSubscriberDb(email);
+      setSubscribers((prev) => prev.filter((s) => s.email !== email));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to remove subscriber.");
+    }
   };
 
   // Journal / Blog Posts
@@ -204,56 +300,44 @@ export function useAdminContent() {
 
   const addPost = async (post: PostItem) => {
     const nextPosts = [post, ...resolvedPosts];
-    const next: ContentOverrides = { ...overrides, allPosts: nextPosts };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, allPosts: nextPosts });
   };
 
   const updatePost = async (slug: string, patch: Partial<PostItem>) => {
     const nextPosts = resolvedPosts.map((p) => (p.slug === slug ? { ...p, ...patch } : p));
-    const next: ContentOverrides = { ...overrides, allPosts: nextPosts };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, allPosts: nextPosts });
   };
 
   const deletePost = async (slug: string) => {
     if (!confirm(`Are you sure you want to delete article "${slug}"?`)) return;
     const nextPosts = resolvedPosts.filter((p) => p.slug !== slug);
-    const next: ContentOverrides = { ...overrides, allPosts: nextPosts };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, allPosts: nextPosts });
   };
 
-  // Testimonials
+  // Testimonials, FAQs, Stats, Trust, Journey
   const resolvedTestimonials: TestimonialItem[] = overrides.testimonials || defaultTestimonials;
   const updateTestimonials = async (testimonials: TestimonialItem[]) => {
-    const next: ContentOverrides = { ...overrides, testimonials };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, testimonials });
   };
 
-  // FAQs
   const resolvedFaqs: FaqItem[] = overrides.faqs || defaultFaqs;
   const updateFaqs = async (faqs: FaqItem[]) => {
-    const next: ContentOverrides = { ...overrides, faqs };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, faqs });
   };
 
-  // Stats
   const resolvedStats: StatItem[] = overrides.stats || defaultStats;
   const updateStats = async (stats: StatItem[]) => {
-    const next: ContentOverrides = { ...overrides, stats };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, stats });
   };
 
-  // Trust Marquee
   const resolvedTrust: string[] = overrides.trust || defaultTrust;
   const updateTrust = async (trust: string[]) => {
-    const next: ContentOverrides = { ...overrides, trust };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, trust });
   };
 
-  // Patient Journey
   const resolvedJourney: JourneyPhaseItem[] = overrides.journey || defaultJourney;
   const updateJourney = async (journey: JourneyPhaseItem[]) => {
-    const next: ContentOverrides = { ...overrides, journey };
-    await saveOverrides(next);
+    await saveOverrides({ ...overrides, journey });
   };
 
   const resetAll = async () => {
@@ -274,22 +358,18 @@ export function useAdminContent() {
     overrides,
     saveOverrides,
     updateOverride,
-    // Specialties & Surgeries
     resolvedSpecialties,
     addSpecialty,
     updateSpecialty,
     deleteSpecialty,
-    // Packages & Pricing
     resolvedPackages,
     addPackage,
     updatePackage,
     deletePackage,
-    // Posts / Journal
     resolvedPosts,
     addPost,
     updatePost,
     deletePost,
-    // Testimonials, FAQs, Stats, Trust, Journey
     resolvedTestimonials,
     updateTestimonials,
     resolvedFaqs,
@@ -300,7 +380,6 @@ export function useAdminContent() {
     updateTrust,
     resolvedJourney,
     updateJourney,
-    // Inquiries & Subscribers
     inquiries,
     setInquiries,
     subscribers,

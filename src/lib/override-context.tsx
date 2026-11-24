@@ -35,6 +35,7 @@ export type PostItem = {
   readTime: string;
   photo?: string;
   content?: string;
+  body?: string[];
 };
 
 export type ContentOverrides = {

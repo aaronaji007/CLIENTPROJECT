@@ -3,6 +3,7 @@ import { put } from "@vercel/blob";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { requireAdmin } from "@/lib/server-admin-auth";
+import { isSameOrigin } from "@/lib/server-overrides";
 
 export const runtime = "nodejs";
 
@@ -36,9 +37,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const origin = req.headers.get("origin");
-  const host = req.headers.get("host");
-  if (origin && host && new URL(origin).host !== host) {
+  if (!isSameOrigin(req)) {
     return NextResponse.json({ error: "Bad origin" }, { status: 403 });
   }
   if (Number(req.headers.get("content-length") || 0) > MAX_BYTES + 64 * 1024) {

@@ -5,7 +5,12 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/admin-auth";
 import { useAdminContent } from "@/lib/admin-content";
 import type { TestimonialItem, FaqItem, StatItem, JourneyPhaseItem, PostItem } from "@/lib/override-context";
-import { getAdminAccountInfoAction, changeAdminPasswordAction } from "./actions";
+import {
+  getAdminAccountInfoAction,
+  changeAdminPasswordAction,
+  type SpecialtyRow,
+  type PackageRow,
+} from "./actions";
 
 type Tab =
   | "overview"
@@ -163,7 +168,6 @@ function Overview({ onSelectTab }: { onSelectTab: (t: Tab) => void }) {
   const {
     resolvedSpecialties,
     resolvedPackages,
-    resolvedPosts,
     inquiries,
     subscribers,
     resetAll,
@@ -332,11 +336,10 @@ function SpecialtiesEditor() {
     slug: "",
     category: "",
     tagline: "",
-    travelDays: "",
     summary: "",
     overview: "",
     recovery: "In-hospital mobilization with structured outpatient physiotherapy and remote follow-up.",
-    outcomes: "Published outcome metrics and board-certified clinical leads.",
+    outcomes: "Verified clinical outcome metrics and board-certified specialist reviews are confirmed during your initial case review.",
     photo: "/images/orthopedics.webp",
     proceduresText: "",
   });
@@ -347,11 +350,18 @@ function SpecialtiesEditor() {
     const slug = newSpec.slug.trim() || newSpec.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const procedures = newSpec.proceduresText
       .split("\n")
-      .map((p) => p.trim())
+      .map((p) => p.split(/\s*·\s*|\s*—\s*/)[0].trim())
       .filter(Boolean);
 
     await addSpecialty({
-      ...newSpec,
+      name: newSpec.name,
+      category: newSpec.category,
+      tagline: newSpec.tagline,
+      summary: newSpec.summary,
+      overview: newSpec.overview,
+      recovery: newSpec.recovery,
+      outcomes: newSpec.outcomes,
+      photo: newSpec.photo,
       slug,
       procedures: procedures.length ? procedures : ["Primary Consultation & Evaluation"],
     });
@@ -362,11 +372,10 @@ function SpecialtiesEditor() {
       slug: "",
       category: "",
       tagline: "",
-      travelDays: "",
       summary: "",
       overview: "",
       recovery: "In-hospital mobilization with structured outpatient physiotherapy and remote follow-up.",
-      outcomes: "Published outcome metrics and board-certified clinical leads.",
+      outcomes: "Verified clinical outcome metrics and board-certified specialist reviews are confirmed during your initial case review.",
       photo: "/images/orthopedics.webp",
       proceduresText: "",
     });
@@ -384,7 +393,7 @@ function SpecialtiesEditor() {
         <div>
           <h2 className="font-display text-2xl font-medium text-ink">Surgeries &amp; Specialties</h2>
           <p className="mt-1 text-sm text-ink/65">
-            Add new medical specialties, edit existing surgery details, and update periods of stay.
+            Add new medical specialties, edit existing surgery details, and manage listed procedures.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -465,28 +474,6 @@ function SpecialtiesEditor() {
               />
             </label>
             <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Period of Stay</span>
-              <input
-                value={newSpec.travelDays}
-                onChange={(e) => setNewSpec({ ...newSpec, travelDays: e.target.value })}
-                placeholder="e.g. Stay 5–10 days (Procedure dependent)"
-                className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Summary (shown on cards)</span>
-              <textarea
-                rows={2}
-                value={newSpec.summary}
-                onChange={(e) => setNewSpec({ ...newSpec, summary: e.target.value })}
-                placeholder="Short description for specialty cards..."
-                className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-            <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Photo Image URL</span>
               <input
                 value={newSpec.photo}
@@ -498,14 +485,25 @@ function SpecialtiesEditor() {
           </div>
 
           <label className="block">
+            <span className="font-mono text-[11px] uppercase text-ink/60">Summary (shown on cards)</span>
+            <textarea
+              rows={2}
+              value={newSpec.summary}
+              onChange={(e) => setNewSpec({ ...newSpec, summary: e.target.value })}
+              placeholder="Short description for specialty cards..."
+              className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
+            />
+          </label>
+
+          <label className="block">
             <span className="font-mono text-[11px] uppercase text-ink/60">
-              Surgeries &amp; Procedures List (One surgery per line, format: Surgery Name · X Days)
+              Surgeries &amp; Procedures List (One surgery per line)
             </span>
             <textarea
               rows={4}
               value={newSpec.proceduresText}
               onChange={(e) => setNewSpec({ ...newSpec, proceduresText: e.target.value })}
-              placeholder={"Coronary Artery Bypass Graft (CABG) · 7–10 Days\nHeart Valve Replacement · 6–8 Days\nAngioplasty & Stenting · 2–3 Days"}
+              placeholder={"Coronary Artery Bypass Graft (CABG)\nHeart Valve Replacement\nAngioplasty & Stenting"}
               className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink font-mono"
             />
           </label>
@@ -555,18 +553,17 @@ function SpecialtyRowItem({
   onDelete,
   loading,
 }: {
-  specialty: any;
+  specialty: SpecialtyRow;
   isEditing: boolean;
   onToggleEdit: () => void;
-  onUpdate: (slug: string, patch: any) => Promise<any>;
-  onDelete: (slug: string) => Promise<any>;
+  onUpdate: (slug: string, patch: Record<string, unknown>) => Promise<unknown>;
+  onDelete: (slug: string) => Promise<unknown>;
   loading: boolean;
 }) {
   const [form, setForm] = useState({
     name: s.name,
     category: s.category,
     tagline: s.tagline || "",
-    travelDays: s.travelDays || "",
     summary: s.summary || "",
     overview: s.overview || "",
     recovery: s.recovery || "",
@@ -578,7 +575,6 @@ function SpecialtyRowItem({
     Array.isArray(s.procedures) ? s.procedures : []
   );
   const [newProcName, setNewProcName] = useState("");
-  const [newProcDays, setNewProcDays] = useState("");
 
   const handleSaveAll = async () => {
     await onUpdate(s.slug, {
@@ -590,10 +586,8 @@ function SpecialtyRowItem({
 
   const addProcedure = () => {
     if (!newProcName.trim()) return;
-    const item = newProcDays.trim() ? `${newProcName.trim()} · ${newProcDays.trim()}` : newProcName.trim();
-    setProcedures([...procedures, item]);
+    setProcedures([...procedures, newProcName.trim()]);
     setNewProcName("");
-    setNewProcDays("");
   };
 
   const removeProcedure = (idx: number) => {
@@ -679,7 +673,7 @@ function SpecialtyRowItem({
       {/* Inline Full Editor */}
       {isEditing && (
         <div className="border-t border-line bg-paper-deep/30 p-6 space-y-5 animate-in fade-in">
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Display Name</span>
               <input
@@ -693,14 +687,6 @@ function SpecialtyRowItem({
               <input
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Period of Stay</span>
-              <input
-                value={form.travelDays}
-                onChange={(e) => setForm({ ...form, travelDays: e.target.value })}
                 className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
               />
             </label>
@@ -753,7 +739,7 @@ function SpecialtyRowItem({
                 <h4 className="font-display text-lg font-medium text-ink">
                   Surgeries &amp; Procedures in this Specialty
                 </h4>
-                <p className="text-xs text-ink/60">Add, change, or remove individual operations and stay estimates.</p>
+                <p className="text-xs text-ink/60">Add, change, or remove individual operations.</p>
               </div>
               <span className="font-mono text-xs text-signal font-semibold">
                 {procedures.length} surgeries listed
@@ -788,12 +774,6 @@ function SpecialtyRowItem({
                 onChange={(e) => setNewProcName(e.target.value)}
                 placeholder="Surgery / Procedure name (e.g. Total Hip Replacement)"
                 className="flex-1 min-w-[200px] rounded-sm border border-line bg-white/80 px-3 py-1.5 text-xs text-ink"
-              />
-              <input
-                value={newProcDays}
-                onChange={(e) => setNewProcDays(e.target.value)}
-                placeholder="Stay period (e.g. 6–8 Days)"
-                className="w-40 rounded-sm border border-line bg-white/80 px-3 py-1.5 text-xs text-ink"
               />
               <button
                 type="button"
@@ -850,20 +830,19 @@ function PackagesEditor() {
     name: "",
     slug: "",
     specialtyId: resolvedSpecialties[0]?.id || "",
-    country: "India",
-    city: "Bangalore",
     price: "4,500",
-    currency: "AUD",
-    days: 7,
+    currency: "USD",
     summary: "",
-    includesText: "Pre-op consultations & bloodwork\nSurgical procedure & implant fees\n5 nights private hospital recovery suite\nAirport and clinical transfers\nDedicated bilingual clinical case manager",
-    notes: "Requires recent imaging / clinical history prior to arrival confirmation.",
+    includesText: "Pre-op consultations & bloodwork\nSurgical procedure & implant fees\nPrivate hospital recovery suite\nAirport and clinical transfers\nDedicated bilingual clinical case manager",
+    notes: "Indicative starting estimate — confirm a tailored quote with your coordinator.",
     photo: "/images/service-doctor.png",
   });
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPkg.name.trim()) return alert("Please provide a package name.");
+    const specialtyId = newPkg.specialtyId || resolvedSpecialties[0]?.id || "";
+    if (!specialtyId) return alert("Please add at least one specialty first.");
     const slug = newPkg.slug.trim() || newPkg.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const includes = newPkg.includesText
       .split("\n")
@@ -871,10 +850,15 @@ function PackagesEditor() {
       .filter(Boolean);
 
     await addPackage({
-      ...newPkg,
+      name: newPkg.name,
       slug,
-      specialtyId: newPkg.specialtyId || resolvedSpecialties[0]?.id,
+      specialtyId,
+      price: newPkg.price,
+      currency: newPkg.currency,
+      summary: newPkg.summary,
       includes,
+      notes: newPkg.notes,
+      photo: newPkg.photo,
     });
 
     setIsAdding(false);
@@ -883,8 +867,7 @@ function PackagesEditor() {
   const filtered = resolvedPackages.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.country.toLowerCase().includes(search.toLowerCase()) ||
-      p.city.toLowerCase().includes(search.toLowerCase())
+      p.specialty.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -893,7 +876,7 @@ function PackagesEditor() {
         <div>
           <h2 className="font-display text-2xl font-medium text-ink">Packages &amp; Pricing</h2>
           <p className="mt-1 text-sm text-ink/65">
-            Modify surgery package pricing, currencies, duration, country locations, and inclusions.
+            Modify surgery package pricing, currencies, descriptions, and bundled inclusions.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -919,8 +902,8 @@ function PackagesEditor() {
           className="rounded-lg border-2 border-signal/40 bg-paper p-6 shadow-panel space-y-4 animate-in fade-in"
         >
           <div className="border-b border-line pb-3">
-            <h3 className="font-display text-xl font-medium text-ink">Create New Surgical Travel Package</h3>
-            <p className="text-xs text-ink/60">Configure pricing, days of stay, and bundled clinical services.</p>
+            <h3 className="font-display text-xl font-medium text-ink">Create New Surgical Package</h3>
+            <p className="text-xs text-ink/60">Configure pricing, specialty link, and bundled clinical services.</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
@@ -954,7 +937,7 @@ function PackagesEditor() {
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Specialty *</span>
               <select
-                value={newPkg.specialtyId}
+                value={newPkg.specialtyId || resolvedSpecialties[0]?.id || ""}
                 onChange={(e) => setNewPkg({ ...newPkg, specialtyId: e.target.value })}
                 className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
               >
@@ -967,7 +950,7 @@ function PackagesEditor() {
             </label>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-3">
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Price *</span>
               <input
@@ -985,46 +968,14 @@ function PackagesEditor() {
                 onChange={(e) => setNewPkg({ ...newPkg, currency: e.target.value })}
                 className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
               >
-                <option value="AUD">AUD ($)</option>
                 <option value="USD">USD ($)</option>
+                <option value="AUD">AUD (A$)</option>
                 <option value="EUR">EUR (€)</option>
                 <option value="GBP">GBP (£)</option>
                 <option value="INR">INR (₹)</option>
-                <option value="NZD">NZD ($)</option>
-                <option value="CAD">CAD ($)</option>
+                <option value="NZD">NZD (NZ$)</option>
+                <option value="CAD">CAD (C$)</option>
               </select>
-            </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Stay Duration (Days) *</span>
-              <input
-                type="number"
-                min="1"
-                required
-                value={newPkg.days}
-                onChange={(e) => setNewPkg({ ...newPkg, days: parseInt(e.target.value) || 1 })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Destination Country</span>
-              <input
-                value={newPkg.country}
-                onChange={(e) => setNewPkg({ ...newPkg, country: e.target.value })}
-                placeholder="e.g. India"
-                className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Destination City</span>
-              <input
-                value={newPkg.city}
-                onChange={(e) => setNewPkg({ ...newPkg, city: e.target.value })}
-                placeholder="e.g. Bangalore"
-                className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
-              />
             </label>
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Photo Image URL</span>
@@ -1107,21 +1058,18 @@ function PackageRowItem({
   onDelete,
   loading,
 }: {
-  pkg: any;
-  specialties: any[];
+  pkg: PackageRow;
+  specialties: SpecialtyRow[];
   isEditing: boolean;
   onToggleEdit: () => void;
-  onUpdate: (slug: string, patch: any) => Promise<any>;
-  onDelete: (slug: string) => Promise<any>;
+  onUpdate: (slug: string, patch: Record<string, unknown>) => Promise<unknown>;
+  onDelete: (slug: string) => Promise<unknown>;
   loading: boolean;
 }) {
   const [form, setForm] = useState({
     name: p.name,
-    country: p.country,
-    city: p.city,
     price: p.price,
-    currency: p.currency || "AUD",
-    days: p.days,
+    currency: p.currency || "USD",
     specialtyId: p.specialtyId,
     summary: p.summary || "",
     notes: p.notes || "",
@@ -1136,7 +1084,6 @@ function PackageRowItem({
   const handleSaveAll = async () => {
     await onUpdate(p.slug, {
       ...form,
-      days: Number(form.days),
       includes,
     });
     onToggleEdit();
@@ -1169,10 +1116,6 @@ function PackageRowItem({
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs uppercase tracking-wider text-signal font-semibold">
                   {p.specialty || p.specialtyId}
-                </span>
-                <span className="text-ink/30">·</span>
-                <span className="font-mono text-xs text-ink/60">
-                  {p.city}, {p.country}
                 </span>
               </div>
               <h3 className="mt-1 font-display text-2xl font-medium text-ink">{p.name}</h3>
@@ -1254,32 +1197,7 @@ function PackageRowItem({
             </label>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-4">
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Stay (Days)</span>
-              <input
-                type="number"
-                value={form.days}
-                onChange={(e) => setForm({ ...form, days: parseInt(e.target.value) || 1 })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">City</span>
-              <input
-                value={form.city}
-                onChange={(e) => setForm({ ...form, city: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-              />
-            </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Country</span>
-              <input
-                value={form.country}
-                onChange={(e) => setForm({ ...form, country: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-              />
-            </label>
+          <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Specialty Relation</span>
               <select
@@ -1293,6 +1211,14 @@ function PackageRowItem({
                   </option>
                 ))}
               </select>
+            </label>
+            <label className="block">
+              <span className="font-mono text-[11px] uppercase text-ink/60">Estimate Notes</span>
+              <input
+                value={form.notes}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
+              />
             </label>
           </div>
 
@@ -1388,7 +1314,6 @@ function PackageRowItem({
 function SiteCopyEditor() {
   const { overrides, updateOverride } = useAdminContent();
   const landing = overrides.landing?.home || {};
-  const site = overrides.site?.global || {};
 
   return (
     <div className="space-y-6">
@@ -1497,9 +1422,31 @@ function SiteCopyEditor() {
 // 4. METRICS & TRUST BADGES
 // -------------------------------------------------------------
 function StatsEditor() {
-  const { resolvedStats, updateStats, resolvedTrust, updateTrust } = useAdminContent();
-  const [statsList, setStatsList] = useState<StatItem[]>(resolvedStats);
-  const [trustList, setTrustList] = useState<string[]>(resolvedTrust);
+  const { loaded, resolvedStats, updateStats, resolvedTrust, updateTrust } = useAdminContent();
+  return (
+    <StatsEditorForm
+      key={loaded ? "ready" : "loading"}
+      initialStats={resolvedStats}
+      initialTrust={resolvedTrust}
+      updateStats={updateStats}
+      updateTrust={updateTrust}
+    />
+  );
+}
+
+function StatsEditorForm({
+  initialStats,
+  initialTrust,
+  updateStats,
+  updateTrust,
+}: {
+  initialStats: StatItem[];
+  initialTrust: string[];
+  updateStats: (stats: StatItem[]) => Promise<void>;
+  updateTrust: (trust: string[]) => Promise<void>;
+}) {
+  const [statsList, setStatsList] = useState<StatItem[]>(initialStats);
+  const [trustList, setTrustList] = useState<string[]>(initialTrust);
   const [newTrust, setNewTrust] = useState("");
 
   const saveStats = async () => {
@@ -1625,8 +1572,24 @@ function StatsEditor() {
 // 5. PATIENT JOURNEY TIMELINE
 // -------------------------------------------------------------
 function JourneyEditor() {
-  const { resolvedJourney, updateJourney } = useAdminContent();
-  const [phases, setPhases] = useState<JourneyPhaseItem[]>(resolvedJourney);
+  const { loaded, resolvedJourney, updateJourney } = useAdminContent();
+  return (
+    <JourneyEditorForm
+      key={loaded ? "ready" : "loading"}
+      initialJourney={resolvedJourney}
+      updateJourney={updateJourney}
+    />
+  );
+}
+
+function JourneyEditorForm({
+  initialJourney,
+  updateJourney,
+}: {
+  initialJourney: JourneyPhaseItem[];
+  updateJourney: (journey: JourneyPhaseItem[]) => Promise<void>;
+}) {
+  const [phases, setPhases] = useState<JourneyPhaseItem[]>(initialJourney);
 
   const savePhases = async () => {
     await updateJourney(phases);
@@ -1737,8 +1700,24 @@ function JourneyEditor() {
 // 6. PATIENT STORIES / TESTIMONIALS
 // -------------------------------------------------------------
 function TestimonialsEditor() {
-  const { resolvedTestimonials, updateTestimonials } = useAdminContent();
-  const [list, setList] = useState<TestimonialItem[]>(resolvedTestimonials);
+  const { loaded, resolvedTestimonials, updateTestimonials } = useAdminContent();
+  return (
+    <TestimonialsEditorForm
+      key={loaded ? "ready" : "loading"}
+      initialTestimonials={resolvedTestimonials}
+      updateTestimonials={updateTestimonials}
+    />
+  );
+}
+
+function TestimonialsEditorForm({
+  initialTestimonials,
+  updateTestimonials,
+}: {
+  initialTestimonials: TestimonialItem[];
+  updateTestimonials: (testimonials: TestimonialItem[]) => Promise<void>;
+}) {
+  const [list, setList] = useState<TestimonialItem[]>(initialTestimonials);
   const [newQuote, setNewQuote] = useState({ quote: "", name: "", care: "" });
 
   const save = async (next: TestimonialItem[]) => {
@@ -1838,8 +1817,24 @@ function TestimonialsEditor() {
 // 7. FREQUENTLY ASKED QUESTIONS (FAQS)
 // -------------------------------------------------------------
 function FaqsEditor() {
-  const { resolvedFaqs, updateFaqs } = useAdminContent();
-  const [faqs, setFaqs] = useState<FaqItem[]>(resolvedFaqs);
+  const { loaded, resolvedFaqs, updateFaqs } = useAdminContent();
+  return (
+    <FaqsEditorForm
+      key={loaded ? "ready" : "loading"}
+      initialFaqs={resolvedFaqs}
+      updateFaqs={updateFaqs}
+    />
+  );
+}
+
+function FaqsEditorForm({
+  initialFaqs,
+  updateFaqs,
+}: {
+  initialFaqs: FaqItem[];
+  updateFaqs: (faqs: FaqItem[]) => Promise<void>;
+}) {
+  const [faqs, setFaqs] = useState<FaqItem[]>(initialFaqs);
   const [newFaq, setNewFaq] = useState({ q: "", a: "" });
 
   const save = async (next: FaqItem[]) => {
@@ -1937,6 +1932,7 @@ function JournalEditor() {
     date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
     readTime: "4 min read",
     photo: "/images/service-doctor.png",
+    content: "",
   });
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -1945,6 +1941,16 @@ function JournalEditor() {
     const slug = newPost.slug.trim() || newPost.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     await addPost({ ...newPost, slug });
     setIsAdding(false);
+    setNewPost({
+      slug: "",
+      category: "Preparation",
+      title: "",
+      excerpt: "",
+      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      readTime: "4 min read",
+      photo: "/images/service-doctor.png",
+      content: "",
+    });
   };
 
   return (
@@ -1995,10 +2001,17 @@ function JournalEditor() {
             />
           </div>
           <textarea
-            rows={3}
+            rows={2}
             placeholder="Article Excerpt..."
             value={newPost.excerpt}
             onChange={(e) => setNewPost({ ...newPost, excerpt: e.target.value })}
+            className="w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
+          />
+          <textarea
+            rows={5}
+            placeholder="Full Article Content (separate paragraphs with a blank line)..."
+            value={newPost.content || ""}
+            onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
             className="w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
           />
           <button
@@ -2042,6 +2055,18 @@ function JournalEditor() {
               onChange={(e) => updatePost(p.slug, { excerpt: e.target.value })}
               className="w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink/70"
             />
+            <textarea
+              rows={4}
+              placeholder="Article body paragraphs (separated by blank lines)..."
+              value={p.content ?? (Array.isArray(p.body) ? p.body.join("\n\n") : "")}
+              onChange={(e) =>
+                updatePost(p.slug, {
+                  content: e.target.value,
+                  body: e.target.value.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean),
+                })
+              }
+              className="w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-xs text-ink/80"
+            />
           </div>
         ))}
       </div>
@@ -2077,7 +2102,7 @@ function FooterEditor() {
           <input
             value={site.brandTagline ?? "MedicalCare Beyond Borders"}
             onChange={(e) => updateOverride("site", "global", "brandTagline", e.target.value)}
-            className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink font-semibold text-signal"
+            className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm font-semibold text-signal"
           />
         </label>
         <label className="block">
@@ -2120,20 +2145,26 @@ function FooterEditor() {
 function PhotosEditor() {
   const { resolvedSpecialties, resolvedPackages, updateSpecialty, updatePackage } = useAdminContent();
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadError(null);
     try {
       const body = new FormData();
       body.append("file", file);
       const res = await fetch("/api/upload", { method: "POST", body });
-      const data = await res.json();
-      if (data.url) setUploadedUrl(data.url);
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        setUploadError(data.error || "Upload failed.");
+        return;
+      }
+      setUploadedUrl(data.url);
     } catch {
-      alert("Upload failed");
+      setUploadError("Upload failed. Please check the file and try again.");
     } finally {
       setUploading(false);
     }
@@ -2147,11 +2178,14 @@ function PhotosEditor() {
           <p className="text-sm text-ink/65">Upload high-resolution clinical images to Vercel Blob or local storage.</p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <label className="cursor-pointer rounded-sm bg-ink px-4 py-2 text-xs font-mono uppercase text-paper hover:bg-ink-soft">
             {uploading ? "Uploading Image…" : "📁 Upload Image File"}
             <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
           </label>
+          {uploadError && (
+            <span className="font-mono text-xs text-signal">⚠️ {uploadError}</span>
+          )}
           {uploadedUrl && (
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs text-signal">Uploaded: {uploadedUrl}</span>
@@ -2171,14 +2205,18 @@ function PhotosEditor() {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="rounded-lg border border-line bg-paper p-6 shadow-panel">
-          <h3 className="font-display text-xl font-medium text-ink mb-4">Specialty Photos</h3>
+          <h3 className="font-display text-xl font-medium text-ink mb-1">Specialty Photos</h3>
+          <p className="text-xs text-ink/55 mb-4">Edit URL and blur/click outside to save to DB.</p>
           <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
             {resolvedSpecialties.map((s) => (
               <div key={s.slug} className="flex items-center justify-between gap-3 border-b border-line pb-2">
                 <span className="text-sm font-medium text-ink truncate">{s.name}</span>
                 <input
-                  value={s.photo || ""}
-                  onChange={(e) => updateSpecialty(s.slug, { photo: e.target.value })}
+                  defaultValue={s.photo || ""}
+                  onBlur={(e) => {
+                    const v = e.target.value.trim();
+                    if (v && v !== s.photo) void updateSpecialty(s.slug, { photo: v });
+                  }}
                   placeholder="/images/photo.webp"
                   className="w-48 rounded-sm border border-line bg-white/70 px-2 py-1 text-xs font-mono text-ink"
                 />
@@ -2188,14 +2226,18 @@ function PhotosEditor() {
         </div>
 
         <div className="rounded-lg border border-line bg-paper p-6 shadow-panel">
-          <h3 className="font-display text-xl font-medium text-ink mb-4">Package Photos</h3>
+          <h3 className="font-display text-xl font-medium text-ink mb-1">Package Photos</h3>
+          <p className="text-xs text-ink/55 mb-4">Edit URL and blur/click outside to save to DB.</p>
           <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
             {resolvedPackages.map((p) => (
               <div key={p.slug} className="flex items-center justify-between gap-3 border-b border-line pb-2">
                 <span className="text-sm font-medium text-ink truncate">{p.name}</span>
                 <input
-                  value={p.photo || ""}
-                  onChange={(e) => updatePackage(p.slug, { photo: e.target.value })}
+                  defaultValue={p.photo || ""}
+                  onBlur={(e) => {
+                    const v = e.target.value.trim();
+                    if (v && v !== p.photo) void updatePackage(p.slug, { photo: v });
+                  }}
                   placeholder="/images/photo.webp"
                   className="w-48 rounded-sm border border-line bg-white/70 px-2 py-1 text-xs font-mono text-ink"
                 />
@@ -2423,8 +2465,8 @@ function SecurityEditor({ onChanged }: { onChanged?: () => void | Promise<void> 
       } else {
         setError(res.error || "Failed to change password.");
       }
-    } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setSubmitting(false);
     }

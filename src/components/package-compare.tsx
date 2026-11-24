@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import type { TravelPackage } from "@/lib/data";
+import { formatPackagePrice } from "@/lib/utils";
 import { Artwork } from "./artwork";
 
 const MAX = 3;
@@ -15,10 +16,10 @@ function parsePrice(p: TravelPackage) {
 export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
   const [selected, setSelected] = useState<string[]>([]);
 
-  const rows = useMemo(() => {
-    const list = packages.filter((p) => selected.includes(p.slug));
-    return list;
-  }, [packages, selected]);
+  const rows = useMemo(
+    () => packages.filter((p) => selected.includes(p.slug)),
+    [packages, selected],
+  );
 
   const toggle = (slug: string) => {
     setSelected((prev) => {
@@ -41,7 +42,7 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
             Compare packages side by side
           </h2>
           <p className="mt-3 text-ink/70">
-            Select up to {MAX} to weigh price, destination, and what is coordinated at a glance.
+            Select up to {MAX} to weigh price and what is coordinated at a glance.
           </p>
         </div>
         <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/45">
@@ -84,7 +85,7 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
                 {rows.map((r) => (
                   <th key={r.slug} className="bg-paper p-4">
                     <div className="relative aspect-[16/9] w-full overflow-hidden rounded-sm">
-                      <Artwork slug={r.slug} kind="card" label={r.specialty} />
+                      <Artwork slug={r.slug} kind="card" label={r.specialty} photo={r.photo} />
                     </div>
                     <Link
                       href={`/packages/${r.slug}`}
@@ -100,7 +101,11 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
               </tr>
             </thead>
             <tbody>
-              <CompareRow label="Price" values={rows.map((r) => `$${r.price}`)} bold />
+              <CompareRow
+                label="Price"
+                values={rows.map((r) => formatPackagePrice(r.price, r.currency))}
+                bold
+              />
               <CompareRow
                 label="Included"
                 values={rows.map((r) => (
@@ -132,7 +137,10 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
       )}
 
       <p className="mt-4 text-xs text-ink/45">
-        Prices are placeholders. {rows.length > 0 ? `From $${Math.min(...rows.map(parsePrice)).toLocaleString()} to $${Math.max(...rows.map(parsePrice)).toLocaleString()}.` : ""}
+        Indicative starting estimates.{" "}
+        {rows.length > 0
+          ? `From $${Math.min(...rows.map(parsePrice)).toLocaleString()} to $${Math.max(...rows.map(parsePrice)).toLocaleString()}.`
+          : ""}
       </p>
     </div>
   );

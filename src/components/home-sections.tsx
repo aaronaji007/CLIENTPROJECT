@@ -4,10 +4,8 @@ import { useContentOverrides } from "@/lib/override-context";
 import { defaultTrust, defaultStats } from "@/lib/admin-content";
 import { testimonials as defaultTestimonials, generalFaqs as defaultFaqs } from "@/lib/data";
 import { Marquee } from "@/components/bits/Marquee";
-import TextPressure from "@/components/bits/TextPressure";
 import AnimatedContent from "@/components/bits/AnimatedContent";
 import CountUp from "@/components/bits/CountUp";
-import GradientText from "@/components/bits/GradientText";
 import {
   Card,
   CardHeader,
@@ -20,8 +18,6 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import SpotlightCard from "@/components/bits/SpotlightCard";
-import { ShieldCheck, Plane, HeartPulse, UserRoundCheck } from "lucide-react";
 
 export function HomeTrustMarquee() {
   const ov = useContentOverrides();

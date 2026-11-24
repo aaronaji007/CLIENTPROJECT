@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "done" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
 
   const subscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -12,46 +12,57 @@ export function NewsletterForm() {
       setStatus("error");
       return;
     }
+    setStatus("submitting");
     try {
       const { createSubscriberDb } = await import("@/app/admin/actions");
-      await createSubscriberDb(email.trim().toLowerCase());
-      setStatus("done");
-      setEmail("");
-    } catch (err) {
+      const res = await createSubscriberDb(email.trim().toLowerCase());
+      if (res.ok) {
+        setStatus("done");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
       setStatus("error");
     }
   };
 
   if (status === "done") {
     return (
-      <p className="max-w-sm rounded-sm bg-paper/[0.08] px-4 py-3 text-sm text-paper/85 ring-1 ring-paper/15">
-        Thank you — you&rsquo;re on the list. A confirmation would follow in production.
+      <p className="max-w-sm rounded-sm bg-[#f4efe2]/10 px-4 py-3 text-sm text-[#f4efe2]/90 ring-1 ring-[#f4efe2]/20">
+        Thank you — you&rsquo;re subscribed for care-planning updates.
       </p>
     );
   }
 
   return (
-    <form onSubmit={subscribe} noValidate className="flex max-w-sm gap-2">
-      <label className="sr-only" htmlFor="newsletter-email">
-        Email address
-      </label>
-      <input
-        id="newsletter-email"
-        type="email"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          if (status === "error") setStatus("idle");
-        }}
-        placeholder="you@example.com"
-        className="w-full min-w-0 rounded-sm border border-paper/20 bg-paper/[0.06] px-3 py-2.5 text-sm text-paper placeholder:text-paper/40 focus:border-paper focus:outline-none"
-      />
-      <button
-        type="submit"
-        className="shrink-0 rounded-sm bg-ink px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-soft"
-      >
-        Subscribe
-      </button>
+    <form onSubmit={subscribe} noValidate className="flex max-w-sm flex-col gap-2">
+      <div className="flex gap-2">
+        <label className="sr-only" htmlFor="newsletter-email">
+          Email address
+        </label>
+        <input
+          id="newsletter-email"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status === "error") setStatus("idle");
+          }}
+          placeholder="you@example.com"
+          className="w-full min-w-0 rounded-sm border border-[#f4efe2]/25 bg-[#f4efe2]/10 px-3 py-2.5 text-sm text-[#f4efe2] placeholder:text-[#f4efe2]/45 focus:border-[#f4efe2] focus:outline-none"
+        />
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="shrink-0 rounded-sm bg-signal px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-deep disabled:opacity-50"
+        >
+          {status === "submitting" ? "…" : "Subscribe"}
+        </button>
+      </div>
+      {status === "error" && (
+        <p className="text-xs text-signal">Please enter a valid email address or try again shortly.</p>
+      )}
     </form>
   );
 }

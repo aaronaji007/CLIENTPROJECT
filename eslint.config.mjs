@@ -14,6 +14,13 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Vendored third-party animation components (reactbits port) — kept as-is.
     "src/components/bits/**",
+    // Generated Prisma contract & third-party agent/migration tooling files.
+    "src/prisma/contract.d.ts",
+    "migrations/**",
+    ".agents/**",
+    ".claude/**",
+    ".cursor/**",
+    ".devin/**",
   ]),
 ]);
 

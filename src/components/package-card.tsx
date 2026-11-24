@@ -1,23 +1,12 @@
 import Link from "next/link";
 import { TravelPackage } from "@/lib/data";
+import { formatPackagePrice } from "@/lib/utils";
 import { Artwork } from "./artwork";
 import { OverrideText } from "./override-text";
 
 export function PackageCard({ pkg }: { pkg: TravelPackage }) {
-  const currencySymbol =
-    pkg.currency === "USD"
-      ? "$"
-      : pkg.currency === "AUD"
-      ? "$"
-      : pkg.currency === "EUR"
-      ? "€"
-      : pkg.currency === "GBP"
-      ? "£"
-      : pkg.currency === "INR"
-      ? "₹"
-      : pkg.currency
-      ? `${pkg.currency} `
-      : "$";
+  const formattedPrice = formatPackagePrice(pkg.price, pkg.currency);
+  const symbolPrefix = formattedPrice.slice(0, formattedPrice.length - pkg.price.length);
 
   return (
     <Link
@@ -47,7 +36,7 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
           <div>
             <p className="font-mono text-[11px] uppercase tracking-wider text-ink/45">from</p>
             <p className="font-display text-2xl font-medium text-ink">
-              {currencySymbol}
+              {symbolPrefix}
               <OverrideText kind="packages" slug={pkg.slug} field="price">
                 {pkg.price}
               </OverrideText>

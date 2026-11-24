@@ -17,6 +17,7 @@ const nav = [
 
 export function Emblem({ className = "" }: { className?: string }) {
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src="/images/medycare-logo.png"
       alt="MedyCare 2₹ism emblem"
@@ -34,6 +35,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
           <Link href="/" className="flex flex-col items-start gap-1 py-1 group" onClick={() => setMenuOpen(false)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/medycare-logo.png"
               alt="MedyCare 2₹ism"

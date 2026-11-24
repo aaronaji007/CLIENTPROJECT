@@ -33,14 +33,25 @@ export function useAdminAuth() {
   }, []);
 
   useEffect(() => {
-    // Clean up the legacy, forgeable flag from older versions.
+    let active = true;
     try {
       sessionStorage.removeItem("carte-clinique-admin");
     } catch {
       /* ignore */
     }
-    refresh();
-  }, [refresh]);
+    getAdminSessionAction()
+      .then((s) => {
+        if (!active) return;
+        setAuthed(s.authed);
+        setMustChangePassword(s.authed ? s.mustChangePassword : false);
+      })
+      .catch(() => {
+        if (active) setAuthed(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (authed === false && window.location.pathname !== "/admin/login") {

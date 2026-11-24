@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/prisma/db";
+import type { FieldInputTypes, FieldOutputTypes } from "@/prisma/contract.d";
 import { revalidatePath } from "next/cache";
 import {
   requireAdmin,
@@ -21,6 +22,27 @@ import {
  * against an explicit allow-list of fields with length limits.
  */
 
+export type SpecialtyRow = Omit<FieldOutputTypes["public"]["Specialty"], "procedures"> & {
+  procedures: string[];
+};
+
+export type PackageRow = Omit<FieldOutputTypes["public"]["Package"], "includes"> & {
+  includes: string[];
+  specialty: string;
+};
+
+export type InquiryRow = Omit<FieldOutputTypes["public"]["Inquiry"], "files"> & {
+  files: string[];
+};
+
+export type SubscriberRow = FieldOutputTypes["public"]["Subscriber"];
+
+type Mutable<T> = { -readonly [K in keyof T]: T[K] };
+type SpecialtyCreate = Omit<FieldInputTypes["public"]["Specialty"], "id">;
+type SpecialtyUpdate = Partial<Mutable<Omit<SpecialtyCreate, "slug">>>;
+type PackageCreate = Omit<FieldInputTypes["public"]["Package"], "id">;
+type PackageUpdate = Partial<Mutable<Omit<PackageCreate, "slug">>>;
+
 // ---------------------------------------------------------------------------
 // Input sanitisers (not exported → not endpoints)
 // ---------------------------------------------------------------------------
@@ -37,6 +59,10 @@ function strArr(v: unknown, maxItems: number, maxLen: number): string[] {
     .slice(0, maxItems)
     .map((x) => x.slice(0, maxLen).trim())
     .filter(Boolean);
+}
+
+function cleanProcedure(raw: string): string {
+  return raw.split(/\s*·\s*|\s*—\s*/)[0].trim();
 }
 
 function slugify(v: unknown): string {
@@ -60,39 +86,63 @@ function safePhoto(v: unknown, fallback: string): string {
   return fallback;
 }
 
-function specialtyFields(data: Record<string, unknown>, partial: boolean) {
-  const out: Record<string, unknown> = {};
-  const has = (k: string) => !partial || k in data;
-  if (has("category")) out.category = str(data.category, 120, "General Surgery") || "General Surgery";
-  if (has("name")) out.name = str(data.name, 160);
-  if (has("tagline")) out.tagline = str(data.tagline, 300);
-  if (has("summary")) out.summary = str(data.summary, 1000);
-  if (has("overview")) out.overview = str(data.overview, 5000);
-  if (has("procedures")) out.procedures = strArr(data.procedures, 100, 300);
-  if (has("recovery")) out.recovery = str(data.recovery, 5000);
-  if (has("outcomes")) out.outcomes = str(data.outcomes, 2000);
-  if (has("travelDays")) out.travelDays = str(data.travelDays, 120, "Stay 3-5 days") || "Stay 3-5 days";
-  if (has("photo")) out.photo = safePhoto(data.photo, "/images/orthopedics.webp");
+function buildSpecialtyCreate(slug: string, d: Record<string, unknown>): SpecialtyCreate {
+  return {
+    slug,
+    category: str(d.category, 120, "General Surgery") || "General Surgery",
+    name: str(d.name, 160),
+    tagline: str(d.tagline, 300),
+    summary: str(d.summary, 1000),
+    overview: str(d.overview, 5000),
+    procedures: strArr(d.procedures, 100, 300).map(cleanProcedure).filter(Boolean),
+    recovery: str(d.recovery, 5000),
+    outcomes: str(d.outcomes, 2000),
+    travelDays: "",
+    photo: safePhoto(d.photo, "/images/orthopedics.webp"),
+  };
+}
+
+function buildSpecialtyUpdate(d: Record<string, unknown>): SpecialtyUpdate {
+  const out: SpecialtyUpdate = {};
+  if ("category" in d) out.category = str(d.category, 120, "General Surgery") || "General Surgery";
+  if ("name" in d) out.name = str(d.name, 160);
+  if ("tagline" in d) out.tagline = str(d.tagline, 300);
+  if ("summary" in d) out.summary = str(d.summary, 1000);
+  if ("overview" in d) out.overview = str(d.overview, 5000);
+  if ("procedures" in d) out.procedures = strArr(d.procedures, 100, 300).map(cleanProcedure).filter(Boolean);
+  if ("recovery" in d) out.recovery = str(d.recovery, 5000);
+  if ("outcomes" in d) out.outcomes = str(d.outcomes, 2000);
+  if ("photo" in d) out.photo = safePhoto(d.photo, "/images/orthopedics.webp");
   return out;
 }
 
-function packageFields(data: Record<string, unknown>, partial: boolean) {
-  const out: Record<string, unknown> = {};
-  const has = (k: string) => !partial || k in data;
-  if (has("name")) out.name = str(data.name, 160);
-  if (has("country")) out.country = str(data.country, 80, "India") || "India";
-  if (has("city")) out.city = str(data.city, 80, "New Delhi") || "New Delhi";
-  if (has("price")) out.price = str(data.price, 40);
-  if (has("currency")) out.currency = str(data.currency, 8, "AUD").toUpperCase() || "AUD";
-  if (has("days")) {
-    const d = Math.round(Number(data.days));
-    out.days = Number.isFinite(d) && d > 0 && d < 366 ? d : 5;
-  }
-  if (has("specialtyId")) out.specialtyId = str(data.specialtyId, 64);
-  if (has("summary")) out.summary = str(data.summary, 1000);
-  if (has("includes")) out.includes = strArr(data.includes, 50, 300);
-  if (has("notes")) out.notes = str(data.notes, 2000);
-  if (has("photo")) out.photo = safePhoto(data.photo, "/images/orthopedics.webp");
+function buildPackageCreate(slug: string, d: Record<string, unknown>): PackageCreate {
+  return {
+    slug,
+    name: str(d.name, 160),
+    country: "",
+    city: "",
+    price: str(d.price, 40),
+    currency: str(d.currency, 8, "USD").toUpperCase() || "USD",
+    days: 0,
+    specialtyId: str(d.specialtyId, 64),
+    summary: str(d.summary, 1000),
+    includes: strArr(d.includes, 50, 300),
+    notes: str(d.notes, 2000),
+    photo: safePhoto(d.photo, "/images/orthopedics.webp"),
+  };
+}
+
+function buildPackageUpdate(d: Record<string, unknown>): PackageUpdate {
+  const out: PackageUpdate = {};
+  if ("name" in d) out.name = str(d.name, 160);
+  if ("price" in d) out.price = str(d.price, 40);
+  if ("currency" in d) out.currency = str(d.currency, 8, "USD").toUpperCase() || "USD";
+  if ("specialtyId" in d) out.specialtyId = str(d.specialtyId, 64);
+  if ("summary" in d) out.summary = str(d.summary, 1000);
+  if ("includes" in d) out.includes = strArr(d.includes, 50, 300);
+  if ("notes" in d) out.notes = str(d.notes, 2000);
+  if ("photo" in d) out.photo = safePhoto(d.photo, "/images/orthopedics.webp");
   return out;
 }
 
@@ -151,24 +201,42 @@ export async function changeAdminPasswordAction(data: {
 // Admin data actions (all require an authenticated admin)
 // ---------------------------------------------------------------------------
 
-export async function fetchAdminData() {
+export async function fetchAdminData(): Promise<{
+  specialties: SpecialtyRow[];
+  packages: PackageRow[];
+  inquiries: InquiryRow[];
+  subscribers: SubscriberRow[];
+}> {
   await requireAdmin();
   try {
-    const specialties = await db.orm.public.Specialty.all();
-    const rawPackages = await db.orm.public.Package.include("specialty").all();
-    const packages = rawPackages.map((p) => ({
-      ...p,
-      specialty: p.specialty ? (p.specialty as any).name : "",
+    const rawSpecialties = await db.orm.public.Specialty.all();
+    const specialties: SpecialtyRow[] = rawSpecialties.map((s) => ({
+      ...s,
+      procedures: [...s.procedures],
     }));
 
+    const rawPackages = await db.orm.public.Package.include("specialty").all();
+    const packages: PackageRow[] = rawPackages.map((p) => {
+      const { specialty: specRel, ...rest } = p;
+      const specName =
+        specRel && typeof specRel === "object" && "name" in specRel
+          ? String((specRel as { name: string }).name)
+          : "";
+      return {
+        ...rest,
+        includes: [...rest.includes],
+        specialty: specName,
+      };
+    });
+
     const rawInquiries = await db.orm.public.Inquiry.all();
-    const inquiries = rawInquiries.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    const inquiries: InquiryRow[] = rawInquiries
+      .map((i) => ({ ...i, files: [...i.files] }))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     const rawSubscribers = await db.orm.public.Subscriber.all();
-    const subscribers = rawSubscribers.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const subscribers = [...rawSubscribers].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
     return { specialties, packages, inquiries, subscribers };
@@ -188,31 +256,32 @@ export async function createSpecialtyDb(data: {
   procedures: string[];
   recovery: string;
   outcomes: string;
-  travelDays: string;
   photo?: string;
 }) {
   await requireAdmin();
   const d = asObj(data);
   const slug = slugify(d.slug || d.name);
   if (!slug) throw new Error("A valid slug or name is required");
-  const fields = specialtyFields(d, false);
+  const fields = buildSpecialtyCreate(slug, d);
   if (!fields.name) throw new Error("Name is required");
 
-  const result = await db.orm.public.Specialty.create({ slug, ...fields } as any);
+  const result = await db.orm.public.Specialty.create(fields);
 
   revalidatePath("/");
   revalidatePath("/specialties");
+  revalidatePath("/faq");
   revalidatePath(`/specialties/${result.slug}`);
-  return result;
+  return { ...result, procedures: [...result.procedures] };
 }
 
-export async function updateSpecialtyDb(slug: string, patch: any) {
+export async function updateSpecialtyDb(slug: string, patch: Record<string, unknown>) {
   await requireAdmin();
   const s = slugify(slug);
-  const fields = specialtyFields(asObj(patch), true);
-  const result = await db.orm.public.Specialty.where({ slug: s }).update(fields as any);
+  const fields = buildSpecialtyUpdate(asObj(patch));
+  const result = await db.orm.public.Specialty.where({ slug: s }).update(fields);
   revalidatePath("/");
   revalidatePath("/specialties");
+  revalidatePath("/faq");
   revalidatePath(`/specialties/${s}`);
   return result;
 }
@@ -228,17 +297,15 @@ export async function deleteSpecialtyDb(slug: string) {
   revalidatePath("/");
   revalidatePath("/specialties");
   revalidatePath("/packages");
+  revalidatePath("/faq");
   return { ok: true };
 }
 
 export async function createPackageDb(data: {
   slug: string;
   name: string;
-  country: string;
-  city: string;
   price: string;
   currency: string;
-  days: number;
   specialtyId: string;
   summary: string;
   includes: string[];
@@ -249,22 +316,22 @@ export async function createPackageDb(data: {
   const d = asObj(data);
   const slug = slugify(d.slug || d.name);
   if (!slug) throw new Error("A valid slug or name is required");
-  const fields = packageFields(d, false);
+  const fields = buildPackageCreate(slug, d);
   if (!fields.name || !fields.specialtyId) throw new Error("Name and specialty are required");
 
-  const result = await db.orm.public.Package.create({ slug, ...fields } as any);
+  const result = await db.orm.public.Package.create(fields);
 
   revalidatePath("/");
   revalidatePath("/packages");
   revalidatePath(`/packages/${result.slug}`);
-  return result;
+  return { ...result, includes: [...result.includes] };
 }
 
-export async function updatePackageDb(slug: string, patch: any) {
+export async function updatePackageDb(slug: string, patch: Record<string, unknown>) {
   await requireAdmin();
   const s = slugify(slug);
-  const fields = packageFields(asObj(patch), true);
-  const result = await db.orm.public.Package.where({ slug: s }).update(fields as any);
+  const fields = buildPackageUpdate(asObj(patch));
+  const result = await db.orm.public.Package.where({ slug: s }).update(fields);
   revalidatePath("/");
   revalidatePath("/packages");
   revalidatePath(`/packages/${s}`);
@@ -296,7 +363,7 @@ export async function deleteSubscriberDb(email: string) {
 
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,24}$/;
 
-export async function createInquiryDb(data: any) {
+export async function createInquiryDb(data: unknown) {
   const ip = await clientIp();
   if (!rateLimit(`inquiry:${ip}`, 5, 60 * 60 * 1000)) {
     throw new Error("Too many inquiries from this network. Please try again later.");
@@ -323,7 +390,7 @@ export async function createInquiryDb(data: any) {
     notes: str(d.notes, 4000) || null,
     files: strArr(d.files, 10, 200),
     status: "new",
-  } as any);
+  });
   return { ok: true };
 }
 

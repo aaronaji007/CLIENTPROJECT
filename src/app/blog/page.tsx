@@ -1,14 +1,20 @@
 import Link from "next/link";
-import { posts } from "@/lib/data";
+import { posts as defaultPosts } from "@/lib/data";
+import { readOverrides } from "@/lib/server-overrides";
 import { Artwork } from "@/components/artwork";
 import { OverrideText } from "@/components/override-text";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Journal",
   description: "Practical guides on planning and recovering from care abroad.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const ov = await readOverrides();
+  const posts = ov.allPosts && ov.allPosts.length > 0 ? ov.allPosts : defaultPosts;
+
   return (
     <div className="mx-auto max-w-4xl px-5 py-16 sm:py-24">
       <div className="max-w-2xl">
@@ -30,7 +36,7 @@ export default function BlogPage() {
           >
             <div className="sm:w-56 sm:shrink-0">
               <div className="h-44 w-full sm:h-full">
-                <Artwork slug={post.slug} kind="card" label={post.category} />
+                <Artwork slug={post.slug} kind="card" label={post.category} photo={post.photo} />
               </div>
             </div>
             <div className="flex-1 p-6">

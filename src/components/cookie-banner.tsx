@@ -1,22 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
 export function CookieBanner() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem("carte-clinique-cookie-consent");
-    if (!consent) {
-      setShow(true);
-    }
+    const t = setTimeout(() => {
+      try {
+        const consent = localStorage.getItem("carte-clinique-cookie-consent");
+        if (!consent) setShow(true);
+      } catch {
+        setShow(true);
+      }
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   if (!show) return null;
 
   const accept = () => {
-    localStorage.setItem("carte-clinique-cookie-consent", "true");
+    try {
+      localStorage.setItem("carte-clinique-cookie-consent", "true");
+    } catch {
+      /* ignore */
+    }
     setShow(false);
   };
 

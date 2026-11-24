@@ -56,6 +56,20 @@ export function InquiryModal() {
 
   const submit = async () => {
     if (typeof window !== "undefined") {
+      let noteText = form.notes;
+      try {
+        const rawUtm = sessionStorage.getItem("carte-clinique-utm");
+        if (rawUtm) {
+          const u = JSON.parse(rawUtm) as { source?: string; medium?: string; campaign?: string };
+          const parts = [u.source, u.medium, u.campaign].filter(Boolean);
+          if (parts.length) {
+            noteText = noteText ? `${noteText}\n[Attribution: ${parts.join(" / ")}]` : `[Attribution: ${parts.join(" / ")}]`;
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+
       const record = {
         condition: form.condition,
         procedure: form.procedure || "",
@@ -63,18 +77,22 @@ export function InquiryModal() {
         name: form.name,
         email: form.email,
         country: form.country,
-        notes: form.notes,
+        notes: noteText,
         files: files.map((f) => f.name),
         status: "new",
       };
-      
+
       try {
         const { createInquiryDb } = await import("@/app/admin/actions");
         await createInquiryDb(record);
         setStep(4); // Show success screen
       } catch (e) {
         console.error("Failed to submit inquiry", e);
-        alert("We couldn't submit your inquiry. Please check your details and try again in a little while.");
+        alert(
+          e instanceof Error
+            ? e.message
+            : "We couldn't submit your inquiry. Please check your details and try again in a little while.",
+        );
       }
     }
   };
@@ -181,7 +199,7 @@ export function InquiryModal() {
                   <option>Orthopedics & Joint Surgery</option>
                   <option>Aesthetic & Plastic Surgery</option>
                   <option>Fertility & Reproductive Medicine</option>
-                  <option>Urology & Men's Health</option>
+                  <option>Urology &amp; Men&apos;s Health</option>
                   <option>Oncology & Precision Treatment</option>
                   <option>Dental & Maxillofacial Care</option>
                   <option>Ophthalmology & Vision</option>
@@ -224,9 +242,9 @@ export function InquiryModal() {
                 <svg viewBox="0 0 24 24" className="h-8 w-8 text-ink/50" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 16 V5 M8 9 L12 5 L16 9 M5 19 H19" />
                 </svg>
-                <span className="text-sm font-medium text-ink">Upload medical documents</span>
+                <span className="text-sm font-medium text-ink">Select medical documents to reference</span>
                 <span className="text-xs text-ink/55">
-                  Imaging, reports, or letters — encrypted in transit. Optional.
+                  Imaging, reports, or letters — optional. Your coordinator will confirm a private, encrypted upload link.
                 </span>
               </label>
               <input

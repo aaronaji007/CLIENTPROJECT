@@ -9,12 +9,12 @@ export function Footer() {
   const site = ov.site?.global || {};
 
   return (
-    <footer className="bg-[#18231c] dark:bg-[#101412] text-paper dark:text-ink border-t border-line">
-      <div className="border-b border-paper/12 dark:border-line">
+    <footer className="bg-[#18231c] dark:bg-[#101412] text-[#f4efe2] border-t border-line">
+      <div className="border-b border-[#f4efe2]/15">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between">
           <div className="max-w-sm">
-            <p className="font-display text-xl font-medium">Stay in the loop</p>
-            <p className="mt-2 text-sm leading-relaxed text-paper/75 dark:text-ink/75">
+            <p className="font-display text-xl font-medium text-[#f4efe2]">Stay in the loop</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#f4efe2]/75">
               Occasional notes on planning care abroad — never spam, always in your timezone.
             </p>
           </div>
@@ -25,7 +25,8 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2 space-y-3">
-            <div className="inline-block rounded-xl bg-white/95 dark:bg-[#1a201c] px-3 py-2 shadow-sm border border-line">
+            <div className="inline-block rounded-xl bg-white/95 dark:bg-[#1a201c] px-3 py-2 shadow-sm border border-[#f4efe2]/15">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/medycare-logo.png"
                 alt={site.brandName || "MedyCare 2₹ism"}
@@ -35,12 +36,12 @@ export function Footer() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal font-semibold">
               {site.brandTagline || "MedicalCare Beyond Borders"}
             </p>
-            <p className="max-w-sm text-sm leading-relaxed text-paper/80">
+            <p className="max-w-sm text-sm leading-relaxed text-[#f4efe2]/80">
               {site.footerDisclaimer ||
                 "A premier global healthcare & medical tourism concierge. Coordinating every step of your medical journey from discovery to recovery across borders."}
             </p>
             {(site.email || site.emergencyPhone) && (
-              <div className="pt-2 font-mono text-xs text-paper/70 space-y-1">
+              <div className="pt-2 font-mono text-xs text-[#f4efe2]/70 space-y-1">
                 {site.email && <p>📧 {site.email}</p>}
                 {site.emergencyPhone && <p>📞 Emergency Recovery: {site.emergencyPhone}</p>}
               </div>
@@ -48,30 +49,30 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/65">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#f4efe2]/65">
               Explore
             </p>
-            <ul className="mt-4 space-y-3 text-sm text-paper/80">
-              <li><Link href="/specialties" className="hover:text-paper">Specialties &amp; Surgeries</Link></li>
-              <li><Link href="/packages" className="hover:text-paper">Care Packages &amp; Pricing</Link></li>
-              <li><Link href="/faq" className="hover:text-paper">FAQ</Link></li>
-              <li><Link href="/blog" className="hover:text-paper">Journal</Link></li>
+            <ul className="mt-4 space-y-3 text-sm text-[#f4efe2]/80">
+              <li><Link href="/specialties" className="hover:text-[#f4efe2]">Specialties &amp; Surgeries</Link></li>
+              <li><Link href="/packages" className="hover:text-[#f4efe2]">Care Packages &amp; Pricing</Link></li>
+              <li><Link href="/faq" className="hover:text-[#f4efe2]">FAQ</Link></li>
+              <li><Link href="/blog" className="hover:text-[#f4efe2]">Journal</Link></li>
             </ul>
           </div>
 
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/65">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#f4efe2]/65">
               Care
             </p>
-            <ul className="mt-4 space-y-3 text-sm text-paper/80">
-              <li><Link href="/#consult" className="hover:text-paper">Book a consult</Link></li>
-              <li><Link href="/#journey" className="hover:text-paper">The journey</Link></li>
-              <li><Link href="/admin" className="hover:text-paper">Admin Console</Link></li>
+            <ul className="mt-4 space-y-3 text-sm text-[#f4efe2]/80">
+              <li><Link href="/consult" className="hover:text-[#f4efe2]">Book a consult</Link></li>
+              <li><Link href="/#journey" className="hover:text-[#f4efe2]">The journey</Link></li>
+              <li><Link href="/admin" className="hover:text-[#f4efe2]">Admin Console</Link></li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-paper/15 pt-6 text-xs text-paper/60 sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-[#f4efe2]/15 pt-6 text-xs text-[#f4efe2]/60 sm:flex-row sm:items-center">
           <p>&copy; {new Date().getFullYear()} {site.brandName || "MedyCare 2₹ism"} · {site.brandTagline || "MedicalCare Beyond Borders"}. All rights reserved.</p>
           <p className="font-mono">Coordinated Care Across Borders</p>
         </div>

@@ -1,6 +1,6 @@
 import { db } from "@/prisma/db";
 import { PackageCollection } from "@/components/collection-filters";
-import { packages as fallbackPackages } from "@/lib/data";
+import { packages as fallbackPackages, type TravelPackage } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -16,25 +16,29 @@ export default async function PackagesPage({
 }) {
   const { q } = await searchParams;
 
-  let mappedPackages = [];
+  let mappedPackages: TravelPackage[] = [];
   try {
     const allPackages = await db.orm.public.Package.include("specialty").all();
-    mappedPackages = allPackages.map((p) => ({
-      id: p.id,
-      slug: p.slug,
-      name: p.name,
-      country: p.country,
-      city: p.city,
-      price: p.price,
-      currency: p.currency,
-      days: p.days,
-      specialtyId: p.specialtyId,
-      specialty: (p.specialty as any)?.name || p.specialtyId,
-      summary: p.summary,
-      includes: (p.includes as string[]) || [],
-      notes: p.notes,
-      photo: p.photo,
-    }));
+    mappedPackages =
+      allPackages.length > 0
+        ? allPackages.map((p) => {
+            const specObj = p.specialty as { name?: string } | null | undefined;
+            return {
+              slug: p.slug,
+              name: p.name,
+              country: p.country,
+              city: p.city,
+              price: p.price,
+              currency: p.currency,
+              days: p.days,
+              specialty: specObj?.name || p.specialtyId,
+              summary: p.summary,
+              includes: [...p.includes],
+              notes: p.notes,
+              photo: p.photo,
+            };
+          })
+        : fallbackPackages;
   } catch (e) {
     console.error("Error fetching packages:", e);
     mappedPackages = fallbackPackages;
