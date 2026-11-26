@@ -115,7 +115,7 @@ export default async function Home() {
             </h1>
             <p className="mt-5 text-base sm:text-lg leading-relaxed text-ink/75 max-w-xl">
               <OverrideText kind="landing" slug="home" field="heroSubtitle">
-                MedyCare 2₹ism connects patients with leading accredited hospitals across borders. Clear clinical paths, documented pricing, and a single coordinator from first review through full recovery.
+                MedyCare 2₹ism connects patients with leading accredited hospitals across borders. Clear clinical paths, accredited specialists, and a single coordinator from first review through full recovery.
               </OverrideText>
             </p>
 
@@ -146,7 +146,7 @@ export default async function Home() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-                <span>Transparent Flat Pricing</span>
+                <span>Accredited Partner Hospitals</span>
               </div>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default async function Home() {
                 </div>
                 <div className="flex items-start gap-2.5 text-xs text-ink/80">
                   <span className="text-signal font-bold">✓</span>
-                  <span><strong>Fixed Care Plan:</strong> Written surgical and travel estimates upfront</span>
+                  <span><strong>Coordinated Care Plan:</strong> End-to-end hospital, travel, and logistics planning</span>
                 </div>
                 <div className="flex items-start gap-2.5 text-xs text-ink/80">
                   <span className="text-signal font-bold">✓</span>
@@ -237,7 +237,7 @@ export default async function Home() {
             {
               icon: UserRoundCheck,
               title: "Aligned incentives",
-              body: "Flat, transparent pricing. We are paid to coordinate your care, never to upsell a procedure.",
+              body: "Patient-first guidance. We coordinate your clinical pathway end to end, never upselling a procedure.",
             },
           ].map((f) => (
             <SpotlightCard
@@ -359,8 +359,8 @@ export default async function Home() {
                 </h2>
                 <p className="mt-4 text-paper/70 dark:text-ink/75">
                   A short, confidential form. No commitment, no sales call — a
-                  clinical lead replies with a realistic path and a written
-                  estimate.
+                  clinical lead replies with a realistic clinical pathway and
+                  next steps.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 font-mono text-xs uppercase tracking-wider text-paper/80 dark:text-ink/80">
                   <div className="flex items-center gap-2">
@@ -369,7 +369,7 @@ export default async function Home() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-                    Fixed, transparent pricing before you fly
+                    Accredited hospitals and vetted surgical teams
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-signal" />

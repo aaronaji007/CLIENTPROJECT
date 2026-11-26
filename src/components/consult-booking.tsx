@@ -85,7 +85,7 @@ export function ConsultBooking() {
 
       const { createInquiryDb } = await import("@/app/admin/actions");
       await createInquiryDb({
-        condition: "20-minute Case Manager Consultation",
+        condition: "Case Manager Consultation",
         procedure: "Initial Telemedicine Consult",
         timeline: "flexible",
         name: name.trim(),
@@ -174,7 +174,7 @@ export function ConsultBooking() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-ink/55">
-              A 20-minute consult. Nothing is charged and nothing is decided here.
+              A confidential introductory consult. Nothing is charged and nothing is decided here.
             </p>
             <button
               type="submit"

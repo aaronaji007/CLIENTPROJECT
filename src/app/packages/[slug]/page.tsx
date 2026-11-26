@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/prisma/db";
 import { packages as fallbackPackages } from "@/lib/data";
-import { formatPackagePrice } from "@/lib/utils";
 import { ArrowIcon } from "@/components/icons";
 import { Artwork } from "@/components/artwork";
 import { OverrideText } from "@/components/override-text";
@@ -12,8 +11,6 @@ export const dynamic = "force-dynamic";
 type ResolvedPackage = {
   slug: string;
   name: string;
-  price: string;
-  currency: string;
   specialtyName: string;
   summary: string;
   includes: readonly string[];
@@ -29,8 +26,6 @@ async function findPackage(slug: string): Promise<ResolvedPackage | null> {
       return {
         slug: dbRow.slug,
         name: dbRow.name,
-        price: dbRow.price,
-        currency: dbRow.currency,
         specialtyName: specObj?.name || dbRow.specialtyId,
         summary: dbRow.summary,
         includes: [...dbRow.includes],
@@ -46,8 +41,6 @@ async function findPackage(slug: string): Promise<ResolvedPackage | null> {
   return {
     slug: fb.slug,
     name: fb.name,
-    price: fb.price,
-    currency: fb.currency,
     specialtyName: fb.specialty,
     summary: fb.summary,
     includes: fb.includes,
@@ -71,9 +64,6 @@ export default async function PackagePage({
   const { slug } = await params;
   const pkg = await findPackage(slug);
   if (!pkg) notFound();
-
-  const formatted = formatPackagePrice(pkg.price, pkg.currency);
-  const symbolPrefix = formatted.slice(0, formatted.length - pkg.price.length);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-24">
@@ -118,26 +108,25 @@ export default async function PackagePage({
             </ul>
           </section>
 
-          <section className="mt-10 rounded-sm bg-signal/5 px-5 py-4 ring-1 ring-signal/20">
-            <p className="text-sm font-medium text-signal-deep dark:text-signal">Estimate notice</p>
-            <p className="mt-1 text-sm text-ink/65">{pkg.notes}</p>
-          </section>
+          {pkg.notes && (
+            <section className="mt-10 rounded-sm bg-signal/5 px-5 py-4 ring-1 ring-signal/20">
+              <p className="text-sm font-medium text-signal-deep dark:text-signal">Program overview</p>
+              <p className="mt-1 text-sm text-ink/65">{pkg.notes}</p>
+            </section>
+          )}
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="overflow-hidden rounded-lg border border-line bg-[#18231c] dark:bg-[#121614] text-[#f4efe2]">
             <div className="p-6">
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#f4efe2]/60">
-                Package
+                Care Program
               </p>
-              <p className="mt-2 font-display text-3xl font-medium text-[#f4efe2]">
-                {symbolPrefix}
-                <OverrideText kind="packages" slug={pkg.slug} field="price">
-                  {pkg.price}
-                </OverrideText>
+              <p className="mt-2 font-display text-2xl font-medium text-[#f4efe2]">
+                Tailored to your clinical needs
               </p>
               <p className="mt-1 text-xs text-[#f4efe2]/65">
-                {pkg.currency || "USD"} · all-inclusive coordinated care
+                All-inclusive coordinated care pathway
               </p>
               <div className="mt-5 space-y-3 border-t border-[#f4efe2]/15 pt-5 text-sm text-[#f4efe2]/85">
                 <p className="flex justify-between gap-4">

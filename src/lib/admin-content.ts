@@ -44,7 +44,7 @@ export const defaultTrust = [
   "JCI-Accredited Partners",
   "GDPR-Aligned Records",
   "Bilingual Care Coordinators",
-  "Transparent Flat Pricing",
+  "End-to-End Care Coordination",
   "24/7 Recovery Line",
   "Named Clinical Lead",
 ];

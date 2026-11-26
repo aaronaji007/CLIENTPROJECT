@@ -40,12 +40,21 @@ export function Footer() {
               {site.footerDisclaimer ||
                 "A premier global healthcare & medical tourism concierge. Coordinating every step of your medical journey from discovery to recovery across borders."}
             </p>
-            {(site.email || site.emergencyPhone) && (
-              <div className="pt-2 font-mono text-xs text-[#f4efe2]/70 space-y-1">
-                {site.email && <p>📧 {site.email}</p>}
-                {site.emergencyPhone && <p>📞 Emergency Recovery: {site.emergencyPhone}</p>}
-              </div>
-            )}
+            <div className="pt-2 font-mono text-xs text-[#f4efe2]/75 space-y-1.5">
+              <p>
+                <span className="text-[#f4efe2]/55">Australia — Sydney:</span>{" "}
+                <a href="tel:+61466588037" className="hover:text-[#f4efe2] underline-offset-4 hover:underline">
+                  +61 466588037
+                </a>
+              </p>
+              <p>
+                <span className="text-[#f4efe2]/55">India — Thrissur, Kerala:</span>{" "}
+                <a href="tel:+917293119311" className="hover:text-[#f4efe2] underline-offset-4 hover:underline">
+                  +91 72931 19311
+                </a>
+              </p>
+              {site.email && <p>📧 {site.email}</p>}
+            </div>
           </div>
 
           <div>
@@ -54,7 +63,7 @@ export function Footer() {
             </p>
             <ul className="mt-4 space-y-3 text-sm text-[#f4efe2]/80">
               <li><Link href="/specialties" className="hover:text-[#f4efe2]">Specialties &amp; Surgeries</Link></li>
-              <li><Link href="/packages" className="hover:text-[#f4efe2]">Care Packages &amp; Pricing</Link></li>
+              <li><Link href="/packages" className="hover:text-[#f4efe2]">Care Packages</Link></li>
               <li><Link href="/faq" className="hover:text-[#f4efe2]">FAQ</Link></li>
               <li><Link href="/blog" className="hover:text-[#f4efe2]">Journal</Link></li>
             </ul>
@@ -62,9 +71,10 @@ export function Footer() {
 
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#f4efe2]/65">
-              Care
+              Care &amp; Contact
             </p>
             <ul className="mt-4 space-y-3 text-sm text-[#f4efe2]/80">
+              <li><Link href="/contact" className="hover:text-[#f4efe2]">Contact Us</Link></li>
               <li><Link href="/consult" className="hover:text-[#f4efe2]">Book a consult</Link></li>
               <li><Link href="/#journey" className="hover:text-[#f4efe2]">The journey</Link></li>
               <li><Link href="/admin" className="hover:text-[#f4efe2]">Admin Console</Link></li>
@@ -74,7 +84,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-[#f4efe2]/15 pt-6 text-xs text-[#f4efe2]/60 sm:flex-row sm:items-center">
           <p>&copy; {new Date().getFullYear()} {site.brandName || "MedyCare 2₹ism"} · {site.brandTagline || "MedicalCare Beyond Borders"}. All rights reserved.</p>
-          <p className="font-mono">Coordinated Care Across Borders</p>
+          <p className="font-mono">Australia (Sydney) · India (Thrissur, Kerala)</p>
         </div>
       </div>
     </footer>

@@ -31,7 +31,7 @@ type Tab =
 const tabs: { id: Tab; label: string; badge?: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "specialties", label: "Surgeries & Specialties", badge: "DB" },
-  { id: "packages", label: "Packages & Pricing", badge: "DB" },
+  { id: "packages", label: "Care Packages", badge: "DB" },
   { id: "site-copy", label: "Hero & Copy" },
   { id: "stats", label: "Metrics & Trust" },
   { id: "journey", label: "Patient Journey" },
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
             MedyCare 2₹ism Management Console
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink/70">
-            Control surgeries, procedures, pricing, packages, testimonials, FAQs, and site-wide copy. Changes are saved to the database and global storage instantly.
+            Control surgeries, procedures, care packages, testimonials, FAQs, and site-wide copy. Changes are saved to the database and global storage instantly.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
@@ -273,7 +273,7 @@ function Overview({ onSelectTab }: { onSelectTab: (t: Tab) => void }) {
                 onClick={() => onSelectTab("packages")}
                 className="w-full text-left rounded-sm border border-line bg-paper-deep/40 px-3 py-2 text-xs text-ink hover:border-ink transition-colors flex items-center justify-between"
               >
-                <span>💲 Change Surgery Package Pricing</span>
+                <span>📦 Manage Care Packages</span>
                 <span className="font-mono text-[10px] text-ink/40">DB</span>
               </button>
               <button
@@ -830,11 +830,9 @@ function PackagesEditor() {
     name: "",
     slug: "",
     specialtyId: resolvedSpecialties[0]?.id || "",
-    price: "4,500",
-    currency: "USD",
     summary: "",
-    includesText: "Pre-op consultations & bloodwork\nSurgical procedure & implant fees\nPrivate hospital recovery suite\nAirport and clinical transfers\nDedicated bilingual clinical case manager",
-    notes: "Indicative starting estimate — confirm a tailored quote with your coordinator.",
+    includesText: "Pre-op consultations & bloodwork\nSurgical procedure & hospital stay\nPrivate hospital recovery suite\nAirport and clinical transfers\nDedicated bilingual clinical case manager",
+    notes: "Personalized clinical pathway coordinated end to end by your case manager.",
     photo: "/images/service-doctor.png",
   });
 
@@ -853,8 +851,6 @@ function PackagesEditor() {
       name: newPkg.name,
       slug,
       specialtyId,
-      price: newPkg.price,
-      currency: newPkg.currency,
       summary: newPkg.summary,
       includes,
       notes: newPkg.notes,
@@ -874,9 +870,9 @@ function PackagesEditor() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line bg-paper p-6 shadow-panel">
         <div>
-          <h2 className="font-display text-2xl font-medium text-ink">Packages &amp; Pricing</h2>
+          <h2 className="font-display text-2xl font-medium text-ink">Care Packages</h2>
           <p className="mt-1 text-sm text-ink/65">
-            Modify surgery package pricing, currencies, descriptions, and bundled inclusions.
+            Manage coordinated surgery packages, descriptions, and bundled inclusions.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -903,7 +899,7 @@ function PackagesEditor() {
         >
           <div className="border-b border-line pb-3">
             <h3 className="font-display text-xl font-medium text-ink">Create New Surgical Package</h3>
-            <p className="text-xs text-ink/60">Configure pricing, specialty link, and bundled clinical services.</p>
+            <p className="text-xs text-ink/60">Configure specialty link and bundled clinical services.</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
@@ -950,32 +946,15 @@ function PackagesEditor() {
             </label>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Price *</span>
+              <span className="font-mono text-[11px] uppercase text-ink/60">Program Notes</span>
               <input
-                required
-                value={newPkg.price}
-                onChange={(e) => setNewPkg({ ...newPkg, price: e.target.value })}
-                placeholder="e.g. 5,200 or 5200"
-                className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink font-semibold"
-              />
-            </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Currency *</span>
-              <select
-                value={newPkg.currency}
-                onChange={(e) => setNewPkg({ ...newPkg, currency: e.target.value })}
+                value={newPkg.notes}
+                onChange={(e) => setNewPkg({ ...newPkg, notes: e.target.value })}
+                placeholder="Program coordination notes..."
                 className="mt-1 w-full rounded-sm border border-line bg-white/50 px-3 py-2 text-sm text-ink"
-              >
-                <option value="USD">USD ($)</option>
-                <option value="AUD">AUD (A$)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="INR">INR (₹)</option>
-                <option value="NZD">NZD (NZ$)</option>
-                <option value="CAD">CAD (C$)</option>
-              </select>
+              />
             </label>
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Photo Image URL</span>
@@ -1068,8 +1047,6 @@ function PackageRowItem({
 }) {
   const [form, setForm] = useState({
     name: p.name,
-    price: p.price,
-    currency: p.currency || "USD",
     specialtyId: p.specialtyId,
     summary: p.summary || "",
     notes: p.notes || "",
@@ -1123,36 +1100,27 @@ function PackageRowItem({
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <span className="block font-mono text-[10px] uppercase text-ink/40">Price</span>
-              <span className="font-display text-2xl font-medium text-signal">
-                {p.currency} {p.price}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Link
-                href={`/packages/${p.slug}`}
-                target="_blank"
-                className="rounded-sm border border-line px-3 py-1.5 text-xs font-mono uppercase text-ink/70 hover:border-ink hover:text-ink"
-              >
-                View live ↗
-              </Link>
-              <button
-                onClick={onToggleEdit}
-                className="rounded-sm border border-ink/20 px-3 py-1.5 text-xs font-mono uppercase font-medium text-ink hover:bg-paper-deep"
-              >
-                {isEditing ? "Close" : "Edit pricing & details"}
-              </button>
-              <button
-                onClick={() => onDelete(p.slug)}
-                disabled={loading}
-                className="rounded-sm border border-signal/30 px-3 py-1.5 text-xs font-mono uppercase text-signal hover:bg-signal/10"
-              >
-                Delete
-              </button>
-            </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/packages/${p.slug}`}
+              target="_blank"
+              className="rounded-sm border border-line px-3 py-1.5 text-xs font-mono uppercase text-ink/70 hover:border-ink hover:text-ink"
+            >
+              View live ↗
+            </Link>
+            <button
+              onClick={onToggleEdit}
+              className="rounded-sm border border-ink/20 px-3 py-1.5 text-xs font-mono uppercase font-medium text-ink hover:bg-paper-deep"
+            >
+              {isEditing ? "Close" : "Edit details"}
+            </button>
+            <button
+              onClick={() => onDelete(p.slug)}
+              disabled={loading}
+              className="rounded-sm border border-signal/30 px-3 py-1.5 text-xs font-mono uppercase text-signal hover:bg-signal/10"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -1160,44 +1128,15 @@ function PackageRowItem({
       {/* Editing Drawer */}
       {isEditing && (
         <div className="border-t border-line bg-paper-deep/30 p-6 space-y-5 animate-in fade-in">
-          <div className="grid gap-4 sm:grid-cols-4">
-            <div className="sm:col-span-2">
-              <label className="block">
-                <span className="font-mono text-[11px] uppercase text-ink/60">Package Name</span>
-                <input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-                />
-              </label>
-            </div>
+          <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
-              <span className="font-mono text-[11px] uppercase text-signal font-semibold">Price (Numeric or String)</span>
+              <span className="font-mono text-[11px] uppercase text-ink/60">Package Name</span>
               <input
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-signal/40 bg-white/90 px-3 py-2 text-sm font-display font-medium text-ink"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
               />
             </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Currency</span>
-              <select
-                value={form.currency}
-                onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-              >
-                <option value="AUD">AUD ($)</option>
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="INR">INR (₹)</option>
-                <option value="NZD">NZD ($)</option>
-                <option value="CAD">CAD ($)</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="font-mono text-[11px] uppercase text-ink/60">Specialty Relation</span>
               <select
@@ -1212,15 +1151,16 @@ function PackageRowItem({
                 ))}
               </select>
             </label>
-            <label className="block">
-              <span className="font-mono text-[11px] uppercase text-ink/60">Estimate Notes</span>
-              <input
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
-              />
-            </label>
           </div>
+
+          <label className="block">
+            <span className="font-mono text-[11px] uppercase text-ink/60">Program Notes</span>
+            <input
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink"
+            />
+          </label>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
@@ -1357,7 +1297,7 @@ function SiteCopyEditor() {
             rows={3}
             value={
               landing.heroSubtitle ??
-              "MedyCare 2₹ism connects patients with leading accredited hospitals across borders. Clear clinical paths, documented pricing, and a single coordinator from first review through full recovery."
+              "MedyCare 2₹ism connects patients with leading accredited hospitals across borders. Clear clinical paths, accredited specialists, and a single coordinator from first review through full recovery."
             }
             onChange={(e) => updateOverride("landing", "home", "heroSubtitle", e.target.value)}
             className="mt-1 w-full rounded-sm border border-line bg-white/60 px-3 py-2 text-sm text-ink"
@@ -2114,9 +2054,9 @@ function FooterEditor() {
           />
         </label>
         <label className="block">
-          <span className="font-mono text-[11px] uppercase text-ink/60">24/7 Recovery Emergency Line</span>
+          <span className="font-mono text-[11px] uppercase text-ink/60">Regional Support Lines</span>
           <input
-            value={site.emergencyPhone ?? "+61 (02) 8000 1234"}
+            value={site.emergencyPhone ?? "AU: +61 466588037 · IN: +91 72931 19311"}
             onChange={(e) => updateOverride("site", "global", "emergencyPhone", e.target.value)}
             className="mt-1 w-full rounded-sm border border-line bg-white/70 px-3 py-2 text-sm text-ink font-mono"
           />

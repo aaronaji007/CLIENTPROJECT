@@ -13,6 +13,7 @@ const nav = [
   { href: "/#journey", label: "The journey" },
   { href: "/faq", label: "FAQ" },
   { href: "/blog", label: "Journal" },
+  { href: "/contact", label: "Contact Us" },
 ];
 
 export function Emblem({ className = "" }: { className?: string }) {

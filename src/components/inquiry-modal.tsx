@@ -210,8 +210,8 @@ export function InquiryModal() {
                 <div className="mt-2 flex gap-3">
                   {[
                     ["flexible", "Flexible"],
-                    ["next-3-months", "Next 3 months"],
-                    ["urgent", "Within 6 weeks"],
+                    ["next-3-months", "Upcoming months"],
+                    ["urgent", "Priority / Soon"],
                   ].map(([val, label]) => (
                     <button
                       key={val}
@@ -315,7 +315,7 @@ export function InquiryModal() {
                 <dl className="mt-3 space-y-2 text-sm">
                   <ReviewRow label="Condition" value={form.condition} />
                   <ReviewRow label="Procedure" value={form.procedure || "To be advised"} />
-                  <ReviewRow label="Timing" value={form.timeline === "flexible" ? "Flexible" : form.timeline === "next-3-months" ? "Next 3 months" : "Within 6 weeks"} />
+                  <ReviewRow label="Timing" value={form.timeline === "flexible" ? "Flexible" : form.timeline === "next-3-months" ? "Upcoming months" : "Priority / Soon"} />
                   <ReviewRow label="Name" value={form.name} />
                   <ReviewRow label="Email" value={form.email} />
                   <ReviewRow label="Documents" value={files.length ? `${files.length} file(s) ready to share` : "None (optional)"} />

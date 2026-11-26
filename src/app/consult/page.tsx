@@ -23,7 +23,7 @@ export default function ConsultPage() {
         </h1>
         <p className="mt-4 text-ink/70">
           A short, confidential form. No commitment and no sales call — a
-          clinical lead replies with a realistic path and a written estimate.
+          clinical lead replies with a realistic clinical pathway and next steps.
         </p>
 
         <div className="mt-10 rounded-3xl border border-line bg-paper p-6 shadow-panel sm:p-8">

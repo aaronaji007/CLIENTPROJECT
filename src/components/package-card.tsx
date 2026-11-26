@@ -1,13 +1,10 @@
 import Link from "next/link";
 import { TravelPackage } from "@/lib/data";
-import { formatPackagePrice } from "@/lib/utils";
+import { ArrowIcon } from "./icons";
 import { Artwork } from "./artwork";
 import { OverrideText } from "./override-text";
 
 export function PackageCard({ pkg }: { pkg: TravelPackage }) {
-  const formattedPrice = formatPackagePrice(pkg.price, pkg.currency);
-  const symbolPrefix = formattedPrice.slice(0, formattedPrice.length - pkg.price.length);
-
   return (
     <Link
       href={`/packages/${pkg.slug}`}
@@ -32,17 +29,10 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
             {pkg.summary}
           </OverrideText>
         </p>
-        <div className="mt-5 flex items-end justify-between">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-wider text-ink/45">from</p>
-            <p className="font-display text-2xl font-medium text-ink">
-              {symbolPrefix}
-              <OverrideText kind="packages" slug={pkg.slug} field="price">
-                {pkg.price}
-              </OverrideText>
-            </p>
-          </div>
-        </div>
+        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-ink underline-offset-4 group-hover:underline">
+          Explore care program
+          <ArrowIcon />
+        </span>
       </div>
     </Link>
   );

@@ -123,7 +123,7 @@ function buildPackageCreate(slug: string, d: Record<string, unknown>): PackageCr
     country: "",
     city: "",
     price: str(d.price, 40),
-    currency: str(d.currency, 8, "USD").toUpperCase() || "USD",
+    currency: str(d.currency, 8).toUpperCase(),
     days: 0,
     specialtyId: str(d.specialtyId, 64),
     summary: str(d.summary, 1000),
@@ -137,7 +137,7 @@ function buildPackageUpdate(d: Record<string, unknown>): PackageUpdate {
   const out: PackageUpdate = {};
   if ("name" in d) out.name = str(d.name, 160);
   if ("price" in d) out.price = str(d.price, 40);
-  if ("currency" in d) out.currency = str(d.currency, 8, "USD").toUpperCase() || "USD";
+  if ("currency" in d) out.currency = str(d.currency, 8).toUpperCase();
   if ("specialtyId" in d) out.specialtyId = str(d.specialtyId, 64);
   if ("summary" in d) out.summary = str(d.summary, 1000);
   if ("includes" in d) out.includes = strArr(d.includes, 50, 300);
@@ -304,8 +304,8 @@ export async function deleteSpecialtyDb(slug: string) {
 export async function createPackageDb(data: {
   slug: string;
   name: string;
-  price: string;
-  currency: string;
+  price?: string;
+  currency?: string;
   specialtyId: string;
   summary: string;
   includes: string[];

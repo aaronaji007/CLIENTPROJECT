@@ -4,14 +4,9 @@ import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import type { TravelPackage } from "@/lib/data";
-import { formatPackagePrice } from "@/lib/utils";
 import { Artwork } from "./artwork";
 
 const MAX = 3;
-
-function parsePrice(p: TravelPackage) {
-  return Number(p.price.replace(/[^0-9]/g, "")) || 0;
-}
 
 export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
   const [selected, setSelected] = useState<string[]>([]);
@@ -42,7 +37,7 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
             Compare packages side by side
           </h2>
           <p className="mt-3 text-ink/70">
-            Select up to {MAX} to weigh price and what is coordinated at a glance.
+            Select up to {MAX} programs to compare specialties and what is coordinated at a glance.
           </p>
         </div>
         <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/45">
@@ -102,9 +97,8 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
             </thead>
             <tbody>
               <CompareRow
-                label="Price"
-                values={rows.map((r) => formatPackagePrice(r.price, r.currency))}
-                bold
+                label="Specialty"
+                values={rows.map((r) => r.specialty)}
               />
               <CompareRow
                 label="Included"
@@ -135,13 +129,6 @@ export function PackageCompare({ packages }: { packages: TravelPackage[] }) {
           </table>
         </div>
       )}
-
-      <p className="mt-4 text-xs text-ink/45">
-        Indicative starting estimates.{" "}
-        {rows.length > 0
-          ? `From $${Math.min(...rows.map(parsePrice)).toLocaleString()} to $${Math.max(...rows.map(parsePrice)).toLocaleString()}.`
-          : ""}
-      </p>
     </div>
   );
 }

@@ -98,15 +98,12 @@ export function PackageCollection({
 }) {
   const [q, setQ] = useState(initialQuery ?? "");
   const [spec, setSpec] = useState("all");
-  const [sort, setSort] = useState<"featured" | "price-asc" | "price-desc">(
-    "featured",
-  );
+  const [sort, setSort] = useState<"featured" | "name-asc">("featured");
 
   const specialties = useMemo(
     () => [...new Set(packages.map((p) => p.specialty))].sort(),
     [packages],
   );
-  const parsePrice = (p: TravelPackage) => Number(p.price.replace(/[^0-9]/g, "")) || 0;
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -119,8 +116,7 @@ export function PackageCollection({
         );
       return matchS && matchQ;
     });
-    if (sort === "price-asc") list = [...list].sort((a, b) => parsePrice(a) - parsePrice(b));
-    if (sort === "price-desc") list = [...list].sort((a, b) => parsePrice(b) - parsePrice(a));
+    if (sort === "name-asc") list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     return list;
   }, [packages, q, spec, sort]);
 
@@ -167,8 +163,7 @@ export function PackageCollection({
             className={`mt-1 w-full ${selectCls}`}
           >
             <option value="featured">Featured</option>
-            <option value="price-asc">Price: low → high</option>
-            <option value="price-desc">Price: high → low</option>
+            <option value="name-asc">Name: A → Z</option>
           </select>
         </label>
       </div>
